@@ -10,7 +10,7 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME = asm
+NAME = corewar
 # FILENAMES =
 HEADERS = corewar
 SRCDIR = ./src

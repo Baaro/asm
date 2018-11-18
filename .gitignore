@@ -10,7 +10,8 @@
 *.gch
 *.txt
 *.log
-lem-in
-ft_ssl
 *.a
 source/
+asm
+corewar
+

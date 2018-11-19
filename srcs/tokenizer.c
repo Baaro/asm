@@ -1,6 +1,6 @@
 #include "info.h"
 
-void	lexical_analyze(const t_info *i, const t_file *f, t_stck_tkns **st) // test version
+t_stack_tokens	*tokenizer(t_file_s *file_s) // test version
 {
 	unsigned int	column;
 	unsigned int	row;

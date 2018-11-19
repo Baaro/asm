@@ -12,7 +12,10 @@ char		*file_get_data(const char *file_name) // test version
 		file_data = ft_strnew(0);
 		file_fd = open(file_name, O_RDONLY);
 		while (get_next_line(file_fd, &file_line) == 1)
-			file_data = ft_strjoincl(file_data, file_line, 1);
+		{
+			file_data = ft_strjoincl(file_data,
+						ft_strjoincl(file_line, "\n", 0), 1);
+		}
 	}
 	else
 		ft_printf("It's not a file: \"%s\"\n", file_name);

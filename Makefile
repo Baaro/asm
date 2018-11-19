@@ -2,7 +2,7 @@ NAME = asm
 
 CC := gcc
 
-FLAGS := -Wall -Wextra -Werror -g
+# FLAGS := -Wall -Wextra -Werror -g
 
 INCLUDES :=	includes					\
 

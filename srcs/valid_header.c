@@ -1,6 +1,6 @@
 #include "info.h"
 
-bool     ft_get_line(char *data, char **line) // test version
+bool     ft_getline_delim(char *data, char **line, char delim) // test version
 {
     static char *tail;
     char        *pos;
@@ -15,10 +15,11 @@ bool     ft_get_line(char *data, char **line) // test version
         if ((pos = ft_strchr(tail, '\n')))
         {
             *line = ft_strsub(tail, 0, tail - pos);
-            tail = ft_strredup(tail, pos + 1);
+            tail = ft_strdupcl(tail, pos + 1);
             return (true);
         }
     }
+    free(tail);
     return (false);
 }
 
@@ -39,7 +40,7 @@ void	valid_header(char *data, unsigned int *row, unsigned int *column) // test v
 
 	line = NULL;
     *column = 0;
-	while ((checker = ft_get_line(data, &line)) == 1)
+	while ((checker = ft_getline_delim(data, &line, '\n')) == 1)
 	{
 		(*row)++;
 		// if (is_label(line) || is_instruction(line))

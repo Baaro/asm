@@ -12,7 +12,7 @@
 
 #include "../../includes/libft.h"
 
-char		*ft_strredup(char *to_free, char *src)
+char		*ft_strredup(char *src)
 {
 	char	*dst;
 
@@ -21,6 +21,5 @@ char		*ft_strredup(char *to_free, char *src)
 	if (!(dst = ft_memalloc(ft_strlen(src) + 1)))
 		return (NULL);
 	dst = ft_strcpy(dst, src);
-	ft_strdel(&to_free);
 	return (dst);
 }

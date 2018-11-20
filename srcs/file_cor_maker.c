@@ -30,7 +30,7 @@ void	file_cor_compile(t_file_cor *file_cor, t_file *file) // test version
 	// ft_memset(stacks, 0, sizeof(t_stacks));
 	stacks.tokens = tokenizer(file);
 	stacks.byte_code = byte_code_generator(stacks.tokens);
-	linker(&file_cor->byte_code, stacks.);
+	// linker(&file_cor->byte_code, stacks.);
 	return (NULL);
 }
 

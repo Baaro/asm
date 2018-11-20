@@ -75,7 +75,7 @@ typedef struct				s_stacks
 	t_stack_tokens			tokens;
 	t_stack_labels			labels;
 	t_stack_referances		labels_ref;
-	// t_stack_byte_code		byte_code;
+	// t_stack_byte_code	byte_code;
 }							t_stacks;
 
 uint8_t				flags_analyze(int *ac, char ***av, int *args_counter);

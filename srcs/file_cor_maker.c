@@ -25,13 +25,12 @@
 
 void	file_cor_compile(t_file_cor *file_cor, t_file *file) // test version
 {
-	// t_stacks	stacks;
+	t_stacks	*stacks;
 
-	// ft_memset(stacks, 0, sizeof(t_stacks));
-	stacks.tokens = tokenizer(file);
-	stacks.byte_code = byte_code_generator(stacks.tokens);
+	stacks = ft_memalloc(sizeof(t_stacks));
+	stacks->tokens = tokenizer(file);
+	// stacks.byte_code = byte_code_generator(stacks.tokens);
 	// linker(&file_cor->byte_code, stacks.);
-	return (NULL);
 }
 
 t_file_cor		*file_cor_make(const char *file_name) // test version

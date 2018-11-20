@@ -10,7 +10,6 @@ void	usage(void) // test version
 
 // void	file_cor_write(t_file_cor file_cor, uint8_t flags)
 // {
-
 	// if (i->flags & FLAG_A)
 	// 	ft_printf("Output a stripped and annotated version\n");
 	// else

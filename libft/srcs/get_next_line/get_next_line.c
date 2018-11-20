@@ -76,6 +76,8 @@ int				get_next_line(const int fd, char **line)
 
 	if (fd < 0 || !line || read(fd, NULL, 0) < 0 || BUFF_SIZE < 1)
 		return (-1);
+	if (*line != NULL)
+		free(*line);
 	new = ft_find_fd(&head, fd);
 	bf = ft_strnew(BUFF_SIZE);
 	while (true)

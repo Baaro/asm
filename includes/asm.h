@@ -8,11 +8,17 @@
 # include "op.h"
 # define FLAG_A 0b00000001
 # define FLAG_M 0b00000010
+# define VALID 2
+# define ENDLINE_CHAR "\n"
+# define STRING_CHAR "\""
+# define SPACE_CHAR " "
 
 typedef struct				s_file
 {
 	int						fd;
 	char					*name;
+	char					*h_name;
+	char					*comment;
 	char					*data;
 	char					*line;
 }							t_file;
@@ -24,10 +30,11 @@ typedef struct				s_file_cor
 	size_t					*byte_code;
 }							t_file_cor;
 
-/*
-**
-**
-*/
+typedef struct				s_counter
+{
+	size_t					column;
+	size_t					row;
+}							t_counter;
 
 typedef struct				s_token
 {
@@ -37,44 +44,24 @@ typedef struct				s_token
 	struct s_token			*next;
 }							t_token;
 
-typedef struct				s_label
-{
-	char					*name;
-	size_t					position;
-}							t_label;
-
-typedef struct				s_referance
-{
-	char					*name;
-	size_t					position;
-}							t_referance;
-
-typedef struct				s_stack_tokens
-{
-	t_token					*top;
-	t_token					*bot;
-	size_t					size;
-}							t_stack_tokens;
-
-typedef struct				s_stack_labels
-{
-	t_label					*top;
-	t_label					*bot;
-	size_t					size;
-}							t_stack_labels;
-
-typedef struct				s_stack_referances
-{
-	t_label					*top;
-	t_label					*bot;
-	size_t					size;
-}							t_stack_referances;
+// typedef struct				s_byte_instrn
+// {
+// 	uint8_t					instruction;
+// 	uint8_t					params;
+// 	uint8_t					reg_val;
+// 	size_t					dir_val;
+// 	size_t					ind_val;				
+// 	size_t					stack_position;
+// 	size_t					byte_position;
+// 	char					*label;
+// 	struct s_byte_instrn	*next;
+// }							t_byte_instrn;
 
 typedef struct				s_stacks
 {
-	t_stack_tokens			tokens;
-	t_stack_labels			labels;
-	t_stack_referances		labels_ref;
+	t_token					*tokens;
+	// t_stack_labels		labels;
+	// t_stack_referances	labels_ref;
 	// t_stack_byte_code	byte_code;
 }							t_stacks;
 

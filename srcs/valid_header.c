@@ -1,52 +1,95 @@
-#include "info.h"
+#include "asm.h"
 
-bool     ft_getline_delim(char *data, char **line, char delim) // test version
+bool	is_prog_name(const char *line, t_counter *counter)
 {
-    static char *tail;
-    char        *pos;
+	size_t	prog_name_len;
 
-    if (!line)
-        return (false);
-    else if (*line)
-        free(*line);
-    tail = tail == NULL ? (char *)data : ft_strjoincl(tail, data, 0);
-    while (tail)
-    {
-        if ((pos = ft_strchr(tail, '\n')))
-        {
-            *line = ft_strsub(tail, 0, tail - pos);
-            tail = ft_strdupcl(tail, pos + 1);
-            return (true);
-        }
-    }
-    free(tail);
-    return (false);
+	prog_name_len = ft_strlen(NAME_CMD_STRING);
+	if (ft_strnequ(line, NAME_CMD_STRING, prog_name_len))
+	{
+		counter->column += prog_name_len;
+		return (true);
+	}
+	return (false);
 }
 
-// bool	is_label(const char *line)
-// {
-
-// }
-
-// bool	is_instruction(const char *line)
-// {
-
-// }
-
-void	valid_header(char *data, unsigned int *row, unsigned int *column) // test version
+bool	is_prog_comment(const char *line, t_counter *counter)
 {
-	char	*line;
-    bool    checker;
+	size_t	prog_comment_len;
 
-	line = NULL;
-    *column = 0;
-	while ((checker = ft_getline_delim(data, &line, '\n')) == 1)
+	prog_comment_len = ft_strlen(COMMENT_CMD_STRING);
+	if (ft_strnequ(line, COMMENT_CMD_STRING, prog_comment_len))
 	{
-		(*row)++;
-		// if (is_label(line) || is_instruction(line))
-			// break ;
-		// valid_line(line, column);
+		counter->column += prog_comment_len;
+		return (true);
 	}
-    // if (checker == 0 && (*row) == 0)
-    //     errors(FILE_IS_EMPTY);
+	return (false);
+}
+
+void	valid_reminder_of_line(const char *line, t_counter *counter)
+{
+	
+}
+
+bool	valid_prog_string(char *line, char *cmd, t_counter *counter)
+{
+	size_t start;
+
+	start = ++counter->column;
+	while (ft_strchr(LABEL_CHARS, line[counter->column]))
+	{
+		if (line[counter->column + 1] == STRING_START_END_CHAR)
+		{
+			valid_reminder_of_line(line, counter);
+			*cmd = ft_strsub(line, 0, counter->column - start);
+			counter->column++;
+			return (true);
+		}
+		counter->column++;
+	}
+	return (false);
+}
+
+bool	valid_prog_cmd(char *line, char **cmd, t_counter *counter)
+{
+	if (cmd)
+	{
+		if (*cmd)
+			errors(DOUBLE_CMD);
+		counter->column += shift_delims(line + counter->column);
+		if (line[counter->column] == STRING_START_END_CHAR)
+			if (valid_string(line, *cmd, counter))
+				return (true);
+		errors(INVALID_SYMBOLS, line, counter);
+	}
+	return (false);
+}
+
+void	valid_prog_header(t_file *file, t_counter *counter)
+{
+	size_t	h_cmds;
+
+	h_cmds = 0;
+	while (get_next_line(file->fd, &file->line) == 1)
+	{
+		counter->column = shift_delims(file->line);
+		if (is_endline_or_comment(file->line[counter->column]))
+			continue ;
+		if (file->line[counter->column] != HEADER_DOT_CHAR && h_cmds != VALID)
+			errors(NOT_ALL_CMD ,file->line, counter);
+		if (file->line[counter->column] == HEADER_DOT_CHAR && h_cmds == VALID)
+			errors(SYNTAX_ERROR, file->line, counter);
+		if (file->line[counter->column] != HEADER_DOT_CHAR && h_cmds == VALID)
+			break ;
+		if (file->line[counter->column] == HEADER_DOT_CHAR && h_cmds != VALID)
+		{
+			if (is_prog_name(file->line, counter))
+				h_cmds += valid_prog_cmd(file->line, &file->h_name, counter);
+			else if (is_prog_comment(file->line, counter))
+				h_cmds += valid_prog_cmd(file->line, &file->h_comment, counter);
+			else
+				errors(UNKNOWN_COMMAND, file->line, counter);
+		}
+		counter->row++;
+	}
 }

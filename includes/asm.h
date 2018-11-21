@@ -6,19 +6,32 @@
 # include <stdbool.h>
 # include "../libft/includes/libft.h"
 # include "op.h"
-# define FLAG_A 0b00000001
-# define FLAG_M 0b00000010
-# define VALID 2
-# define ENDLINE_CHAR "\n"
-# define STRING_CHAR "\""
-# define SPACE_CHAR " "
+# define FLAG_A 				0b00000001
+# define FLAG_M 				0b00000010
+# define VALID	 				2
+# define ENDLINE_CHAR 			"\n"
+# define STRING_START_END_CHAR 	"\""
+# define SPACE_CHAR 			" "
+// # define IS_NAME 				0
+// # define IS_COMMENT 			1
+
+typedef enum 				e_errors
+{
+	INVALID_COMMAND	= 1,
+	DOUBLE_CMD,
+	SYNTAX_ERROR,
+	LEXICAL_ERROR,
+	UNKNOWN_COMMAND,
+	INVALID_SYMBOLS,
+	NOT_ALL_CMD,
+}							t_errors;
 
 typedef struct				s_file
 {
 	int						fd;
 	char					*name;
 	char					*h_name;
-	char					*comment;
+	char					*h_comment;
 	char					*data;
 	char					*line;
 }							t_file;
@@ -85,8 +98,8 @@ unsigned int		*compile_file(const t_info *info, const t_file *file);
 /*
 **	Lexical analyze
 */
-void				lexical_analyze(const t_info *i, const t_file *f,	\
+// void				lexical_analyze(const t_info *i, const t_file *f,	\
 													t_stck_tkns **st);
-void				valid_header(char *data, unsigned int *row,			\
-													unsigned int *column);
+void				valid_header(t_file *file, t_counter *counter);
+
 #endif

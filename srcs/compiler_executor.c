@@ -32,10 +32,11 @@ int		main(int ac, char **av)
 	else if (ac >= 2)
 	{
 		flags = flags_analyze(&ac, &av, &args_counter);
-		while (++args_counter < ac)
+		while (args_counter < ac)
 		{
 			file_cor = file_cor_make(av[args_counter]);
-			file_cor_write(file_cor, flags);
+			args_counter++;
+			// file_cor_write(file_cor, flags);
 		}
 	}
 	// system("leaks asm");

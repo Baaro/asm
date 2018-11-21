@@ -18,7 +18,6 @@ static bool is_flag_m(const char *flag)
 uint8_t     flags_analyze(int *ac, char ***av, int *args_counter)
 {
 	uint8_t	flags;
-	// int		args_counter;
 
 	flags = 0;
 	*args_counter = 0;
@@ -29,7 +28,5 @@ uint8_t     flags_analyze(int *ac, char ***av, int *args_counter)
 		else if (is_flag_m((*av)[*args_counter]))
 			flags |= FLAG_M;
 	}
-	*ac -= *args_counter;
-	*av += *args_counter;
 	return (flags);
 }

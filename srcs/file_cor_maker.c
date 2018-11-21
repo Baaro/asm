@@ -27,8 +27,11 @@ void	file_cor_compile(t_file_cor *file_cor, t_file *file) // test version
 {
 	t_stacks	*stacks;
 
+	ft_printf("cor_compile\n");
 	stacks = ft_memalloc(sizeof(t_stacks));
 	stacks->tokens = tokenizer(file);
+	ft_printf(".name: %s\n", file->h_name);
+	ft_printf(".comment: %s\n", file->h_comment);
 	// stacks.byte_code = byte_code_generator(stacks.tokens);
 	// linker(&file_cor->byte_code, stacks.);
 }

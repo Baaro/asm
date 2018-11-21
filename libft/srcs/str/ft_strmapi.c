@@ -12,21 +12,19 @@
 
 #include "libft.h"
 
-char	*ft_strmapi(char const *s, char (*f)(unsigned int, char))
+char	*ft_strmapi(char const *str, char (*f)(unsigned int, char))
 {
-	char	*m;
 	size_t	i;
+	size_t	len;
+	char	*tmp;
 
-	if (f == NULL || s == NULL)
+	if (f == NULL || str == NULL)
 		return (NULL);
-	i = ft_strlen(s);
-	if (!(m = ft_strnew(i)))
+	len = ft_strlen(str);
+	if (!(tmp = ft_strnew(len)))
 		return (NULL);
-	i = 0;
-	while (s[i])
-	{
-		m[i] = f(i, s[i]);
-		i++;
-	}
-	return (m);
+	i = -1;
+	while (str[++i])
+		tmp[i] = f(i, str[i]);
+	return (tmp);
 }

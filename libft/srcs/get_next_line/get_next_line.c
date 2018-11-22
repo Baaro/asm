@@ -39,7 +39,7 @@ static t_lst	*ft_find_fd(t_lst **head, const int fd)
 	return (tmp->fd == fd ? tmp : (tmp->next = ft_lst_create(fd)));
 }
 
-static int		ft_check(t_lst *lst, char *bf, char **line, int ret)
+static int		ft_cut_line(t_lst *lst, char *bf, char **line, int ret)
 {
 	char	*del;
 	char	*pos;
@@ -67,33 +67,41 @@ static int		ft_check(t_lst *lst, char *bf, char **line, int ret)
 	return (0);
 }
 
-int				get_next_line(const int fd, char **line)
+static int		ft_find_endline(t_lst *lst, char **line)
 {
-	static t_lst	*head;
-	t_lst			*new;
 	char			*bf;
 	int				ret;
 
-	if (fd < 0 || !line || read(fd, NULL, 0) < 0 || BUFF_SIZE < 1)
-		return (-1);
-	if (*line != NULL)
-		free(*line);
-	new = ft_find_fd(&head, fd);
 	bf = ft_strnew(BUFF_SIZE);
 	while (true)
 	{
-		if (new->str && !ft_strchr(new->str, '\n'))
+		if (lst->str && !ft_strchr(lst->str, '\n'))
 		{
-			ret = read(new->fd, bf, BUFF_SIZE);
+			ret = read(lst->fd, bf, BUFF_SIZE);
 			bf[ret] = '\0';
 		}
-		if (!new->str || (ret == 0 && (new->str)[0] == '\0'))
+		if (!lst->str || (ret == 0 && (lst->str)[0] == '\0'))
 			break ;
 		if (ret == -1)
 			return (-1);
-		if (new->str && ft_check(new, bf, line, ret))
+		if (lst->str && ft_cut_line(lst, bf, line, ret))
 			return (1);
 	}
 	ft_strdel(&bf);
 	return (0);
+}
+
+int				get_next_line(const int fd, char **line)
+{
+	static t_lst	*head;
+	t_lst			*new;
+	int				status;
+
+	if (fd < 0 || !line || read(fd, NULL, 0) < 0 || BUFF_SIZE < 1)
+		return (-1);
+	if (*line != NULL)
+		ft_strdel(line);
+	new = ft_find_fd(&head, fd);
+	status = ft_find_endline(new, line);
+	return (status);
 }

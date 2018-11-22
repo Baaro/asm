@@ -11,6 +11,7 @@
 # define VALID	 				2
 # define COMMENT_CHAR_ALTER 	';'
 # define ENDLINE_CHAR 			'\n'
+# define ENDSTRING_CHAR			'\0'
 # define STRING_QUOTES_CHAR 	'\"'
 # define SPACE_CHAR 			' '
 # define IS_NAME				0
@@ -23,11 +24,12 @@ typedef enum 				e_errors
 	DOUBLE_COMMENT,
 	SYNTAX_ERROR,
 	LEXICAL_ERROR,
-	UNKNOWN_COMMAND,
+	UNMATCHED_COMMAND,
 	INVALID_SYMBOLS,
 	INVALID_STRING,
-	NOT_ALL_CMD,
+	NOT_ALL_COMMAND,
 	CHAMPION_NAME_TOO_LONG,
+	CHAMPION_COMMENT_TOO_LONG,
 	NO_BEGIN_QUOTES,
 	NO_END_QUOTES,
 }							t_errors;
@@ -87,15 +89,23 @@ typedef struct				s_stacks
 uint8_t				flags_analyze(int *ac, char ***av, int *args_counter);
 t_file_cor			*file_cor_make(const char *file_name);
 t_token				*tokenizer(t_file *file);
+
 void				valid_header(t_file *file, t_counter *counter);
 bool				valid_name(char *line, char **name, t_counter *counter);
 bool				valid_comment(char *line, char **comment, t_counter *counter);
+
 char				*get_name(char *line, size_t name_len, t_counter *counter);
 char				*get_comment(char *line, size_t comment_len, t_counter *counter);
+
 void				valid_tail_of_string(char *line, size_t after_end_quotes, t_counter *counter);
+
 bool				is_name_cmd(const char *line, t_counter *counter);
 bool				is_comment_cmd(const char *line, t_counter *counter);
 
+
+void    			lexical_errors(t_errors error, char *line, t_counter *counter);
+void				syntactic_errors(t_errors error, char *line, t_counter *counter);
+void    			semantic_errors(t_errors error, char *line, t_counter *counter);
 /*
 **
 ** 		 Compiler stages:

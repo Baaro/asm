@@ -131,16 +131,10 @@ bool	valid_name(char *line, char **name, t_counter *counter)
 
 	name_len = 0;
 	if (*name)
-	{
-		ft_printf("errors(DOUBLE_NAME, line, counter)\n");
-		exit(1);
-	}
+		semantic_errors(DOUBLE_NAME, line, counter);
 	counter->column += shift_whitetspaces(line + counter->column);
 	if (line[counter->column] != STRING_QUOTES_CHAR)
-	{
-		ft_printf("erorrs(NO_BEGIN_QUOTES, line, counter)\n");
-		exit(1);
-	}
+		lexical_errors(NO_BEGIN_QUOTES, line, counter);
 	counter->column += shift_chars(line[counter->column]);
 	while (line[name_len + counter->column])
 	{
@@ -156,20 +150,41 @@ bool	valid_name(char *line, char **name, t_counter *counter)
 		}
 		if (line[(name_len + 1) + counter->column] == '\0')
 		{
-			ft_printf("erorrs(NO_END_QUOTES, line, counter)\n");
-			exit(1);
+			counter->column += name_len + 2;
+			lexical_errors(NO_END_QUOTES, line, counter);
 		}
 		name_len++;
 	}
 	return (false);
 }
 
-bool	is_endline_or_comment(char c)
+bool	is_header_valid(char c, size_t h_cmds)
 {
-	return (c == ENDLINE_CHAR || c == COMMENT_CHAR || c == COMMENT_CHAR_ALTER);
+	return (c != HEADER_DOT_CHAR && h_cmds == VALID);
 }
 
-void	valid_header(t_file *file, t_counter *counter)
+bool	is_endline_or_comment(char c)
+{
+	return (c == ENDLINE_CHAR || c == ENDSTRING_CHAR \
+	|| c == COMMENT_CHAR || c == COMMENT_CHAR_ALTER);
+}
+
+bool	is_not_all_command_checked(char c, size_t h_cmds)
+{
+	return (c != HEADER_DOT_CHAR && h_cmds != VALID);
+}
+
+bool	is_unknown_command(char c, size_t h_cmds)
+{
+	return (c == HEADER_DOT_CHAR && h_cmds == VALID);
+}
+
+bool	is_dot_char(char c, size_t h_cmds)
+{
+	return (c == HEADER_DOT_CHAR && h_cmds != VALID);
+}
+
+void	valid_header(t_file *file, t_counter *counter) // test version
 {
 	size_t	h_cmds;
 
@@ -177,32 +192,25 @@ void	valid_header(t_file *file, t_counter *counter)
 	while (get_next_line(file->fd, &file->line) == 1)
 	{
 		counter->column = shift_whitetspaces(file->line);
+		if (is_header_valid(file->line[counter->column], h_cmds))
+		{
+			ft_printf("line: %s\nchar: %c\n", file->line, file->line[counter->column]);
+			break ;
+		}
 		if (is_endline_or_comment(file->line[counter->column]))
 			continue ;
-		if (file->line[counter->column] != HEADER_DOT_CHAR && h_cmds != VALID)
-		{
-			ft_printf("errors(NOT_ALL_CMD ,file->line, counter)\n");
-			exit(1);
-		}
-		if (file->line[counter->column] == HEADER_DOT_CHAR && h_cmds == VALID)
-		{
-			ft_printf("errors(UNKNOWN_COMMAND, file->line, counter)\n");
-			exit(1);
-		}
-		if (file->line[counter->column] != HEADER_DOT_CHAR && h_cmds == VALID)
-			break ;
-		if (file->line[counter->column] == HEADER_DOT_CHAR && h_cmds != VALID)
+		if (is_not_all_command_checked(file->line[counter->column], h_cmds))
+			syntactic_errors(NOT_ALL_COMMAND, file->line, counter);
+		if (is_dot_char(file->line[counter->column], h_cmds))
 		{
 			if (is_name_cmd(file->line, counter))
 				h_cmds += valid_name(file->line, &file->h_name, counter);
 			else if (is_comment_cmd(file->line, counter))
 				h_cmds += valid_comment(file->line, &file->h_comment, counter);
 			else
-			{
-				ft_printf("errors(UNKNOWN_COMMAND, file->line, counter)\n");
-				exit(1);
-			}
+				lexical_errors(UNMATCHED_COMMAND, file->line, counter);
 		}
 		counter->row++;
 	}
+	free(file->line);
 }

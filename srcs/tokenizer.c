@@ -8,6 +8,7 @@ t_token	*tokenizer(t_file *file) // test version
 	head = ft_memalloc(sizeof(t_token));
 	counter = ft_memalloc(sizeof(t_counter));
 	valid_header(file, counter);
+	free(head);
 	// tokenizing_instructions(file, head, counter);
 	return (head);
 }

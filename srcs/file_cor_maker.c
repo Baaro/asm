@@ -27,11 +27,12 @@ void	file_cor_compile(t_file_cor *file_cor, t_file *file) // test version
 {
 	t_stacks	*stacks;
 
-	ft_printf("cor_compile\n");
+	ft_printf("filename: %s\n", file->name);
 	stacks = ft_memalloc(sizeof(t_stacks));
 	stacks->tokens = tokenizer(file);
 	ft_printf(".name: %s\n", file->h_name);
 	ft_printf(".comment: %s\n", file->h_comment);
+	free(stacks);
 	// stacks.byte_code = byte_code_generator(stacks.tokens);
 	// linker(&file_cor->byte_code, stacks.);
 }
@@ -46,7 +47,10 @@ t_file_cor		*file_cor_make(const char *file_name) // test version
 	file->name = ft_strdup(file_name);
 	file->fd = open(file->name, O_RDONLY);
 	file_cor_compile(file_cor, file);
-	close(file->fd);
-	free(file);
+	free(file->name);
+	free(file->h_name);
+	free(file->h_comment);
+	// free(file);
+	// free(file_cor);
 	return (file_cor);
 }

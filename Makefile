@@ -27,6 +27,7 @@ $(NAME): $(OBJ)
 VPATH := $(source_dirs)
 
 %.o: %.c
+	# $(CC) $(FLAGS) -c $(addprefix -I $(INCLUDES), $(source_dirs)) $<
 	$(CC) $(FLAGS) -I $(INCLUDES) -c $< -o $@
 	
 clean:

@@ -6,6 +6,7 @@ void	usage(void) // test version
 	ft_printf("    -a : Instead of creating a .cor file, ");
 	ft_printf("outputs a stripped and annotated ");
 	ft_printf("version of the code to the standard output\n");
+	exit(1);
 }
 
 // void	file_cor_write(t_file_cor file_cor, uint8_t flags)
@@ -35,8 +36,8 @@ int		main(int ac, char **av)
 		while (args_counter < ac)
 		{
 			file_cor = file_cor_make(av[args_counter]);
-			args_counter++;
 			// file_cor_write(file_cor, flags);
+			args_counter++;
 		}
 	}
 	// system("leaks asm");

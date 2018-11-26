@@ -81,6 +81,7 @@ char				*ft_strtrim(char const *s);
 char				**ft_strsplit(char const *s, char c);
 
 void				ft_putchar(char c);
+void				ft_putnchar(char c, size_t len);
 void				ft_putstr(char const *s);
 void				ft_putendl(char const *s);
 void				ft_putnbr(int nb);

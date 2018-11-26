@@ -1,21 +1,21 @@
 #include "asm.h"
 
-static bool is_flag(const char *flag)
+static bool	is_flag(const char *flag)
 {
 	return (*flag == '-' && *(flag + 2) == '\0');
 }
 
-static bool is_flag_a(const char *flag)
+static bool	is_flag_a(const char *flag)
 {
 	return (*flag == '-' && *(flag + 1) == 'a' && *(flag + 2) == '\0');
 }
 
-static bool is_flag_m(const char *flag)
+static bool	is_flag_m(const char *flag)
 {
 	return (*flag == '-' && *(flag + 1) == 'm' && *(flag + 2) == '\0');
 }
 
-uint8_t     flags_analyze(int *ac, char ***av, int *args_counter)
+uint8_t		flags_analyze(int *ac, char ***av, int *args_counter)
 {
 	uint8_t	flags;
 

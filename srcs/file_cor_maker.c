@@ -23,7 +23,7 @@
 // 	return (file_data);
 // }
 
-void	file_cor_compile(t_file_cor *file_cor, t_file *file) // test version
+void			file_cor_compile(t_file_cor *file_cor, t_file *file) // test version
 {
 	t_stacks	*stacks;
 
@@ -46,7 +46,10 @@ t_file_cor		*file_cor_make(const char *file_name) // test version
 	file_cor = ft_memalloc(sizeof(t_file_cor));
 	file->name = ft_strdup(file_name);
 	file->fd = open(file->name, O_RDONLY);
+	if (!ft_is_file(file->name))
+		usage();
 	file_cor_compile(file_cor, file);
+	// file_clear();
 	free(file->name);
 	free(file->h_name);
 	free(file->h_comment);

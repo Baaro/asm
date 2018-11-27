@@ -77,7 +77,7 @@ typedef struct				s_instruction
 
 typedef struct				s_label
 {
-	char					*label;
+	char					*name;
 	struct s_label			*next;
 }							t_label;
 
@@ -139,5 +139,5 @@ void				valid_tail_of_string(char *line, size_t after_end_quotes, t_counter *cou
 size_t				shift_chars(char c);
 size_t				shift_whitespaces(const char *str);
 bool				is_whitespaces(const char c);
-int					file_get_line(t_file *file);
+int					file_get_line(t_file *file, t_counter *counter);
 #endif

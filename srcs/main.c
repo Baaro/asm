@@ -40,6 +40,6 @@ int		main(int ac, char **av)
 			args_counter++;
 		}
 	}
-	system("leaks asm");
+	// system("leaks asm");
 	return (0);
 }

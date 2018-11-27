@@ -5,8 +5,8 @@ void	point_to_mistake(char *line, size_t column, char symb)
 	size_t	spaces;
 	size_t	waved_line;
 
-	waved_line = 0;
 	spaces = 0;
+	waved_line = 0;
 	ft_printf("%s\n", line);
 	while (++spaces < column)
 		ft_printf(" ");

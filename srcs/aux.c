@@ -15,18 +15,6 @@ size_t	shift_whitespaces(const char *str)
 	return (counter);
 }
 
-char		*append_data(char *data, char *line)
-{
-	char 	*endline_char;
-	char 	*without_endline;
-
-	without_endline = data == NULL ? ft_strnew(0) : data;
-	endline_char = ft_strdup("\n");
-	without_endline = ft_strjoincl(without_endline, line, 0);
-	data = ft_strjoincl(without_endline, endline_char, 1);
-	return (data);
-}
-
 size_t	shift_chars(char c)
 {
 	if (c == LABEL_CHAR

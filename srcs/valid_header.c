@@ -1,6 +1,6 @@
 #include "asm.h"
 
-static bool	is_dot_char(char c, size_t h_cmds)
+static bool	is_dot_char(char c)
 {
 	return (c == HEADER_DOT_CHAR);
 }
@@ -14,7 +14,7 @@ static bool	is_endline_or_comment(char c)
 	return (false);
 }
 
-static void	check_gnl_status(int gnl_status, t_file *file, t_counter *counter)
+static void	check_status(int gnl_status, t_file *file, t_counter *counter)
 {
 	if (gnl_status == 0)
 		lexical_errors(E_IS_NOT_ENOUGH_DATA, file->name, counter);
@@ -24,28 +24,23 @@ static void	check_gnl_status(int gnl_status, t_file *file, t_counter *counter)
 
 void		valid_header(t_file *file, t_counter *counter)
 {
-	size_t	h_cmds;
-	int 	gnl_status;
+	size_t	header_commands;
+	int		status;
 
-	h_cmds = 0;
-	gnl_status = 0;
-	while ((gnl_status = get_next_line(file->fd, &file->line) == 1))
+	header_commands = 0;
+	while ((status = file_get_line(file)) == 1)
 	{
 		counter->row++;
 		counter->column = shift_whitespaces(file->line);
-		file->data = append_data(file->data, file->line);
 		if (is_endline_or_comment(file->line[counter->column]))
 			continue ;
-		if (!is_dot_char(file->line[counter->column], h_cmds))
+		if (is_dot_char(file->line[counter->column]))
 		{
-			if (h_cmds == VALID)
-				break ;
-			syntactic_errors(E_NOT_ALL_COMMAND, file->line, counter);
+			if ((header_commands += valid_commands(file, counter)) == VALID)
+				return ;
 		}
-		if (h_cmds != VALID)
-			valid_commands(file, counter, &h_cmds);
 		else
-			semantic_errors(E_COMMAND_READ, file->line, counter);
+			syntactic_errors(E_NOT_ALL_COMMAND, file->line, counter);
 	}
-	check_gnl_status(gnl_status, file, counter);
+	check_status(status, file, counter);
 }

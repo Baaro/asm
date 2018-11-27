@@ -84,12 +84,16 @@ static bool	valid_comment(char *line, char **comment, t_counter *counter)
 	return (false);
 }
 
-void	valid_commands(t_file *file, t_counter *counter, size_t *h_cmds)
+bool		valid_commands(t_file *file, t_counter *counter)
 {
+	bool valid;
+
+	valid = 0;
 	if (is_name_cmd(file->line, counter))
-		*h_cmds += valid_name(file->line, &file->h_name, counter);
+		valid = valid_name(file->line, &file->h_name, counter);
 	else if (is_comment_cmd(file->line, counter))
-		*h_cmds += valid_comment(file->line, &file->h_comment, counter);
+		valid = valid_comment(file->line, &file->h_comment, counter);
 	else
 		semantic_errors(E_UNMATCHED_COMMAND, file->line, counter);
+	return (valid);
 }

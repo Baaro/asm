@@ -6,18 +6,22 @@
 # include <stdbool.h>
 # include "../libft/includes/libft.h"
 # include "op.h"
-# define FLAG_A 				0b00000001
-# define FLAG_M 				0b00000010
-# define VALID	 				2
-# define COMMENT_CHAR_ALTER 	';'
-# define ENDLINE_CHAR 			'\n'
-# define ENDSTRING_CHAR			'\0'
-# define STRING_QUOTES_CHAR 	'\"'
-# define SPACE_CHAR 			' '
+# define FLAG_A 					0b00000001
+# define FLAG_M 					0b00000010
+# define REG						0b00000001
+# define DIR						0b00000010
+# define IND						0b00000011
+# define VALID	 					2
+# define COMMENT_CHAR_ALTER 		';'
+# define ENDLINE_CHAR 				'\n'
+# define ENDSTRING_CHAR				'\0'
+# define STRING_QUOTES_CHAR 		'\"'
+# define SPACE_CHAR 				' '
+# define MAX_ARGUMENTS				3
 
 typedef enum 				e_errors
 {
-	E_INVALID_COMMAND	= 1,
+	E_INVALID_COMMAND = 1,
 	E_DOUBLE_NAME,
 	E_DOUBLE_COMMENT,
 	E_UNMATCHED_COMMAND,
@@ -57,35 +61,64 @@ typedef struct				s_counter
 	size_t					row;
 }							t_counter;
 
+typedef struct				s_argument
+{
+	uint8_t					type; // reg, ind, dir
+	char					*reference;
+	size_t					value;
+}							t_argument;
+
+typedef struct				s_instruction
+{
+	uint8_t					type;
+	t_argument				arguments[MAX_ARGUMENTS];
+	uint8_t					size;
+}							t_instruction;
+
+typedef struct				s_label
+{
+	char					*label;
+	struct s_label			*next;
+}							t_label;
+
 typedef struct				s_token
 {
-	uint8_t					params;
-	uint8_t					reg;
-	uint16_t				ind;
-	uint32_t				dir;
-	uint8_t					size;
-	uint8_t					instruction;
+	t_label					*labels;
+	t_instruction			instruction;
 	size_t					position;
-	char					*label;
 	struct s_token			*next;
 }							t_token;
+
+typedef struct				s_linker_label
+{
+	t_token					*token;
+	size_t					position;
+	struct s_linker_labels	*next;
+} 							t_linker_label;
+
+typedef struct				s_linker_ref
+{
+	t_token					*token;
+	uint8_t					position;
+	struct s_linker_refs	*next;
+} 							t_linker_ref;
 
 typedef struct				s_stacks
 {
 	t_token					*tokens;
-	// t_stack_labels		labels;
-	// t_stack_referances	labels_ref;
-	// t_stack_byte_code	byte_code;
+	t_linker_label			*l_labels;
+	t_linker_ref			*l_refs;
 }							t_stacks;
 
 void				usage(void); // test version
 uint8_t				flags_analyze(int *ac, char ***av, int *args_counter);
 t_file_cor			*file_cor_make(const char *file_name);
-t_token				*tokenizer(t_file *file);
+void				tokenizer(t_file *file, t_stacks *stacks, t_counter *counter);
 
 void    			lexical_errors(t_errors error, char *line, t_counter *counter);
 void				syntactic_errors(t_errors error, char *line, t_counter *counter);
 void    			semantic_errors(t_errors error, char *line, t_counter *counter);
+
 /*
 **
 ** 		 Compiler stages:
@@ -99,12 +132,12 @@ void    			semantic_errors(t_errors error, char *line, t_counter *counter);
 */
 
 void				valid_header(t_file *file, t_counter *counter);
-void				valid_commands(t_file *file, t_counter *counter, size_t *h_cmds);
+bool				valid_commands(t_file *file, t_counter *counter);
 char				*get_name(char *line, size_t name_len, t_counter *counter);
 char				*get_comment(char *line, size_t comment_len, t_counter *counter);
 void				valid_tail_of_string(char *line, size_t after_end_quotes, t_counter *counter);
 size_t				shift_chars(char c);
 size_t				shift_whitespaces(const char *str);
 bool				is_whitespaces(const char c);
-char				*append_data(char *data, char *line);
+int					file_get_line(t_file *file);
 #endif

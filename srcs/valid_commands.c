@@ -1,13 +1,11 @@
 #include "asm.h"
 
-static bool	is_name_cmd(const char *line, t_counter *counter)
+static bool	is_name_cmd(t_file *file, t_counter *counter)
 {
-	size_t	name_cmd_len;
-
-	name_cmd_len = ft_strlen(NAME_CMD_STRING);
-	if (ft_strnequ(line, NAME_CMD_STRING, name_cmd_len))
+	file->header.name_cmd_len = ft_strlen(NAME_CMD_STRING);
+	if (ft_strnequ(file->line, NAME_CMD_STRING, file->header.name_cmd_len))
 	{
-		counter->column += name_cmd_len;
+		counter->column += file->header.name_cmd_len;
 		return (true);
 	}
 	return (false);
@@ -29,27 +27,30 @@ static bool	is_comment_cmd(const char *line, t_counter *counter)
 static bool	valid_name(char *line, char **name, t_counter *counter)
 {
 	size_t	name_len;
+	size_t	name_cmd_len;
+	size_t	whitspaces;
 
-	name_len = -1;
+	name_cmd_len = ft_strlen(NAME_CMD_STRING);
 	if (*name)
 		semantic_errors(E_DOUBLE_NAME, line, counter);
-	counter->column += shift_whitespaces(line + counter->column);
-	if (line[counter->column] != STRING_QUOTES_CHAR)
+	whitspaces = shift_whitespaces(line + name_cmd_len);
+	if (line[name_cmd_len + whitspaces] != STRING_QUOTES_CHAR)
 		lexical_errors(E_NO_BEGIN_QUOTES, line, counter);
 	counter->column += shift_chars(line[counter->column]);
-	while (line[++name_len + counter->column])
+	name_len = -1;
+	while (line[name_cmd_len + ++name_len])
 	{
 		if (name_len > PROG_NAME_LENGTH)
 			lexical_errors(E_CHAMPION_NAME_TOO_LONG, line, counter);
-		if (line[name_len + counter->column] == STRING_QUOTES_CHAR)
+		if (line[name_cmd_len + name_len] == STRING_QUOTES_CHAR)
 		{
-			*name = get_name(line, name_len, counter);
+			*name = get_name(line, name_len, name_cmd_len);
 			return (true);
 		}
-		if (line[(name_len + 1) + counter->column] == '\0')
+		if (line[name_cmd_len + name_len + 1] == '\0')
 		{
-			counter->column += name_len + 2;
-			lexical_errors(E_NO_END_QUOTES, line, counter);
+			counter->column += name_cmd_len + name_len + 2;
+			lexical_errors(E_NO_END_QUOTES, line, counter, name_cmd_len + name_len + 1);
 		}
 	}
 	return (false);
@@ -89,10 +90,10 @@ bool		valid_commands(t_file *file, t_counter *counter)
 	bool valid;
 
 	valid = 0;
-	if (is_name_cmd(file->line, counter))
-		valid = valid_name(file->line, &file->h_name, counter);
-	else if (is_comment_cmd(file->line, counter))
-		valid = valid_comment(file->line, &file->h_comment, counter);
+	if (is_name_cmd(file, counter))
+		valid = valid_name(file, &file->h_name, counter);
+	else if (is_comment_cmd(file, counter))
+		valid = valid_comment(file, &file->h_comment, counter);
 	else
 		semantic_errors(E_UNMATCHED_COMMAND, file->line, counter);
 	return (valid);

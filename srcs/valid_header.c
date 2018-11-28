@@ -1,8 +1,8 @@
 #include "asm.h"
 
-static bool	is_dot_char(char c)
+static bool	is_dot_char(char *c)
 {
-	return (c == HEADER_DOT_CHAR);
+	return (*c == HEADER_DOT_CHAR);
 }
 
 void		valid_header(t_file *file, t_counter *counter)
@@ -13,7 +13,7 @@ void		valid_header(t_file *file, t_counter *counter)
 	header_commands = 0;
 	while ((status = file_get_line(file, counter)) == 1)
 	{
-		if (is_dot_char(file->line[counter->column]))
+		if (is_dot_char(file->line))
 		{
 			if ((header_commands += valid_commands(file, counter)) == VALID)
 				return ;

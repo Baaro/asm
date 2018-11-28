@@ -6,19 +6,23 @@ void	point_to_mistake(char *line, size_t column, char symb)
 	size_t	waved_line;
 
 	spaces = 0;
-	waved_line = 0;
 	ft_printf("%s\n", line);
 	while (++spaces < column)
 		ft_printf(" ");
 	ft_printf("\x1b[33m^ ");
-	while (line[++waved_line + spaces])
-		ft_printf("~");
-	ft_printf("\n");
-	spaces = 0;
-	while (++spaces < column)
-		ft_printf(" ");
 	if (symb)
+	{
+		waved_line = 0;
+		while (line[++waved_line + spaces])
+			ft_printf("~");
+		ft_printf("\n");
+		spaces = 0;
+		while (++spaces < column)
+			ft_printf(" ");
 		ft_printf("%c\n", symb);
+	}
+	else
+		ft_printf("\n");
 	ft_printf("\x1b[0m");
 }
 
@@ -99,6 +103,11 @@ void    semantic_errors(t_errors error, char *line, t_counter *counter)
 	else if (error == E_COMMAND_READ)
 	{
 		ft_printf("\x1b[31mSemantic error\x1b[0m[%zu:%zu]: The Commands has already read! This is an unknown command!\n", counter->row, counter->column);
+		point_to_mistake(line, counter->column, ENDSTRING_CHAR);
+	}
+	else if (error == E_SEMANTIC_ERROR)
+	{
+		ft_printf("\x1b[31mSemantic error\x1b[0m[%zu:%zu]: Invalid symbol!\n", counter->row, counter->column);
 		point_to_mistake(line, counter->column, ENDSTRING_CHAR);
 	}
 	exit(EXIT_FAILURE);

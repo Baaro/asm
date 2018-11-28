@@ -1,6 +1,6 @@
 #include "asm.h"
 
-char	*get_name(char *line, size_t name_len, t_counter *counter)
+char	*get_name(char *line, size_t name_len, size_t name_cmd_len)
 {
 	char	*name;
 	size_t	after_end_quotes;

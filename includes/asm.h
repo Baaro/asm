@@ -22,6 +22,7 @@
 typedef enum 				e_errors
 {
 	E_INVALID_COMMAND = 1,
+	E_SEMANTIC_ERROR,
 	E_DOUBLE_NAME,
 	E_DOUBLE_COMMENT,
 	E_UNMATCHED_COMMAND,
@@ -38,22 +39,23 @@ typedef enum 				e_errors
 	E_WRONG_INPUT,
 }							t_errors;
 
-typedef struct				s_file
-{
-	int						fd;
-	char					*name;
-	char					*h_name;
-	char					*h_comment;
-	char					*data;
-	char					*line;
-}							t_file;
 
-typedef struct				s_file_cor
+typedef struct				s_header
 {
-	t_header				header;
-	size_t					*bot_size;
-	size_t					*byte_code;
-}							t_file_cor;
+	char					h_name[PROG_NAME_LENGTH + 1];
+	char					h_comment[COMMENT_LENGTH + 1];
+	size_t					name_cmd_len;
+	size_t					name_len;
+	size_t					comment_cmd_len;
+	size_t					comment_len;
+}							t_header;
+
+typedef struct				s_line
+{
+	char					*str;
+	size_t					delim;
+	size_t					whitespaces;
+}							t_line;
 
 typedef struct				s_counter
 {
@@ -61,16 +63,39 @@ typedef struct				s_counter
 	size_t					row;
 }							t_counter;
 
+typedef struct				s_file
+{
+	int						fd;
+	char					*name;
+	char					*data;
+	t_header				header;
+	t_line					line;
+	t_counter				counter;
+	// char					*line;
+}							t_file;
+
+typedef struct				s_file_cor
+{
+	t_header				header;
+	unsigned int			magic;
+	unsigned int		    prog_size;
+	// size_t					*bot_size;
+	// size_t					*byte_code;
+}							t_file_cor;
+
 typedef struct				s_argument
 {
-	uint8_t					type; // reg, ind, dir
+	uint8_t					opcode; // reg, ind, dir
+	char					*name;
 	char					*reference;
 	size_t					value;
 }							t_argument;
 
 typedef struct				s_instruction
 {
-	uint8_t					type;
+	uint8_t					opcode;
+	uint8_t					opcode_args;
+	char					*name;
 	t_argument				arguments[MAX_ARGUMENTS];
 	uint8_t					size;
 }							t_instruction;

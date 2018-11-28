@@ -1,2 +1,5 @@
 filename: vm_champs/champs/examples/zork.s
-[31mSemantic error[0m[3:0]: The Commands has already read! This is an unknown command!
+[31mSyntactic error[0m[1:8]: Is not a .name or .comment!
+.name "zork"
+       [33m^ 
+[0mline: .

@@ -48,7 +48,8 @@ int			file_get_line(t_file *file, t_counter *counter)
 	while ((status = get_next_line(file->fd, &file->line) == 1))
 	{
 		counter->row++;
-		counter->whitespaces = get_whitespaces(file->line);
+		counter->column = 0;
+		counter->begin_whitespaces = get_whitespaces(file->line);
 		if (is_endline_or_comment(file->line))
 			continue ;
 		file->line = file_del_comment(file->line);

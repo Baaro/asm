@@ -1,5 +1,7 @@
 filename: vm_champs/champs/examples/zork.s
-[31mSyntactic error[0m[1:8]: Is not a .name or .comment!
-.name "zork"
-       [33m^ 
-[0mline: .
+counter: 0
+counter: 7
+counter: 0
+[31mSyntactic error[0m[2:0]Is not a .name or .comment!
+comment "I'M ALIIIIVE"
+[33m^~~~~~~~~~~~~~~~~~~~~~~[0m

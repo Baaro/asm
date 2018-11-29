@@ -15,7 +15,7 @@
 # define COMMENT_CHAR_ALTER 		';'
 # define ENDLINE_CHAR 				'\n'
 # define ENDSTRING_CHAR				'\0'
-# define STRING_QUOTES_CHAR 		'\"'
+# define QUOTES_CHAR		 		'\"'
 # define SPACE_CHAR 				' '
 # define MAX_ARGUMENTS				3
 
@@ -39,28 +39,11 @@ typedef enum 				e_errors
 	E_WRONG_INPUT,
 }							t_errors;
 
-
-typedef struct				s_header
-{
-	char					h_name[PROG_NAME_LENGTH + 1];
-	char					h_comment[COMMENT_LENGTH + 1];
-	size_t					name_cmd_len;
-	size_t					name_len;
-	size_t					comment_cmd_len;
-	size_t					comment_len;
-}							t_header;
-
-typedef struct				s_line
-{
-	char					*str;
-	size_t					delim;
-	size_t					whitespaces;
-}							t_line;
-
 typedef struct				s_counter
 {
 	size_t					column;
 	size_t					row;
+	size_t					begin_whitespaces;
 }							t_counter;
 
 typedef struct				s_file
@@ -68,10 +51,8 @@ typedef struct				s_file
 	int						fd;
 	char					*name;
 	char					*data;
-	t_header				header;
-	t_line					line;
-	t_counter				counter;
-	// char					*line;
+	char					*line;
+	t_header				hdr;
 }							t_file;
 
 typedef struct				s_file_cor
@@ -136,10 +117,17 @@ typedef struct				s_stacks
 }							t_stacks;
 
 void				usage(void); // test version
+/*
+** MAIN funcitons
+*/
 uint8_t				flags_analyze(int *ac, char ***av, int *args_counter);
 t_file_cor			*file_cor_make(const char *file_name);
+int					file_get_line(t_file *file, t_counter *counter);
 void				tokenizer(t_file *file, t_stacks *stacks, t_counter *counter);
-
+size_t				get_currunet_column(t_counter *counter);
+/*
+** Errors
+*/
 void    			lexical_errors(t_errors error, char *line, t_counter *counter);
 void				syntactic_errors(t_errors error, char *line, t_counter *counter);
 void    			semantic_errors(t_errors error, char *line, t_counter *counter);
@@ -157,12 +145,10 @@ void    			semantic_errors(t_errors error, char *line, t_counter *counter);
 */
 
 void				valid_header(t_file *file, t_counter *counter);
-bool				valid_commands(t_file *file, t_counter *counter);
-char				*get_name(char *line, size_t name_len, t_counter *counter);
-char				*get_comment(char *line, size_t comment_len, t_counter *counter);
-void				valid_tail_of_string(char *line, size_t after_end_quotes, t_counter *counter);
-size_t				shift_chars(char c);
-size_t				shift_whitespaces(const char *str);
-bool				is_whitespaces(const char c);
-int					file_get_line(t_file *file, t_counter *counter);
+bool				is_comment_cmd(char *str);
+void				valid_comment(t_file *file, t_counter *counter);
+bool				is_name_cmd(char *str);
+void				valid_name(t_file *file, t_counter *counter);
+size_t				shift_chars(const char c);
+size_t				get_whitespaces(const char *str);
 #endif

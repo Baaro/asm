@@ -1,5 +1,5 @@
-								.name "zork"					 ;test
-.comment "I'M ALIIIIVE"
+.name "zork" #test	
+.comment "I'M ALIIIIVE"  #aasdasd
 
 #l1: 	sti r1, %:live, %1	# 7 bytes
 

@@ -54,7 +54,7 @@ t_token			*new_token(t_list *labels, char *line, t_counter *counter)
 	t_token	*token;
 
 	token = ft_memalloc(sizeof(t_token));
-	token->labels = ft_lstmap(labels, ft_lstget);
+	token->labels = ft_lstmap(labels, ft_lstget); 
 	ft_lstiter(token->labels, ft_lstprint);
 	token->instruction = new_instruction(line, counter);
 	line = NULL;

@@ -21,7 +21,7 @@ void	point_to_begin_quotes(char *line, size_t column)
 	ft_printf("\x1b[0m\n");
 }
 
-void	point_to_end_quotes(char *line, size_t column)
+void	point_to_end_quotes(char *line)
 {
 	size_t	spaces;
 	size_t	waved_line;
@@ -78,7 +78,7 @@ void	lexical_errors(t_errors error, char *line, t_counter *counter)
 	else if (error == E_NO_END_QUOTES)
 	{
 		ft_printf("The name's of string doesn't have END quotes!\n");
-		point_to_end_quotes(line, counter->column);
+		point_to_end_quotes(line);
 	}
 	else if (error == E_CHAMPION_NAME_TOO_LONG)
 		ft_printf("Champion name too long!\n");
@@ -105,8 +105,9 @@ void	syntactic_errors(t_errors error, char *line, t_counter *counter)
 	**  [-] 2. Misspelled keywords;
 	**
 	*/
+	line = NULL;
 	ft_printf("\x1b[31mSyntactic error\x1b[0m");
-	ft_printf("[%zu:%zu]", counter->row, get_currunet_column(counter));
+	ft_printf("[%zu:%zu]\n", counter->row, get_currunet_column(counter));
 	if (error == E_NOT_ALL_COMMAND)
 		ft_printf("Is not a .name or .comment!\n");
 	exit(EXIT_FAILURE);
@@ -146,14 +147,14 @@ void	semantic_errors(t_errors error, char *line, t_counter *counter)
 	exit(EXIT_FAILURE);
 }
 
-void	linker_errors(t_errors error, char *line, t_counter *counter)
-{
-	/*
-	**      Linker errors can be:
-	**
-	**      1. No definition of label
-	**      2. No declaration of label
-	**
-	*/
-	exit(EXIT_FAILURE);
-}
+// void	linker_errors(t_errors error, char *line, t_counter *counter)
+// {
+// 	/*
+// 	**      Linker errors can be:
+// 	**
+// 	**      1. No definition of label
+// 	**      2. No declaration of label
+// 	**
+// 	*/
+// 	exit(EXIT_FAILURE);
+// }

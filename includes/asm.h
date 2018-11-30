@@ -6,6 +6,7 @@
 # include <stdbool.h>
 # include "../libft/includes/libft.h"
 # include "op.h"
+# define VALID_SYMBOLS        		"abcdefghijklmnopqrstuvwxyz_0123456789-%,: "
 # define FLAG_A 					0b00000001
 # define FLAG_M 					0b00000010
 # define REG						0b00000001
@@ -44,6 +45,7 @@ typedef struct				s_counter
 	size_t					column;
 	size_t					row;
 	size_t					begin_whitespaces;
+	size_t					bytes;
 }							t_counter;
 
 typedef struct				s_file
@@ -66,6 +68,7 @@ typedef struct				s_file_cor
 
 typedef struct				s_argument
 {
+	bool					is_active;
 	uint8_t					opcode; // reg, ind, dir
 	char					*name;
 	char					*reference;
@@ -78,43 +81,38 @@ typedef struct				s_instruction
 	uint8_t					opcode_args;
 	char					*name;
 	t_argument				arguments[MAX_ARGUMENTS];
+	size_t					byte_code;
 	uint8_t					size;
 }							t_instruction;
 
-typedef struct				s_label
-{
-	char					*name;
-	struct s_label			*next;
-}							t_label;
-
 typedef struct				s_token
 {
-	t_label					*labels;
-	t_instruction			instruction;
+	t_list					*labels;
+	t_instruction			*instruction;
 	size_t					position;
-	struct s_token			*next;
 }							t_token;
 
 typedef struct				s_linker_label
 {
-	t_token					*token;
+	t_list					*token;
 	size_t					position;
-	struct s_linker_labels	*next;
 } 							t_linker_label;
 
 typedef struct				s_linker_ref
 {
-	t_token					*token;
+	// t_token					*token;
+	char					*reference;
 	uint8_t					position;
-	struct s_linker_refs	*next;
+	// struct s_linker_refs	*next;
 } 							t_linker_ref;
 
-typedef struct				s_stacks
+typedef struct				s_lists
 {
-	t_token					*tokens;
-	t_linker_label			*l_labels;
-	t_linker_ref			*l_refs;
-}							t_stacks;
+	t_list					*tokens;
+	t_list					*labels;
+	t_list					*link_labels;
+	t_list					*link_refs;
+}							t_lists;
 
 void				usage(void); // test version
 /*
@@ -123,7 +121,7 @@ void				usage(void); // test version
 uint8_t				flags_analyze(int *ac, char ***av, int *args_counter);
 t_file_cor			*file_cor_make(const char *file_name);
 int					file_get_line(t_file *file, t_counter *counter);
-void				tokenizer(t_file *file, t_stacks *stacks, t_counter *counter);
+void				tokenizer(t_file *file, t_lists *lists, t_counter *counter);
 size_t				get_currunet_column(t_counter *counter);
 /*
 ** Errors
@@ -151,4 +149,15 @@ bool				is_name_cmd(char *str);
 void				valid_name(t_file *file, t_counter *counter);
 size_t				shift_chars(const char c);
 size_t				get_whitespaces(const char *str);
+bool				is_whitespaces(const char c);
+
+/*
+** Lable_handler
+*/
+void 			   	append_label(t_list **label_head, char *label);
+bool				is_label_without_instruction(char *line, t_counter *counter);
+bool				label_exists(char *line);
+bool				is_label_char(char c);
+char				*new_label(char *line, t_counter *counter);
+
 #endif

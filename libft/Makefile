@@ -32,7 +32,7 @@ srcs/ft_printf/form/form_num/get_num				\
 srcs/ft_printf/form/form_str_char					\
 srcs/ft_printf/form/form_str_char/form_unicode		\
 
-OBJ_DIR := objs
+# OBJ_DIR := objs
 MAKE := make
 RM := rm -rf
 
@@ -49,7 +49,8 @@ $(NAME): $(OBJ)
 VPATH := $(source_dirs)
 
 %.o: %.c
-	$(CC) $(FLAGS) -c $(addprefix -I $(INCLUDES), $(source_dirs)) $<
+	$(CC) $(FLAGS) -I $(INCLUDES) -c $< -o $@
+	# $(CC) $(FLAGS) -c $(addprefix -I $(INCLUDES), $(source_dirs)) $<
 
 clean:
 	$(RM) $(OBJ)

@@ -27,18 +27,21 @@ t_file_cor		*file_cor_new(void)
 
 void			file_cor_compile(t_file_cor *file_cor, t_file *file) // test version
 {
-	t_stacks	*stacks;
+	t_lists		*lists;
 	t_counter	*counter;
 
 	ft_printf("filename: %s\n", file->name);
-	stacks = ft_memalloc(sizeof(t_stacks));
 	counter = ft_memalloc(sizeof(t_counter));
+	lists = ft_memalloc(sizeof(t_lists));
 	valid_header(file, counter);
-	// tokenizer(file, stacks, counter);
+	tokenizer(file, lists, counter);
+	// link_labels(stacks);
+	// make_bytecode(stacks, file_cor);
 	ft_printf(".name: %s\n", file->hdr.prog_name);
 	ft_printf(".comment: %s\n", file->hdr.comment);
 	// ft_printf("DATA: \n%s\n", file->data);
-	free(stacks);
+	file_cor = NULL;
+	free(lists);
 	free(counter);
 }
 
@@ -53,8 +56,8 @@ t_file_cor		*file_cor_make(const char *file_name) // test version
 	file->fd = open(file->name, O_RDONLY);
 	if (!ft_is_file(file->name))
 	{
-		char *pos = ft_strrchr(file_name, '/');
-		ft_printf("ERROR: Can't read source file %s\n", ft_strsub(pos + 1, 0, ft_strlen(pos)));
+		char *slash = ft_strrchr(file_name, '/');
+		ft_printf("ERROR: Can't read source file %s\n", ft_strsub(slash + 1, 0, ft_strlen(slash)));
 		exit(1);
 	}
 	file_cor_compile(file_cor, file);

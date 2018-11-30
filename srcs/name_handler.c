@@ -5,6 +5,7 @@ static char	*get_name(char *line, size_t name_len, t_counter *counter)
 	size_t	after_end_quotes;
 	char	*name;
 
+	name = NULL;
 	after_end_quotes = counter->column + name_len + 1;
 	after_end_quotes += get_whitespaces(line + after_end_quotes);
 	if (line[after_end_quotes] == ENDSTRING_CHAR)
@@ -30,6 +31,7 @@ static void	set_name(t_file *file, t_counter *counter)
 		{
 			name = get_name(file->line, name_len, counter);
 			ft_strncpy(file->hdr.prog_name, name, name_len);
+			ft_strdel(&name);
 			return ;
 		}
 		if (file->line[counter->column + name_len + 1] == ENDSTRING_CHAR)

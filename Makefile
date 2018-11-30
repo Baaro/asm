@@ -2,7 +2,7 @@ NAME = asm
 
 CC := gcc
 
-# FLAGS := -Wall -Wextra -Werror -g
+FLAGS := -Wall -Wextra -Werror -g
 
 INCLUDES :=	includes					\
 
@@ -21,7 +21,7 @@ OBJ = $(notdir $(patsubst %.c, %.o, $(wildcard $(search_wildcards))))
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	make -C ./libft
+	$(MAKE) -C ./libft
 	$(CC) $(FLAGS) -o $@ $(OBJ) $(LIBFT)
 
 VPATH := $(source_dirs)

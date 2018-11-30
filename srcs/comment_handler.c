@@ -5,6 +5,7 @@ static char	*get_comment(char *line, size_t comment_len, t_counter *counter)
 	size_t	after_end_quotes;
 	char	*comment;
 
+	comment = NULL;
 	after_end_quotes = counter->column + comment_len + 1;
 	after_end_quotes += get_whitespaces(line + after_end_quotes);
 	if (line[after_end_quotes] == ENDSTRING_CHAR)
@@ -30,6 +31,7 @@ static void	set_comment(t_file *file, t_counter *counter)
 		{
 			comment = get_comment(file->line, comment_len, counter);
 			ft_strncpy(file->hdr.comment, comment, comment_len);
+			ft_strdel(&comment);
 			return ;
 		}
 		if (file->line[counter->column + comment_len + 1] == ENDSTRING_CHAR)

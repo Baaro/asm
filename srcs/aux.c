@@ -10,7 +10,7 @@ size_t		get_currunet_position(t_counter *counter)
 	return (counter->column);
 }
 
-static bool	is_whitespaces(const char c)
+bool	is_whitespaces(const char c)
 {
 	return (c == '\t' || c == ' ');
 }

@@ -7,7 +7,7 @@ FLAGS := -Wall -Wextra -Werror -g
 INCLUDES :=	includes					\
 
 source_dirs :=	srcs					\
-
+				srcs/instr_compute		\
 # OBJ_DIR := objs
 
 RM := rm -rf

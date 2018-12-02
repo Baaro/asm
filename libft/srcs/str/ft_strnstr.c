@@ -17,21 +17,15 @@ char	*ft_strnstr(const char *str, const char *to_f, size_t l)
 	size_t i;
 	size_t j;
 
-	i = 0;
-	j = 0;
-	if (to_f[i] == '\0')
+	if (!str || !to_f || *to_f == '\0')
 		return ((char *)(str));
-	while (str[i] && l)
+	i = -1;
+	while (str[++i] && i < l)
 	{
-		while (str[i + j] == to_f[j] && (l >= (ft_strlen(to_f))))
-		{
+		j = -1;
+		while (str[i + ++j] == to_f[j] && (l >= (ft_strlen(to_f))))
 			if (to_f[j + 1] == '\0')
 				return ((char *)(str + i));
-			j++;
-		}
-		i++;
-		l--;
-		j = 0;
 	}
 	return (NULL);
 }

@@ -80,6 +80,9 @@ char				*ft_strjoincl(char *s1, char *s2, int free_both);
 char				*ft_strtrim(char const *s);
 char				*ft_strretrim(char *s);
 char				**ft_strsplit(char const *s, char c);
+size_t  			ft_strcspn(const char *s1, const char *s2);
+size_t				ft_strspn(const char *s1, const char *s2);
+char				*strtok(char *s1, const char *delimiters);
 
 void				ft_putchar(char c);
 void				ft_putnchar(char c, size_t len);

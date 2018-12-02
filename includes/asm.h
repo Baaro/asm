@@ -6,24 +6,24 @@
 # include <stdbool.h>
 # include "../libft/includes/libft.h"
 # include "op.h"
-# define VALID_SYMBOLS        		"abcdefghijklmnopqrstuvwxyz_0123456789-%,: "
 # define FLAG_A 					0b00000001
 # define FLAG_M 					0b00000010
-# define REG						0b00000001
-# define DIR						0b00000010
-# define IND						0b00000011
+# define VALID_CHARS				"abcdefghijklmnopqrstuvwxyz_0123456789 \t%:,"
+# define NUM_INSTRUCTIONS			16
+# define NUM_ARGUMENTS				3
 # define VALID	 					2
 # define COMMENT_CHAR_ALTER 		';'
 # define ENDLINE_CHAR 				'\n'
 # define ENDSTRING_CHAR				'\0'
 # define QUOTES_CHAR		 		'\"'
 # define SPACE_CHAR 				' '
-# define MAX_ARGUMENTS				3
+# define TAB_CHAR 					'\t'
 
 typedef enum 				e_errors
 {
 	E_INVALID_COMMAND = 1,
 	E_SEMANTIC_ERROR,
+	E_UNKNOWN_INSTR,
 	E_DOUBLE_NAME,
 	E_DOUBLE_COMMENT,
 	E_UNMATCHED_COMMAND,
@@ -62,33 +62,45 @@ typedef struct				s_file_cor
 	t_header				header;
 	unsigned int			magic;
 	unsigned int		    prog_size;
-	// size_t					*bot_size;
-	// size_t					*byte_code;
 }							t_file_cor;
 
-typedef struct				s_argument
-{
-	bool					is_active;
-	uint8_t					opcode; // reg, ind, dir
-	char					*name;
-	char					*reference;
-	size_t					value;
-}							t_argument;
+// typedef struct				s_arg
+// {
+// 	char					*reference;
+// 	size_t					value;
+// }							t_arg;
 
-typedef struct				s_instruction
+typedef struct		s_instr
 {
-	uint8_t					opcode;
-	uint8_t					opcode_args;
-	char					*name;
-	t_argument				arguments[MAX_ARGUMENTS];
-	size_t					byte_code;
-	uint8_t					size;
-}							t_instruction;
+	const char		*name;
+	const uint8_t	op_code;
+	uint8_t			arg_code;
+	uint8_t			args[NUM_ARGUMENTS];
+	const size_t	label_size;
+	t_token			*(*make_token)(char *line, t_counter *counter);
+	// t_arg			args[3];
+}					t_instr;
+// typedef struct				s_instruction
+// {
+// 	char					*name;
+// 	uint8_t					opcode;
+// 	uint8_t					opcode_args;
+// 	uint8_t					size;
+// 	size_t					byte_code;
+// 	t_argument				arguments[MAX_ARGUMENTS];
+// 	// void					(*get_argumetns)(struct	*s_instruction, char *, t_counter *);
+// 	// size_t					(*get_size)(char*);
+
+// }							t_instruction;
 
 typedef struct				s_token
 {
 	t_list					*labels;
-	t_instruction			*instruction;
+	t_instr					*instr;
+	// t_list					*references;
+	uint8_t					op_code;
+	uint8_t					arg_code;
+	t_arg					args[NUM_ARGUMENTS];
 	size_t					position;
 }							t_token;
 
@@ -160,4 +172,20 @@ bool				label_exists(char *line);
 bool				is_label_char(char c);
 char				*new_label(char *line, t_counter *counter);
 
+t_token 			*live_compute(char *line, t_counter *counter);
+t_token 			*ld_compute(char *line, t_counter *counter);
+t_token 			*st_compute(char *line, t_counter *counter);
+t_token 			*add_compute(char *line, t_counter *counter);
+t_token 			*sub_compute(char *line, t_counter *counter);
+t_token 			*and_compute(char *line, t_counter *counter);
+t_token 			*or_compute(char *line, t_counter *counter);
+t_token 			*xor_compute(char *line, t_counter *counter);
+t_token 			*zjmp_compute(char *line, t_counter *counter);
+t_token 			*ldi_compute(char *line, t_counter *counter);
+t_token 			*sti_compute(char *line, t_counter *counter);
+t_token 			*fork_compute(char *line, t_counter *counter);
+t_token 			*lld_compute(char *line, t_counter *counter);
+t_token 			*lldi_compute(char *line, t_counter *counter);
+t_token 			*lfork_compute(char *line, t_counter *counter);
+t_token 			*aff_compute(char *line, t_counter *counter);
 #endif

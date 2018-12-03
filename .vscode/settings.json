@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "asm.h": "c",
-        "op.h": "c"
+        "op.h": "c",
+        "regex.h": "c"
     }
 }

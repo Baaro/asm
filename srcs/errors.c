@@ -84,9 +84,9 @@ void	lexical_errors(t_errors error, char *line, t_counter *counter)
 		ft_printf("Champion name too long!\n");
 	else if (error == E_CHAMPION_COMMENT_TOO_LONG)
 		ft_printf("Champion comment too long!\n");
-	else if (error == E_WRONG_TAIL_OF_STRING)
+	else if (error == E_INVALID_SYMBOLS)
 	{
-		ft_printf("Wrong symbol!\n");
+		ft_printf("Invalid symbol!\n");
 		point_to_bad_symb(line, counter->column);
 	}
 	else if (error == E_WRONG_INPUT)

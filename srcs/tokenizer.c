@@ -55,7 +55,7 @@ size_t			valid_line(char *line)
 	len = ft_strlen(line);
 	while (++counter < len)
 	{
-		if (!(ft_strchr(VALID_CHARS, line[counter])))
+		if (!(ft_strchr(INSTR_CHARS, line[counter])))
 			break ;
 	}
 	return (counter);
@@ -66,17 +66,20 @@ size_t			get_instruction(char *line, t_counter *counter)
 	size_t	instr_iter;
 	char	*instr_name;
 
-	counter->column += get_whitespaces(line + counter->column);
-	instr_name = ft_strtok(line + counter->column, " \t");
-	if ((counter->column += valid_line(instr_iter)) == counter->column)
+	counter->column += ft_strspn(line + counter->column, DELIMS_CHARS);
+	instr_name = ft_strtok(line + counter->column, DELIMS_CHARS);
+	printf("name: %s\n", instr_name);
+	printf("before: %zu\n", counter->column);
+	if (ft_strspn(instr_name, INSTR_CHARS) == ft_strlen(instr_name))
 	{
+		printf("after: %zu\n", counter->column);
 		instr_iter = -1;
-		while (!ft_strequ(instr_name, g_instrs_tab[++instr_iter].name))
-			if (instr_iter == NUM_ARGUMENTS + 1)
-				semantic_errors(E_UNKNOWN_INSTR, line, counter->column);
+		while (!ft_strequ(instr_name, g_instrs_tab[++instr_iter].name));
+			// if (instr_iter == NUM_ARGUMENTS + 1)
+				// semantic_errors(E_UNKNOWN_INSTR, line, counter->column);
 	}
 	else
-		syntactic_errors(E_INVALID_SYMBOLS, line, counter);
+		lexical_errors(E_INVALID_SYMBOLS, line, counter);
 	return (instr_iter);
 }
 
@@ -88,34 +91,117 @@ t_token			*new_token(char *line, t_counter *counter)
 	token = NULL;
 	if ((current_instr = get_instruction(line, counter)))
 		token = g_instrs_tab[current_instr].make_token(line, counter);
-	else
-		lexical_errors(E_UNKNOWN_INSTR, line, counter->column);
+	printf("cur: %zu\n", current_instr);
+	// else
+	// 	lexical_errors(E_UNKNOWN_INSTR, line, counter->column);
 	return (token);
+}
+
+bool			is_valid_symbols(char *line, size_t len, t_counter *counter)
+{
+	size_t	i;
+
+	i = -1;
+	while (++i < len)
+	{
+		if (!ft_strchr(LABEL_CHARS, line[i]))
+		{
+			counter->column += i + 1;
+			lexical_errors(E_INVALID_SYMBOLS, line, counter);
+		}
+	}
+	return (i == len);
+}
+
+bool			instr_exists(char *line)
+{
+	// printf("line: %d\n", ft_strcspn(line, DELIMS_CHARS) != 0);
+	return (ft_strcspn(line, DELIMS_CHARS) != 0);
+}
+
+bool			is_label(char *label, t_counter *counter)
+{
+	size_t	label_len;
+
+	label_len = ft_strlen(label);
+	if (ft_strcspn(label, ":") + 1 == label_len)
+		return (is_valid_symbols(label, label_len - 1, counter));
+	return (false);
 }
 
 void			tokenizer(t_file *file, t_lists *lists, t_counter *counter) // test version
 {
 	t_token		*token;
+	char 		*tmp;
+	char		*instr;
+	char		*args[3];
 
 	token = NULL;
+	printf("\n");
 	while (file_get_line(file, counter) == 1)
 	{
-		if (is_label_without_instruction(file->line, counter))
-			append_label(&lists->labels, new_label(file->line, counter));
+		tmp = ft_strdup(ft_strtok(file->line, DELIMS_CHARS));
+		if (is_label(tmp, counter)
+		&& !(instr = ft_strdup(ft_strtok(NULL, DELIMS_CHARS))))
+		{
+			printf("label solo: %s\n\n", tmp);
+			append_label(&lists->labels, tmp);
+		}
 		else
 		{
-			if (label_exists(file->line))
-				append_label(&lists->labels, new_label(file->line, counter));
-			token = new_token(file->line, counter);
-			token->labels = ft_lstmap(lists->labels, ft_lstget);
+			if (is_label(tmp, counter))
+			{
+				printf("label with instr: %s\n", tmp);
+				printf("instr: %s\n\n", instr);
+			}
+			else
+				printf("instr without label: %s\n\n", tmp);
+		}
+		// if ((tmp = ft_strtok(file->line, "\t ")))
+		// {
+		// 	if ((instr = ft_strtok(NULL, "\t ")))
+		// 	{
+		// 		ft_lstiter(lists->labels, ft_lstprint);
+		// 		ft_lstdel(&lists->labels, ft_lstelemfree);
+		// 		printf("instr: %s\n", instr);
+		// 		int i = -1;
+		// 		while ((args[++i] = ft_strtok(NULL, "\t ,")))
+		// 			printf("arg[%d]: -> %s\n", i, args[i]);
+		// 		printf("\n");
+		// 	}
+		// }
+		// if (is_valid_symbols(tmp , ft_strlen(tmp)))
+		// 	printf("label: %s\n", tmp);
+		// else
+		// 	printf("NO: %s\n", tmp);
+		
+
+		// while ((result = (tmp = ft_strdup(ft_strtok(NULL, "\t ,")))))
+		// {
+		// }
+		// if (is_label_without_instruction(file->line, counter))
+		// {
+		// 	printf("label: %s\n", file->line);
+		// 	append_label(&lists->labels, new_label(file->line, counter));
+		// }
+		// else
+		// {
+		// 	if (label_exists(file->line))
+		// 	{
+		// 		printf("line: %s\n", file->line);
+		// 		append_label(&lists->labels, new_label(file->line, counter));
+		// 	}
+		// 	// ft_lstiter(lists->labels, ft_lstprint);
+		// 	token = new_token(file->line, counter);
+			// token->labels = ft_lstmap(lists->labels, ft_lstget);
 			// append_linker_label(&lists->link_labels, token);
 			// append_linker_refs(&lists->link_refs, token);
 			// append_token(&lists->tokens, token);
-			ft_lstdel(&lists->labels, ft_lstelemfree);
+			// ft_lstdel(&lists->labels, ft_lstelemfree);
 			// system("leaks asm");
 			// break ;
 			// ft_printf("FALSE: %s\n", file->line);
-		}
+		// }
 	}
 	// ft_lstiter(lists->labels, ft_lstprint);
 }

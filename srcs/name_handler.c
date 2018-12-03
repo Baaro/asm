@@ -7,13 +7,13 @@ static char	*get_name(char *line, size_t name_len, t_counter *counter)
 
 	name = NULL;
 	after_end_quotes = counter->column + name_len + 1;
-	after_end_quotes += get_whitespaces(line + after_end_quotes);
-	if (line[after_end_quotes] == ENDSTRING_CHAR)
+	after_end_quotes += ft_strspn(line + after_end_quotes, DELIMS_CHARS);
+	if (!line[after_end_quotes])
 		name = ft_strsub(line, counter->column, name_len);
 	else
 	{
 		counter->column = after_end_quotes + 1;
-		lexical_errors(E_WRONG_TAIL_OF_STRING, line, counter);
+		lexical_errors(E_INVALID_SYMBOLS, line, counter);
 	}
 	return (name);
 }
@@ -34,7 +34,7 @@ static void	set_name(t_file *file, t_counter *counter)
 			ft_strdel(&name);
 			return ;
 		}
-		if (file->line[counter->column + name_len + 1] == ENDSTRING_CHAR)
+		if (!file->line[counter->column + name_len + 1])
 		{
 			counter->column += name_len + 2;
 			lexical_errors(E_NO_END_QUOTES, file->line, counter);
@@ -53,7 +53,7 @@ void		valid_name(t_file *file, t_counter *counter)
 	if (!file->hdr.prog_name[0])
 	{
 		counter->column = ft_strlen(NAME_CMD_STRING);
-		counter->column += get_whitespaces(file->line + counter->column);
+		counter->column += ft_strspn(file->line + counter->column, DELIMS_CHARS);
 		if (file->line[counter->column] == QUOTES_CHAR)
 		{
 			counter->column++;

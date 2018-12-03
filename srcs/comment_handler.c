@@ -7,13 +7,13 @@ static char	*get_comment(char *line, size_t comment_len, t_counter *counter)
 
 	comment = NULL;
 	after_end_quotes = counter->column + comment_len + 1;
-	after_end_quotes += get_whitespaces(line + after_end_quotes);
-	if (line[after_end_quotes] == ENDSTRING_CHAR)
+	after_end_quotes += ft_strspn(line + after_end_quotes, DELIMS_CHARS);
+	if (!line[after_end_quotes])
 		comment = ft_strsub(line, counter->column, comment_len);
 	else
 	{
 		counter->column = after_end_quotes + 1;
-		lexical_errors(E_WRONG_TAIL_OF_STRING, line, counter);
+		lexical_errors(E_INVALID_SYMBOLS, line, counter);
 	}
 	return (comment);
 }
@@ -34,7 +34,7 @@ static void	set_comment(t_file *file, t_counter *counter)
 			ft_strdel(&comment);
 			return ;
 		}
-		if (file->line[counter->column + comment_len + 1] == ENDSTRING_CHAR)
+		if (!file->line[counter->column + comment_len + 1])
 		{
 			counter->column += comment_len + 2;
 			lexical_errors(E_NO_END_QUOTES, file->line, counter);
@@ -53,7 +53,7 @@ void		valid_comment(t_file *file, t_counter *counter)
 	if (!file->hdr.comment[0])
 	{
 		counter->column = ft_strlen(COMMENT_CMD_STRING);
-		counter->column += get_whitespaces(file->line + counter->column);
+		counter->column += ft_strspn(file->line + counter->column, DELIMS_CHARS);
 		if (file->line[counter->column] == QUOTES_CHAR)
 		{
 			counter->column++;

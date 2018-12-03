@@ -58,27 +58,30 @@ char		*ft_strtok(char *s1, const char *delimiters)
 
 	return (ft_strtok_r(s1, delimiters, &ssave));
 }
+char	*ft_strdup(const char *s1)
+{
+	char		*cs1;
+	size_t		len;
+
+	len = strlen(s1);
+	if (!(cs1 = (char *)malloc(sizeof(char) * len + 1)))
+		return (NULL);
+	cs1 = strcpy(cs1, s1);
+	return (cs1);
+}
+
+# define COMMENT_CHARS		 		"#;"
 
 int     main(void)
 {
-	char	*str;
-	char	*instr;
-	size_t	column;
-
-	column = 0;
-	str = malloc(sizeof(char) * strlen("	sti	r1, %:live, %1") + 1);
-	str = strcpy(str, "	sti	r1, %:live, %1");
-	// printf("1. [%zu]: str: %s\n", column, str + column);
-
-	// column = ft_strspn(str, DELIMS);
-	// printf("2. [%zu]: str: %s\n", column, str + column);
-
-	// column += ft_strcspn(str + column, DELIMS);
-	// printf("3. [%zu]: str: %s\n", column, str + column);
-
-	instr = ft_strtok(str, DELIMS);
-	printf("instruction: %s\n", instr);
-	instr = ft_strtok(NULL, DELIMS);
-	printf("instruction: %s\n", instr);
+	char *tmp;
+	char *str = ft_strdup(".name zork\"");
+	tmp = ft_strdup(ft_strtok(str, "\t \""));
+	printf("%s\n", tmp);
+	while ((tmp = ft_strdup(ft_strtok(NULL, "\t ,"))))
+	{
+		printf("%s\n", tmp);
+	}
 	return (0);
 }
+

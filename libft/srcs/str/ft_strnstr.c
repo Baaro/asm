@@ -22,10 +22,13 @@ char	*ft_strnstr(const char *str, const char *to_f, size_t l)
 	i = -1;
 	while (str[++i] && i < l)
 	{
-		j = -1;
-		while (str[i + ++j] == to_f[j] && (l >= (ft_strlen(to_f))))
+		j = 0;
+		while (str[j + i] == to_f[j] && (l >= (ft_strlen(to_f))))
+		{
 			if (to_f[j + 1] == '\0')
 				return ((char *)(str + i));
+			j++;
+		}
 	}
 	return (NULL);
 }

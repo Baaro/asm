@@ -75,6 +75,7 @@ char				*ft_strmapi(char const *str, char (*f)(unsigned int, char));
 int					ft_strequ(char const *s1, char const *s2);
 int					ft_strnequ(char const *s1, char const *s2, size_t n);
 char				*ft_strsub(char const *s, unsigned int start, size_t len);
+char				*ft_strsubcl(char *s, unsigned int start, size_t len, bool clear);
 char				*ft_strjoin(char const *s1, char const *s2);
 char				*ft_strjoincl(char *s1, char *s2, int free_both);
 char				*ft_strtrim(char const *s);
@@ -82,7 +83,8 @@ char				*ft_strretrim(char *s);
 char				**ft_strsplit(char const *s, char c);
 size_t  			ft_strcspn(const char *s1, const char *s2);
 size_t				ft_strspn(const char *s1, const char *s2);
-char				*strtok(char *s1, const char *delimiters);
+char				*ft_strcutuntil(char *str, const char *until);
+char				*ft_strtok(char *s1, const char *delimiters);
 
 void				ft_putchar(char c);
 void				ft_putnchar(char c, size_t len);

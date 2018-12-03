@@ -2,8 +2,8 @@ NAME = asm
 
 CC := gcc
 
-FLAGS := -Wall -Wextra -Werror -g
-
+# FLAGS := -Wall -Wextra -Werror -g
+FLAGS := -g
 INCLUDES :=	includes					\
 
 source_dirs :=	srcs					\

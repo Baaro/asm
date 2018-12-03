@@ -8,16 +8,13 @@
 # include "op.h"
 # define FLAG_A 					0b00000001
 # define FLAG_M 					0b00000010
-# define VALID_CHARS				"abcdefghijklmnopqrstuvwxyz_0123456789 \t%:,"
+# define INSTR_CHARS				"abcdefghijklmnopqrstuvwxyz"
 # define NUM_INSTRUCTIONS			16
 # define NUM_ARGUMENTS				3
 # define VALID	 					2
-# define COMMENT_CHAR_ALTER 		';'
-# define ENDLINE_CHAR 				'\n'
-# define ENDSTRING_CHAR				'\0'
+# define COMMENT_CHARS		 		";#"
+# define DELIMS_CHARS				" \t"
 # define QUOTES_CHAR		 		'\"'
-# define SPACE_CHAR 				' '
-# define TAB_CHAR 					'\t'
 
 typedef enum 				e_errors
 {
@@ -70,39 +67,26 @@ typedef struct				s_file_cor
 // 	size_t					value;
 // }							t_arg;
 
-typedef struct		s_instr
-{
-	const char		*name;
-	const uint8_t	op_code;
-	uint8_t			arg_code;
-	uint8_t			args[NUM_ARGUMENTS];
-	const size_t	label_size;
-	t_token			*(*make_token)(char *line, t_counter *counter);
-	// t_arg			args[3];
-}					t_instr;
-// typedef struct				s_instruction
-// {
-// 	char					*name;
-// 	uint8_t					opcode;
-// 	uint8_t					opcode_args;
-// 	uint8_t					size;
-// 	size_t					byte_code;
-// 	t_argument				arguments[MAX_ARGUMENTS];
-// 	// void					(*get_argumetns)(struct	*s_instruction, char *, t_counter *);
-// 	// size_t					(*get_size)(char*);
-
-// }							t_instruction;
-
 typedef struct				s_token
 {
 	t_list					*labels;
-	t_instr					*instr;
+	// t_instr					*instr;
 	// t_list					*references;
 	uint8_t					op_code;
 	uint8_t					arg_code;
 	t_arg					args[NUM_ARGUMENTS];
 	size_t					position;
 }							t_token;
+
+typedef struct				s_instr
+{
+	const char				*name;
+	const uint8_t			op_code;
+	uint8_t					arg_code;
+	uint8_t					args[NUM_ARGUMENTS];
+	const size_t			label_size;
+	t_token					*(*make_token)(char *line, t_counter *counter);
+}							t_instr;
 
 typedef struct				s_linker_label
 {

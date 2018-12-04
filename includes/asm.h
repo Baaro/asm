@@ -61,6 +61,14 @@ typedef struct				s_file_cor
 	unsigned int		    prog_size;
 }							t_file_cor;
 
+typedef struct				s_tmp_token
+{
+	t_list					*labels;
+	char					*instr;
+	char					*label;
+	char					*tmp_line;
+}							t_tmp_token;
+
 // typedef struct				s_arg
 // {
 // 	char					*reference;
@@ -70,13 +78,15 @@ typedef struct				s_file_cor
 typedef struct				s_token
 {
 	t_list					*labels;
-	// t_instr					*instr;
-	// t_list					*references;
-	uint8_t					op_code;
-	uint8_t					arg_code;
-	t_arg					args[NUM_ARGUMENTS];
-	size_t					position;
+	char					*instr;
+	char					*label;
+	char					*args[MAX_ARGS_NUMBER - 1];
+	// uint8_t					op_code;
+	// uint8_t					arg_code;
+	// t_arg					args[NUM_ARGUMENTS];
+	// size_t					position;
 }							t_token;
+
 
 typedef struct				s_instr
 {
@@ -152,7 +162,7 @@ bool				is_whitespaces(const char c);
 */
 void 			   	append_label(t_list **label_head, char *label);
 bool				is_label_without_instruction(char *line, t_counter *counter);
-bool				label_exists(char *line);
+// bool				label_exists(char *line);
 bool				is_label_char(char c);
 char				*new_label(char *line, t_counter *counter);
 

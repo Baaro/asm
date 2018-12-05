@@ -8,12 +8,12 @@ void		ft_lstaddend(t_list **alst, t_list *new)
 		return ;
 	if (!(*alst))
 	{
-		*alst = new;
+		*alst = ft_lstcopy(new);
 		return ;
 	}
 	last = *alst;
 	while (last->next)
 		last = last->next;
-	last->next = new;
+	last->next = ft_lstcopy(new);
 	new->next = NULL;
 }

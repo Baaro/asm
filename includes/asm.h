@@ -61,25 +61,10 @@ typedef struct				s_file_cor
 	unsigned int		    prog_size;
 }							t_file_cor;
 
-typedef struct				s_tmp_token
-{
-	t_list					*labels;
-	char					*instr;
-	char					*label;
-	char					*tmp_line;
-}							t_tmp_token;
-
-// typedef struct				s_arg
-// {
-// 	char					*reference;
-// 	size_t					value;
-// }							t_arg;
-
 typedef struct				s_token
 {
 	t_list					*labels;
 	char					*instr;
-	char					*label;
 	char					*args[MAX_ARGS_NUMBER - 1];
 	// uint8_t					op_code;
 	// uint8_t					arg_code;
@@ -153,18 +138,19 @@ bool				is_comment_cmd(char *str);
 void				valid_comment(t_file *file, t_counter *counter);
 bool				is_name_cmd(char *str);
 void				valid_name(t_file *file, t_counter *counter);
-size_t				shift_chars(const char c);
-size_t				get_whitespaces(const char *str);
+// size_t				shift_chars(const char c);
+// size_t				get_whitespaces(const char *str);
 bool				is_whitespaces(const char c);
+
+/* AUX */
+ssize_t				get_invalid_symbols(char *line, size_t len);
 
 /*
 ** Lable_handler
 */
 void 			   	append_label(t_list **label_head, char *label);
-bool				is_label_without_instruction(char *line, t_counter *counter);
-// bool				label_exists(char *line);
-bool				is_label_char(char c);
-char				*new_label(char *line, t_counter *counter);
+char				*get_solo_label(char *line, t_counter *counter);
+char				*get_label(char *line, t_counter *counter);
 
 t_token 			*live_compute(char *line, t_counter *counter);
 t_token 			*ld_compute(char *line, t_counter *counter);

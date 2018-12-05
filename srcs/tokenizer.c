@@ -1,24 +1,5 @@
 #include "asm.h"
 
-// void			append_linker_labels(t_lists *lists, t_token *token)
-// {
-// 	if (token->labels)
-// 		append_linker_label(lists->l_labels, token);
-// }
-
-// void			append_linker_references(t_lists *lists, t_token *token)
-// {
-// 	char	*current_reference;
-// 	size_t	current_instrument;
-
-// 	current_instrument = -1;
-// 	while (++current_instrument < MAX_ARGUMENTS)
-// 	{
-// 		current_reference = token->instruction.arguments[current_instrument].reference;
-// 		if (current_reference)
-// 			append_linker_reference(lists->l_refs, token, current_reference);
-// 	}
-
 t_instr 	g_instrs_tab[NUM_INSTRUCTIONS + 1] =
 {
 	{"live",	1,	0,	{T_DIR},												4,	live_compute},
@@ -46,163 +27,109 @@ void			ft_lstprint(t_list *elem)
 		ft_printf("%s\n", elem->content);
 }
 
-// size_t			valid_line(char *line)
-// {
-// 	size_t	counter;
-// 	size_t	len;
-
-// 	counter = -1;
-// 	len = ft_strlen(line);
-// 	while (++counter < len)
-// 	{
-// 		if (!(ft_strchr(INSTR_CHARS, line[counter])))
-// 			break ;
-// 	}
-// 	return (counter);
-// }
-
-bool			is_valid_symbols(char *line, size_t len, t_counter *counter)
+void			token_print(t_list *token)
 {
-	size_t	i;
+	ssize_t i;
 
-	i = -1;
-	while (++i < len)
-	{
-		if (!ft_strchr(LABEL_CHARS, line[i]))
-		{
-			counter->column += i + 1;
-			lexical_errors(E_INVALID_SYMBOLS, line, counter);
-		}
-	}
-	return (i == len);
-}
-
-// bool			instr_exists(char *line)
-// {
-// 	return (ft_strcspn(line, DELIMS_CHARS) != 0);
-// }
-
-bool			is_label(char *label, t_counter *counter)
-{
-	size_t	label_len;
-
-	label_len = ft_strlen(label);
-	if (ft_strcspn(label, ":") + 1 == label_len)
-		return (is_valid_symbols(label, label_len - 1, counter));
-	return (false);
-}
-
-// char			*get_label(char *line, bool is_solo, t_counter *counter)
-// {
-// 	char *pos;
-	
-// 	if ((pos = ft_strchr(line, LABEL_CHAR)))
-// 	{
-// 		if (is_valid_symbols(line, pos - line, counter))
-// 			return (ft_strsub(line, 0, pos - line));
-// 	}
-// 	return (NULL);
-	
-// }
-
-char			*get_label(char *line, bool is_solo, t_counter *counter)
-{
-	size_t	lab_char_pos;
-	char	*label;
-
-	label = NULL;
-	lab_char_pos = ft_strcspn(line, ":");
-	if (line[lab_char_pos] == LABEL_CHAR
-	&& is_valid_symbols(line, lab_char_pos, counter))
-	{
-		if (is_solo)
-		{
-			if (lab_char_pos + 1 == ft_strlen(line))
-				label = ft_strsub(line, 0, lab_char_pos);
-			else
-				label = NULL;
-		}
-		else
-		{
-			is_valid_symbols(line + lab_char_pos + 1, ft_strlen(line + lab_char_pos + 1), counter);
-			label = ft_strsub(line, 0, lab_char_pos);
-		}
-	}
-	return (label);
-}
-
-//	[+]	get_label()
-//	[-]	get_instruction()
-// 	[-]	get_arguments()
-
-void			token_print(t_token *token)
-{
 	printf("\n-----------TOKEN-----------\n");
 	printf("LABELS:\n");
-	ft_lstiter(token->labels, ft_lstprint);
-	printf("INSTRUCTION: [%s]\n", token->instr);
+	ft_lstiter((*(t_token *)token->content).labels, ft_lstprint);
+	printf("INSTRUCTION: [%s]\n", (*(t_token*)token->content).instr);
 	printf("ARGUMENTS:\n");
-	int i = -1;
+	i = -1;
 	while (++i < MAX_ARGS_NUMBER - 1)
-		printf("arg[%d] -> %s\n", i, token->args[i]);
+		printf("arg[%zu] -> %s\n", i, (*(t_token*)token->content).args[i]);
 	printf("\n-----------TOKEN-----------\n");
 }
 
-t_token 		*new_token(t_list *labels, char *line, t_counter *counter)
+ssize_t			get_invalid_symbols(char *line, size_t len)
 {
-	t_token		*token;
+	ssize_t	i;
 
-	token = ft_memalloc(sizeof(t_token));
-	if ((token->label = get_label(ft_strtok(line, ":"), 0, counter))) // label with instr
+	i = -1;
+	while (line[++i] && i < (ssize_t)len)
 	{
-		append_label(&labels, token->label);
-		token->instr = ft_strdup(ft_strtok(NULL, DELIMS_CHARS));
-		printf("INSTR: %s\n", token->instr);
+		if (!ft_strchr(LABEL_CHARS, line[i]))
+			return(i);
 	}
-	else // instr without label
-		token->instr = ft_strdup(ft_strtok(line, DELIMS_CHARS));
-	token->labels = ft_lstmap(labels, ft_lstget);
-	// get arguemnts();
-	int i = -1;
+	return (i == len ? -1 : i);
+}
+
+void			get_arguemnts(t_token *token)
+{
+	ssize_t	i = -1;
 	while (++i < MAX_ARGS_NUMBER - 1)
 		token->args[i] = ft_strtrim(ft_strtok(NULL, ","));
+}
+
+char			*get_instruction(char *fileline, char *current_line, t_counter *counter)
+{
+	ssize_t		invalid_symbol;
+	char		*instr;
+
+	instr = ft_strtrim(ft_strtok(current_line, DELIMS_CHARS));
+	if ((invalid_symbol = get_invalid_symbols(instr, ft_strlen(instr))) != -1)
+	{
+		counter->column += ft_strlen(instr) + (size_t)invalid_symbol;
+		lexical_errors(E_INVALID_SYMBOLS, fileline, counter);
+	}
+	return (instr);
+}
+
+void    		append_token(t_list **token_head, t_token *token)
+{
+	ft_lstaddend(token_head, ft_lstnew(token, sizeof(t_token)));
+	// free(label);
+}
+
+t_token 		*new_token(t_list *labels, char *fileline, t_counter *counter)
+{
+	t_token		*token;
+	char		*label;
+
+	token = ft_memalloc(sizeof(t_token));
+	if ((label = get_label(fileline, counter))) // label with instr
+	{
+		append_label(&labels, label);
+		token->instr = get_instruction(fileline,
+						fileline + ft_strlen(label) + 1, counter);
+	}
+	else // instr without label
+		token->instr = get_instruction(fileline, fileline, counter);
+	token->labels = ft_lstmap(labels, ft_lstcopy);
+	get_arguemnts(token);
 	return (token);
 }
 
-void			tmp_token_clear(t_tmp_token *token)
+void			token_free(t_token **token)
 {
-	// if (token->label)
-		// free(token->label);
-	// if (token->instr)
-		// free(token->instr);
+	ssize_t	i = -1;
+
+	ft_lstdel(&(*token)->labels, ft_lstelemfree);
+	ft_strdel(&(*token)->instr);
+	while (++i < MAX_ARGS_NUMBER - 1)
+		ft_strdel(&(*token)->args[i]);
 }
 
 void			tokenizer(t_file *file, t_lists *lists, t_counter *counter) // test version
 {
 	t_token		*token;
-	char 		*tmp;
+	char 		*label;
 
-	tmp = NULL;
+	label = NULL;
 	while (file_get_line(file, counter) == 1)
 	{
-		if ((tmp = get_label(file->line, 1, counter)))
-		{
-			printf("iF line: %s\n", file->line);
-			append_label(&lists->labels, tmp);
-		}
+		if ((label = get_solo_label(file->line, counter)))
+			append_label(&lists->labels, label);
 		else
 		{
-			printf("eLSE line: %s\n", file->line);
 			token = new_token(lists->labels, file->line, counter);
-			token_print(token);
-			// tmp_token_clear(&token);
+			append_token(&lists->tokens, token);
+			// token_free(&token);
+			ft_lstdel(&lists->labels, ft_lstelemfree);
 			// append_linker_label(&lists->link_labels, token);
 			// append_linker_refs(&lists->link_refs, token);
-			// append_token(&lists->tokens, token);
 		}
 	}
+	ft_lstiter(lists->tokens, token_print);
 }
-// if we found ':' at the end of the string -> it's the solo label
-// else if we did not ->
-					// if we found ':' -> cut and valid label
-					// else if we did not cut and valid instruction 

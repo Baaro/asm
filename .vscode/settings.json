@@ -2,6 +2,7 @@
     "files.associations": {
         "asm.h": "c",
         "op.h": "c",
-        "regex.h": "c"
+        "regex.h": "c",
+        "libft.h": "c"
     }
 }

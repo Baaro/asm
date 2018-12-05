@@ -72,7 +72,16 @@ typedef struct				s_token
 	// size_t					position;
 }							t_token;
 
-
+typedef struct	bc
+{
+	uint8_t   	instr_code;
+	uint8_t		arg_code;
+	uint8_t		reg;
+	uint16_t	dir2;
+	uint32_t	dir4;
+	uint16_t	ind;
+	// uint32_t	args[3];
+}				bc;
 typedef struct				s_instr
 {
 	const char				*name;
@@ -80,7 +89,7 @@ typedef struct				s_instr
 	uint8_t					arg_code;
 	uint8_t					args[NUM_ARGUMENTS];
 	const size_t			label_size;
-	t_token					*(*make_token)(char *line, t_counter *counter);
+	t_token					*(*make_bytecode)(char *line, t_counter *counter);
 }							t_instr;
 
 typedef struct				s_linker_label
@@ -148,7 +157,7 @@ ssize_t				get_invalid_symbols(char *line, size_t len);
 /*
 ** Lable_handler
 */
-void 			   	append_label(t_list **label_head, char *label);
+void			    append_label(t_list **label_head, char *label, size_t label_len);
 char				*get_solo_label(char *line, t_counter *counter);
 char				*get_label(char *line, t_counter *counter);
 

@@ -36,8 +36,8 @@ char			*get_solo_label(char *line, t_counter *counter)
 	return (NULL);
 }
 
-void    append_label(t_list **label_head, char *label)
+void    append_label(t_list **label_head, char *label, size_t label_len)
 {
-	ft_lstaddend(label_head, ft_lstnew(label, ft_strlen(label) + 1));
+	ft_lstaddend(label_head, ft_lstnew(label, label_len + 1));
 	// ft_strdel(label);
 }

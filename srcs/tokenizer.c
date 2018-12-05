@@ -20,6 +20,7 @@ t_instr 	g_instrs_tab[NUM_INSTRUCTIONS + 1] =
 	{"aff",		16,	0,	{T_REG},												4,	aff_compute},
 	{0, 		0,	0,	{0}}
 };
+// byte_code = g_instrs_tab[current_instr].make_bytecode(token);
 
 void			ft_lstprint(t_list *elem)
 {
@@ -62,7 +63,7 @@ void			get_arguemnts(t_token *token)
 		token->args[i] = ft_strtrim(ft_strtok(NULL, ","));
 }
 
-char			*get_instruction(char *fileline, char *current_line, t_counter *counter)
+char			*get_instruction(char *fline, char *current_line, t_counter *counter)
 {
 	ssize_t		invalid_symbol;
 	char		*instr;
@@ -71,7 +72,7 @@ char			*get_instruction(char *fileline, char *current_line, t_counter *counter)
 	if ((invalid_symbol = get_invalid_symbols(instr, ft_strlen(instr))) != -1)
 	{
 		counter->column += ft_strlen(instr) + (size_t)invalid_symbol;
-		lexical_errors(E_INVALID_SYMBOLS, fileline, counter);
+		lexical_errors(E_INVALID_SYMBOLS, fline, counter);
 	}
 	return (instr);
 }
@@ -82,45 +83,48 @@ void    		append_token(t_list **token_head, t_token *token)
 	// free(label);
 }
 
-t_token 		*new_token(t_list *labels, char *fileline, t_counter *counter)
+t_token 		*new_token(t_list *labels, char *fline, t_counter *counter)
 {
 	t_token		*token;
 	char		*label;
+	size_t		label_len;
 
 	token = ft_memalloc(sizeof(t_token));
-	if ((label = get_label(fileline, counter))) // label with instr
+	if ((label = get_label(fline, counter))) // label with instr
 	{
-		append_label(&labels, label);
-		token->instr = get_instruction(fileline,
-						fileline + ft_strlen(label) + 1, counter);
+		label_len = ft_strlen(label);
+		append_label(&labels, label, label_len);
+		token->instr = get_instruction(fline, fline + label_len + 1, counter);
 	}
 	else // instr without label
-		token->instr = get_instruction(fileline, fileline, counter);
+		token->instr = get_instruction(fline, fline, counter);
 	token->labels = ft_lstmap(labels, ft_lstcopy);
 	get_arguemnts(token);
 	return (token);
 }
+// void			token_free(t_token **token) // does not work
+// {
+// 	ssize_t	i = -1;
 
-void			token_free(t_token **token)
-{
-	ssize_t	i = -1;
-
-	ft_lstdel(&(*token)->labels, ft_lstelemfree);
-	ft_strdel(&(*token)->instr);
-	while (++i < MAX_ARGS_NUMBER - 1)
-		ft_strdel(&(*token)->args[i]);
-}
+// 	ft_lstdel(&(*token)->labels, ft_lstelemfree);
+// 	ft_strdel(&(*token)->instr);
+// 	while (++i < MAX_ARGS_NUMBER - 1)
+// 		ft_strdel(&(*token)->args[i]);
+// }
 
 void			tokenizer(t_file *file, t_lists *lists, t_counter *counter) // test version
 {
 	t_token		*token;
 	char 		*label;
+	size_t		label_len;
 
-	label = NULL;
 	while (file_get_line(file, counter) == 1)
 	{
 		if ((label = get_solo_label(file->line, counter)))
-			append_label(&lists->labels, label);
+		{
+			label_len = ft_strlen(label);
+			append_label(&lists->labels, label, label_len);
+		}
 		else
 		{
 			token = new_token(lists->labels, file->line, counter);

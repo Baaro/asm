@@ -1,4 +1,4 @@
-.name "\n"	 
+.name "asd"
 .comment "I'M ALIIIIVE"  ;test
 
 l2:

@@ -1,6 +1,6 @@
 #include "asm.h"
 
-static t_file_cor  *file_cor_new(void)
+static t_file_cor	*file_cor_new(void)
 {
 	return (ft_memalloc(sizeof(t_file_cor)));
 }
@@ -30,7 +30,7 @@ static t_file_cor  *file_cor_new(void)
 // 	free(counter);
 // }
 
-void    file_cor_del(t_file_cor **fc)
+void    			file_cor_del(t_file_cor **fc)
 {
 	ft_memdel(&(*fc)->header);
 	free((*fc)->name);
@@ -39,7 +39,7 @@ void    file_cor_del(t_file_cor **fc)
 	free(*fc);
 }
 
-t_file_cor  *file_cor_make(t_file *f, t_counter *c) // test version
+t_file_cor  		*file_cor_make(t_file *f, t_counter *c) // test version
 {
 	t_file_cor	*fc;
 	t_list		*tokens;

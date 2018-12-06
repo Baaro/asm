@@ -58,6 +58,7 @@ typedef struct		        	s_header
 	char				    	prog_name[PROG_NAME_LENGTH + 1];
 	unsigned int		    	prog_size;
 	char						comment[COMMENT_LENGTH + 1];
+	bool						cmd_choose;
 }								t_header;
 
 #endif

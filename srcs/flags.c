@@ -15,18 +15,19 @@ static bool	is_flag_m(const char *flag)
 	return (*flag == '-' && *(flag + 1) == 'm' && *(flag + 2) == '\0');
 }
 
-uint8_t		flags_analyze(int *ac, char ***av, int *args_counter)
+uint8_t		flags_get(int *ac, char ***av, t_counter *c)
 {
 	uint8_t	flags;
 
 	flags = 0;
-	*args_counter = 0;
-	while (++(*args_counter) < *ac && is_flag((*av)[*args_counter]))
+	c->args = 1;
+	while (c->args < *ac && is_flag((*av)[c->args]))
 	{
-		if (is_flag_a((*av)[*args_counter]))
+		if (is_flag_a((*av)[c->args]))
 			flags |= FLAG_A;
-		else if (is_flag_m((*av)[*args_counter]))
+		else if (is_flag_m((*av)[c->args]))
 			flags |= FLAG_M;
+		c->args++;
 	}
 	return (flags);
 }

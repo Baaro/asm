@@ -2,22 +2,9 @@
 
 static bool	is_endline_or_comment(char *str)
 {
-	if (!(*str) || ft_strspn(str, "\n;#") > 0)
-		return (true);
-	return (false);
+    return (!(*str) || ft_strspn(str, "\n;#") > 0);
 }
 
-static char		*file_append_data(char *data, char *line)
-{
-	char 	*without_endline;
-    char    *with_endline;
-
-	without_endline = data == NULL ? ft_strnew(0) : data;
-	without_endline = ft_strjoincl(without_endline, line, 0);
-	with_endline = ft_strjoincl(without_endline, "\n", 0);
-    data = with_endline;
-	return (data);
-}
 
 int			file_get_line(t_file *file, t_counter *counter)
 {

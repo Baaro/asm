@@ -9,36 +9,30 @@ void	usage(void) // test version
 	exit(1);
 }
 
-// void	file_cor_write(t_file_cor file_cor, uint8_t flags)
-// {
-	// if (i->flags & FLAG_A)
-	// 	ft_printf("Output a stripped and annotated version\n");
-	// else
-	// {
-	// 	ft_printf("convert to byte-code\n");
-	// 	// i->byte_code = convert_to_byte_code(i->compiled_data);
-	// 	// write_cor_file(&i->file);
-	// }
-	// file_clear(&i->file);
-// }
-
 int		main(int ac, char **av)
 {
 	uint8_t		flags;
-	int			args_counter;
-	t_file_cor	*file_cor;
+	t_file_cor	*fc;
+	t_file		*f;
+	t_counter	*c;
 
 	if (ac == 1)
 		usage();
 	else if (ac >= 2)
 	{
-		flags = flags_analyze(&ac, &av, &args_counter);
-		while (args_counter < ac)
+		c = counter_new();
+		flags = flags_get(&ac, &av, c);
+		while (c->args < ac)
 		{
-			file_cor = file_cor_make(av[args_counter]);
-			// file_cor_write(file_cor, flags);
-			args_counter++;
+			f = file_get(av[c->args]);
+			fc = file_cor_make(f, c);
+			// file_cor_write(fc, flags, c);
+			file_del(&f);
+			file_cor_del(&fc);
+			counter_clear(c);
+			c->args++;
 		}
+		counter_del(&c);
 	}
 	// system("leaks asm");
 	return (0);

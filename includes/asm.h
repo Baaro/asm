@@ -6,11 +6,11 @@
 # include <stdbool.h>
 # include "../libft/includes/libft.h"
 # include "op.h"
-# define FLAG_A 					0b00000001
-# define FLAG_M 					0b00000010
+# define FLAG_A 					1
+# define FLAG_M 					2
 # define INSTR_CHARS				"abcdefghijklmnopqrstuvwxyz"
 # define NUM_INSTRUCTIONS			16
-# define NUM_ARGUMENTS				3
+// # define NUM_ARGUMENTS				3
 # define VALID	 					2
 # define COMMENT_CHARS		 		";#"
 # define DELIMS_CHARS				" \t"
@@ -43,6 +43,7 @@ typedef struct				s_counter
 	size_t					row;
 	size_t					begin_whitespaces;
 	size_t					bytes;
+	int						args;
 }							t_counter;
 
 typedef struct				s_file
@@ -50,46 +51,45 @@ typedef struct				s_file
 	int						fd;
 	char					*name;
 	char					*data;
-	char					*line;
-	t_header				hdr;
 }							t_file;
 
 typedef struct				s_file_cor
 {
-	t_header				header;
-	unsigned int			magic;
-	unsigned int		    prog_size;
+	t_header				*header;
+	char					*name;
+	unsigned int			*bytecode;
 }							t_file_cor;
+
+typedef struct				s_label
+{
+	char					*name;
+	size_t					len;
+}							t_label;
 
 typedef struct				s_token
 {
 	t_list					*labels;
 	char					*instr;
 	char					*args[MAX_ARGS_NUMBER - 1];
-	// uint8_t					op_code;
-	// uint8_t					arg_code;
-	// t_arg					args[NUM_ARGUMENTS];
 	// size_t					position;
 }							t_token;
 
-typedef struct	bc
+typedef struct				s_byte_code
 {
-	uint8_t   	instr_code;
-	uint8_t		arg_code;
-	uint8_t		reg;
-	uint16_t	dir2;
-	uint32_t	dir4;
-	uint16_t	ind;
-	// uint32_t	args[3];
-}				bc;
+	uint8_t   				instr_code;
+	uint8_t					arg_code;
+	uint8_t					reg;
+	uint16_t				dir2;
+	uint32_t				dir4;
+	uint16_t				ind;
+}							t_byte_code;
+
 typedef struct				s_instr
 {
 	const char				*name;
 	const uint8_t			op_code;
-	uint8_t					arg_code;
-	uint8_t					args[NUM_ARGUMENTS];
-	const size_t			label_size;
-	t_token					*(*make_bytecode)(char *line, t_counter *counter);
+	uint8_t					args[MAX_ARGS_NUMBER - 1];
+	t_byte_code				*(*bytecode_make)(t_list *tokens, t_counter *c);
 }							t_instr;
 
 typedef struct				s_linker_label
@@ -110,25 +110,48 @@ typedef struct				s_lists
 {
 	t_list					*tokens;
 	t_list					*labels;
-	t_list					*link_labels;
-	t_list					*link_refs;
+	// t_list					*link_labels;
+	// t_list					*link_refs;
 }							t_lists;
 
 void				usage(void); // test version
+
 /*
-** MAIN funcitons
+** counter
 */
-uint8_t				flags_analyze(int *ac, char ***av, int *args_counter);
-t_file_cor			*file_cor_make(const char *file_name);
-int					file_get_line(t_file *file, t_counter *counter);
-void				tokenizer(t_file *file, t_lists *lists, t_counter *counter);
-size_t				get_currunet_column(t_counter *counter);
+t_counter			*counter_new(void);
+void				counter_del(t_counter **c);
+void				counter_clear(t_counter *c);
+
+/*
+** filename.*
+*/
+t_file 				*file_get(char *filename);
+void				file_del(t_file **f);
+
+/*
+** flags
+*/
+uint8_t				flags_get(int *ac, char ***av, t_counter *c);
+
+/*
+** filename.cor
+*/
+t_file_cor			*file_cor_make(t_file *f, t_counter *c);		// test version
+void			    file_cor_del(t_file_cor **fc);
+
+// t_file_cor			*file_cor_make(const char *file_name);
+// int					file_get_line(t_file *f, t_counter *c);
+// void				tokenizer(t_file *f, t_lists *lists, t_counter *c);
+size_t				get_currunet_column(t_counter *c);
+
+
 /*
 ** Errors
 */
-void    			lexical_errors(t_errors error, char *line, t_counter *counter);
-void				syntactic_errors(t_errors error, char *line, t_counter *counter);
-void    			semantic_errors(t_errors error, char *line, t_counter *counter);
+void    			lexical_errors(t_errors error, char *line, t_counter *c);
+void				syntactic_errors(t_errors error, char *line, t_counter *c);
+void    			semantic_errors(t_errors error, char *line, t_counter *c);
 
 /*
 **
@@ -155,7 +178,7 @@ bool				is_whitespaces(const char c);
 ssize_t				get_invalid_symbols(char *line, size_t len);
 
 /*
-** Lable_handler
+** Label
 */
 void			    append_label(t_list **label_head, char *label, size_t label_len);
 char				*get_solo_label(char *line, t_counter *counter);

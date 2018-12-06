@@ -41,8 +41,6 @@ bool	is_whitespaces(const char c)
 // 	return (c != HEADER_DOT_CHAR && h_cmds == VALID);
 // }
 
-
-
 // bool	is_not_all_command_checked(char c, size_t h_cmds)
 // {
 // 	return (c != HEADER_DOT_CHAR && h_cmds != VALID);

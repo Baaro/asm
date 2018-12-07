@@ -1,89 +1,93 @@
 #include "asm.h"
 
-static char	*cmd_str_get(char *line, size_t str_len, t_counter *c)
+static void	cmd_str_del(t_cmd_str **str)
+{
+	free((*str)->value);
+	free(*str);
+}
+
+static void	cmd_str_save(t_header *h, t_cmd_str *str, t_counter *c)
 {
 	size_t	after_end_quotes;
-	char	*str;
+	char	*new_str;
 
-	str = NULL;
-	after_end_quotes = c->column + str_len + 1;
-	after_end_quotes += ft_strspn(line + after_end_quotes, DELIMS_CHARS);
-	if (!line[after_end_quotes])
-		str = ft_strsub(line, c->column, str_len);
-	else
+	new_str = NULL;
+	after_end_quotes = c->column + str->len + 1;
+	after_end_quotes += ft_strspn(str->value + after_end_quotes, DELIMS_CHARS);
+	after_end_quotes += ft_strspn(str->value + after_end_quotes, "\n");
+	if (str->value[after_end_quotes] != '\0'
+	&& str->value[after_end_quotes] != COMMENT_CHAR
+	&& str->value[after_end_quotes] != COMMENT_CHAR_ALT)
+		lexical_errors(E_INVALID_SYMBOLS, str->value, c);
+	new_str = ft_strsub(str->value, c->column, str->len - 1);
+	if (h->is_name_cmd)
+		ft_strncpy(h->prog_name, new_str, str->len);
+	else if (h->is_comment_cmd)
+		ft_strncpy(h->comment, new_str, str->len);
+}
+
+static char	*cmd_str_read(t_file *f, t_counter *c)
+{
+	char *str;
+
+	str = ft_strdup(f->line + c->column + 1);
+	str = ft_strjoincl(str, "\n", 0);
+	while (!(ft_strchr(str, QUOTES_CHAR)))
 	{
-		c->column = after_end_quotes + 1;
-		lexical_errors(E_INVALID_SYMBOLS, line, c);
+		if ((file_get_line(f, c, 1)) == 0)
+			lexical_errors(E_IS_NOT_ENOUGH_DATA, f->line, c);
+		str = ft_strjoincl(str, f->line, 0);
 	}
 	return (str);
 }
 
-static void	cmd_str_set(t_header *h, char *line, size_t maxstrlen, t_counter *c)
+static void	cmd_str_valid(t_file *f, t_header *h, t_cmd_str *str, t_counter *c)
 {
-	size_t	str_len;
-	char	*str;
-
-	str_len = -1;
-	str = NULL;
-	while (++str_len < maxstrlen)
+	while (str->len <= str->maxlen
+	&& str->value[str->len] != QUOTES_CHAR)
 	{
-		if (line[c->column + str_len] == QUOTES_CHAR)
+		if (str->len == str->maxlen)
 		{
-			str = cmd_str_get(line, str_len, c);
-			if (h->cmd_choose)
-				ft_strncpy(h->prog_name, str, str_len);
-			else
-				ft_strncpy(h->comment, str, str_len);
-			ft_strdel(&str);
-			return ;
+			if (h->is_name_cmd)
+				lexical_errors(E_CHAMPION_NAME_TOO_LONG, f->line, c);
+			else if (h->is_comment_cmd)
+				lexical_errors(E_CHAMPION_COMMENT_TOO_LONG, f->line, c);
 		}
-		if (!line[c->column + str_len + 1])
+		if (str->value[str->len + 1] == '\0')
 		{
-			c->column += str_len + 2;
-			lexical_errors(E_NO_END_QUOTES, line, c);
+			c->column += str->len + 2;
+			lexical_errors(E_NO_END_QUOTES, f->line, c);
 		}
+		str->len++;
 	}
-	if (h->cmd_choose)
-		lexical_errors(E_CHAMPION_NAME_TOO_LONG, line, c);
-	lexical_errors(E_CHAMPION_COMMENT_TOO_LONG, line, c);
 }
 
-static void		cmd_set(t_header *h, char *line, t_counter *c)
+void		cmd_str_set(t_file *f, t_header *h, t_counter *c)
 {
-	size_t	max_str_len;
+	t_cmd_str	*str;
 
-	if (h->cmd_choose)
+	str = ft_memalloc(sizeof(t_cmd_str));
+	if (h->is_name_cmd)
 	{
-		max_str_len = PROG_NAME_LENGTH + 1;
-		if (!h->prog_name[0])
-			c->column = ft_strlen(NAME_CMD_STRING);
-		else
-			semantic_errors(E_DOUBLE_NAME, line, c);
+		if (h->prog_name[0])
+			semantic_errors(E_DOUBLE_NAME, f->line, c);
+		str->maxlen = PROG_NAME_LENGTH + 1;
+		c->column += c->begin_whitespaces + ft_strlen(NAME_CMD_STR);
 	}
-	else
+	else if (h->is_comment_cmd)
 	{
-		max_str_len = COMMENT_LENGTH + 1;
-		if (!h->comment[0])
-			c->column = ft_strlen(COMMENT_CMD_STRING);
-		else
-			semantic_errors(E_DOUBLE_COMMENT, line, c);
+		if (h->comment[0])
+			semantic_errors(E_DOUBLE_COMMENT, f->line, c);
+		str->maxlen = COMMENT_LENGTH + 1;
+		c->column += c->begin_whitespaces + ft_strlen(COMMENT_CMD_STR);
 	}
-	if (line[c->column] == QUOTES_CHAR)
-	{
-		c->column++;
-		command_str_set(h, line, max_str_len, c);
-	}
-	else
-		lexical_errors(E_NO_BEGIN_QUOTES, line, c);
-}
-
-void			cmd_get(t_header *h, char *line, t_counter *c)
-{
-	if (ft_strnequ(line, NAME_CMD_STRING, ft_strlen(NAME_CMD_STRING)))
-		h->cmd_choose = true;
-	else if (ft_strnequ(line, COMMENT_CMD_STRING, ft_strlen(COMMENT_CMD_STRING)))
-		h->cmd_choose = false;
-	else
-		semantic_errors(E_UNMATCHED_COMMAND, line, c);
-	cmd_set(h, line, c);
+	c->column += ft_strspn(f->line + c->column, DELIMS_CHARS);
+	if (f->line[c->column] != QUOTES_CHAR)
+		lexical_errors(E_NO_BEGIN_QUOTES, f->line, c);
+	str->value = cmd_str_read(f, c);
+	cmd_str_valid(f, h, str, c);
+	cmd_str_save(h, str, c);
+	h->is_name_cmd = false;
+	h->is_comment_cmd = false;
+	cmd_str_del(&str);
 }

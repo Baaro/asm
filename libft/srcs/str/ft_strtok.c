@@ -1,27 +1,8 @@
 #include "libft.h"
 
-static char	*ft_strtok_r(char *s, const char *delimiters, char **lasts)
+char		*ft_strtok(char *s, const char *delimiters)
 {
-	char *sbegin;
-	char *send;
+	static char *s_save = "";
 
-	sbegin = s ? s : *lasts;
-	sbegin += ft_strspn(sbegin, delimiters);
-	if (*sbegin == '\0')
-	{
-		*lasts = "";
-		return (NULL);
-	}
-	send = sbegin + ft_strcspn(sbegin, delimiters);
-	if (*send != '\0')
-		*send++ = '\0';
-	*lasts = send;
-	return (sbegin);
-}
-
-char		*ft_strtok(char *s1, const char *delimiters)
-{
-	static char *ssave = "";
-
-	return (ft_strtok_r(s1, delimiters, &ssave));
+	return (ft_strtok_r(s, delimiters, &s_save));
 }

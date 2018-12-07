@@ -21,17 +21,17 @@ char	*ft_strretrim(char *s)
 
 	if (s == NULL)
 		return (NULL);
-	end = ft_strlen(s) - 1;
+	end = ft_strlen(s);
 	begin = 0;
 	len = 0;
 	while ((s[end] == '\n' || s[end] == '\t' || s[end] == ' ') && (end > 0))
 		end--;
+	if (end == 0)
+		return (ft_strdup(""));
 	while (s[begin] == '\n' || s[begin] == '\t' || s[begin] == ' ')
 		begin++;
 	len = end - begin + 1;
-	if (end == 0)
-		cs = ft_strdup("");
-	else if (!(cs = ft_strsub(s, begin, len)))
+	if (!(cs = ft_strsub(s, begin, len)))
 		return (NULL);
 	free(s);
 	return (cs);

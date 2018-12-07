@@ -10,9 +10,9 @@
 # define FLAG_M 					2
 # define INSTR_CHARS				"abcdefghijklmnopqrstuvwxyz"
 # define NUM_INSTRUCTIONS			16
-// # define NUM_ARGUMENTS				3
 # define VALID	 					2
 # define COMMENT_CHARS		 		";#"
+# define COMMENT_CHAR_ALT			';'
 # define DELIMS_CHARS				" \t"
 # define QUOTES_CHAR		 		'\"'
 
@@ -51,6 +51,7 @@ typedef struct				s_file
 	int						fd;
 	char					*name;
 	char					*data;
+	char					*line;
 }							t_file;
 
 typedef struct				s_file_cor
@@ -59,6 +60,13 @@ typedef struct				s_file_cor
 	char					*name;
 	unsigned int			*bytecode;
 }							t_file_cor;
+
+typedef	struct				s_cmd_str
+{
+	char					*value;
+	size_t					maxlen;
+	size_t					len;
+}							t_cmd_str;
 
 typedef struct				s_label
 {
@@ -140,11 +148,25 @@ uint8_t				flags_get(int *ac, char ***av, t_counter *c);
 t_file_cor			*file_cor_make(t_file *f, t_counter *c);		// test version
 void			    file_cor_del(t_file_cor **fc);
 
-// t_file_cor			*file_cor_make(const char *file_name);
-// int					file_get_line(t_file *f, t_counter *c);
+int			         file_get_line(t_file *f, t_counter *c, bool with_endline);
+char				*file_append_data(char **data, char **line, bool ret_with_endline);
 // void				tokenizer(t_file *f, t_lists *lists, t_counter *c);
 size_t				get_currunet_column(t_counter *c);
 
+/*
+** header
+*/
+t_header			*header_get(t_file *f, t_counter *c);
+void				header_del(t_header **h);
+
+/*
+** cmd
+*/
+void				cmd_str_set(t_file *f, t_header *h, t_counter *c);
+/*
+** token
+*/
+t_list				*tokens_make(t_file *f, t_counter *c); // test version
 
 /*
 ** Errors

@@ -23,8 +23,8 @@
 # define LABEL_CHARS        	"abcdefghijklmnopqrstuvwxyz_0123456789"
 
 # define HEADER_DOT_CHAR		'.'
-# define NAME_CMD_STRING		".name"
-# define COMMENT_CMD_STRING		".comment"
+# define NAME_CMD_STR			".name"
+# define COMMENT_CMD_STR		".comment"
 
 # define REG_NUMBER				16
 
@@ -58,7 +58,9 @@ typedef struct		        	s_header
 	char				    	prog_name[PROG_NAME_LENGTH + 1];
 	unsigned int		    	prog_size;
 	char						comment[COMMENT_LENGTH + 1];
-	bool						cmd_choose;
+	bool						is_name_cmd;
+	bool						is_comment_cmd;
+	// bool						cmd_choose;
 }								t_header;
 
 #endif

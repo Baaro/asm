@@ -1,31 +1,19 @@
 #include "asm.h"
 
-static char		*file_append_data(char **data, char *line)
-{
-	char 	*without_endline;
-	char    *with_endline;
+// static char		*file_get_data(int fd)
+// {
+// 	char	*line;
+// 	char	*data;
+// 	int		status;
 
-	without_endline = *data == NULL ? ft_strnew(0) : *data;
-	without_endline = ft_strjoincl(without_endline, line, 0);
-	with_endline = ft_strjoincl(without_endline, "\n", 0);
-	*data = with_endline;
-	return (*data);
-}
-
-static char		*file_get_data(int fd)
-{
-	char	*line;
-	char	*data;
-	int		status;
-
-	line = NULL;
-	data = NULL;
-	while ((status = get_next_line(fd, &line) == 1))
-		file_append_data(&data, line);
-	if (status == -1)
-		lexical_errors(E_WRONG_INPUT, line, NULL);
-	return (data);
-}
+// 	line = NULL;
+// 	data = NULL;
+// 	while ((status = get_next_line(fd, &line) == 1))
+// 		file_append_data(&data, line);
+// 	if (status == -1)
+// 		lexical_errors(E_WRONG_INPUT, line, NULL);
+// 	return (data);
+// }
 
 static t_file	*file_new(void)
 {
@@ -52,6 +40,6 @@ t_file			*file_get(char *filename)
 	file = file_new();
 	file->name = ft_strdup(filename);
 	file->fd = open(file->name, O_RDONLY);
-	file->data = file_get_data(file->fd);
+	// file->data = file_get_data(file->fd);
 	return (file);
 }

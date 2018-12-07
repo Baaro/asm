@@ -10,27 +10,26 @@ static bool		is_dot_char(char *c)
 	return (*c == HEADER_DOT_CHAR);
 }
 
-static void		header_valid(t_header *h, char *data, t_counter *c)
+static void		header_set_cmds(t_file *f, t_header *h, t_counter *c)
 {
-	size_t	header_commands;
-	size_t	status;
 	char	*line;
 
 	line = NULL;
-	header_commands = 0;
-	while ((status = file_get_line(data, &line, c)) == 1)
+	while ((file_get_line(f, c, 0)) == 1)
 	{
-		if (is_dot_char(line))
+		if (is_dot_char(f->line + c->begin_whitespaces))
 		{
-			cmd_get(h, line, c);
-			if (++header_commands == VALID)
-				return (true);
+			if (ft_strnequ(f->line, NAME_CMD_STR, ft_strlen(NAME_CMD_STR)))
+				h->is_name_cmd = true;
+			else if (ft_strnequ(f->line, COMMENT_CMD_STR, ft_strlen(COMMENT_CMD_STR)))
+				h->is_comment_cmd = true;
+			else
+				semantic_errors(E_UNMATCHED_COMMAND, f->line, c);
+			cmd_str_set(f, h, c);
+			return ;
 		}
-		else
-			syntactic_errors(E_NOT_ALL_COMMAND, line, c);
 	}
-	if (status == 0)
-		lexical_errors(E_IS_NOT_ENOUGH_DATA, line, c);
+	lexical_errors(E_IS_NOT_ENOUGH_DATA, NULL, c);
 }
 
 void			header_del(t_header **h)
@@ -38,11 +37,16 @@ void			header_del(t_header **h)
 	ft_memdel((void **)h);
 }
 
-t_header		*header_set(char *data, t_counter *c)
+t_header		*header_get(t_file *f, t_counter *c)
 {
 	t_header    *h;
+	ssize_t		h_cmds;
 
 	h = header_new();
-	header_valid(h, data, c);
+	h_cmds = -1;
+	while (++h_cmds != VALID)
+		header_set_cmds(f, h, c);
+	printf(".name: %s\n", h->prog_name);
+	printf(".comment: %s\n", h->comment);
 	return (h);
 }

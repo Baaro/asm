@@ -32,23 +32,23 @@ static t_file_cor	*file_cor_new(void)
 
 void    			file_cor_del(t_file_cor **fc)
 {
-	ft_memdel(&(*fc)->header);
+	ft_memdel((void**)&(*fc)->header);
 	free((*fc)->name);
 	free((*fc)->bytecode);
 	// free((*file)->line);
 	free(*fc);
 }
 
-t_file_cor  		*file_cor_make(t_file *f, t_counter *c) // test version
+t_file_cor			*file_cor_make(t_file *f, t_counter *c) // test version
 {
 	t_file_cor	*fc;
 	t_list		*tokens;
 
 	fc = file_cor_new();
-	fc->header = header_get(f->data, c);
+	fc->header = header_get(f, c);
 	tokens = tokens_make(f, c);
-	tokens_link(tokens);
-	fc->bytecode = file_cor_make_bytecode(fc->header, tokens);
+	// tokens_link(tokens);
+	// fc->bytecode = file_cor_make_bytecode(fc->header, tokens);
 	// file_cor_compile(file_cor, file);
 	return (fc);
 }

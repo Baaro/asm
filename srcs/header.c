@@ -12,11 +12,9 @@ static bool		is_dot_char(char *c)
 
 static void		header_set_cmds(t_file *f, t_header *h, t_counter *c)
 {
-	char	*line;
-
-	line = NULL;
-	while ((file_get_line(f, c, 0)) == 1)
+	while ((file_get_line(f, c, false)) == 1)
 	{
+		// printf("%s\n", f->line);
 		if (is_dot_char(f->line + c->begin_whitespaces))
 		{
 			if (ft_strnequ(f->line, NAME_CMD_STR, ft_strlen(NAME_CMD_STR)))
@@ -28,6 +26,8 @@ static void		header_set_cmds(t_file *f, t_header *h, t_counter *c)
 			cmd_str_set(f, h, c);
 			return ;
 		}
+		else
+			semantic_errors(E_SEMANTIC_ERROR, f->line, c);
 	}
 	lexical_errors(E_IS_NOT_ENOUGH_DATA, NULL, c);
 }
@@ -46,7 +46,5 @@ t_header		*header_get(t_file *f, t_counter *c)
 	h_cmds = -1;
 	while (++h_cmds != VALID)
 		header_set_cmds(f, h, c);
-	printf(".name: %s\n", h->prog_name);
-	printf(".comment: %s\n", h->comment);
 	return (h);
 }

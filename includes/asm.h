@@ -114,13 +114,13 @@ typedef struct				s_linker_ref
 	// struct s_linker_refs	*next;
 } 							t_linker_ref;
 
-typedef struct				s_lists
-{
-	t_list					*tokens;
-	t_list					*labels;
-	// t_list					*link_labels;
-	// t_list					*link_refs;
-}							t_lists;
+// typedef struct				s_lists
+// {
+// 	t_list					*tokens;
+// 	t_list					*labels;
+// 	// t_list					*link_labels;
+// 	// t_list					*link_refs;
+// }							t_lists;
 
 void				usage(void); // test version
 
@@ -148,9 +148,7 @@ uint8_t				flags_get(int *ac, char ***av, t_counter *c);
 t_file_cor			*file_cor_make(t_file *f, t_counter *c);		// test version
 void			    file_cor_del(t_file_cor **fc);
 
-int			         file_get_line(t_file *f, t_counter *c, bool with_endline);
-char				*file_append_data(char **data, char **line, bool ret_with_endline);
-// void				tokenizer(t_file *f, t_lists *lists, t_counter *c);
+int		         	file_get_line(t_file *f, t_counter *c, bool is_cmds);
 size_t				get_currunet_column(t_counter *c);
 
 /*
@@ -163,6 +161,13 @@ void				header_del(t_header **h);
 ** cmd
 */
 void				cmd_str_set(t_file *f, t_header *h, t_counter *c);
+
+/*
+** label
+*/
+void    			append_label(t_list **label_head, t_label *label);
+t_label				*get_solo_label(char *line, t_counter *counter);
+t_label				*get_label(char *line, t_counter *counter);
 /*
 ** token
 */
@@ -187,24 +192,12 @@ void    			semantic_errors(t_errors error, char *line, t_counter *c);
 **
 */
 
-void				valid_header(t_file *file, t_counter *counter);
-bool				is_comment_cmd(char *str);
-void				valid_comment(t_file *file, t_counter *counter);
-bool				is_name_cmd(char *str);
-void				valid_name(t_file *file, t_counter *counter);
-// size_t				shift_chars(const char c);
-// size_t				get_whitespaces(const char *str);
 bool				is_whitespaces(const char c);
 
 /* AUX */
 ssize_t				get_invalid_symbols(char *line, size_t len);
-
-/*
-** Label
-*/
-void			    append_label(t_list **label_head, char *label, size_t label_len);
-char				*get_solo_label(char *line, t_counter *counter);
-char				*get_label(char *line, t_counter *counter);
+void				token_print(t_list *token);
+void				ft_lstprint(t_list *elem);
 
 t_token 			*live_compute(char *line, t_counter *counter);
 t_token 			*ld_compute(char *line, t_counter *counter);

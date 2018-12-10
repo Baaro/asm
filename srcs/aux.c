@@ -15,6 +15,42 @@ bool	is_whitespaces(const char c)
 	return (c == '\t' || c == ' ');
 }
 
+void			ft_lstprint(t_list *elem)
+{
+	if (elem)
+	{
+		printf("%s\n", ((t_label *)elem->content)->name);
+	}
+}
+
+void			token_print(t_list *token)
+{
+	ssize_t i;
+
+	printf("\n-----------TOKEN-----------\n");
+	printf("LABELS:\n");
+	ft_lstiter(((t_token *)token->content)->labels, ft_lstprint);
+	printf("INSTRUCTION: [%s]\n", ((t_token *)token->content)->instr);
+	printf("ARGUMENTS:\n");
+	i = -1;
+	while (++i < MAX_ARGS_NUMBER - 1)
+		printf("arg[%zu] -> %s\n", i, (*(t_token*)token->content).args[i]);
+	printf("\n-----------TOKEN-----------\n");
+}
+
+ssize_t			get_invalid_symbols(char *line, size_t len)
+{
+	ssize_t	i;
+
+	i = -1;
+	while (line[++i] && i < (ssize_t)len)
+	{
+		if (!ft_strchr(LABEL_CHARS, line[i]))
+			return(i);
+	}
+	return (i == len ? -1 : i);
+}
+
 // size_t	get_whitespaces(const char *str)
 // {
 // 	size_t	counter;

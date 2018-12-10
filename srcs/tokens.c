@@ -21,43 +21,27 @@
 // 	{0, 		0,	{0}}
 // };
 
-void			ft_lstprint(t_list *elem)
-{
-	if (elem)
-		ft_printf("%s\n", elem->content);
-}
+// void			token_free(t_token *token) // does not work
+// {
+// 	ssize_t	i = -1;
 
-void			token_print(t_list *token)
-{
-	ssize_t i;
+// 	if (token->labels)
+// 		ft_lstdel(&token->labels, ft_lstelemfree);
+// 	// ft_memdel((void**)&token->labels);
+// 	ft_strdel(&token->instr);
+// 	while (++i < MAX_ARGS_NUMBER - 1)
+// 	{
+// 		if (token->args[i])
+// 			ft_strdel(&token->args[i]);
+// 	}
+// 	ft_memdel((void**)&token);
+// }
 
-	printf("\n-----------TOKEN-----------\n");
-	printf("LABELS:\n");
-	ft_lstiter((*(t_token *)token->content).labels, ft_lstprint);
-	printf("INSTRUCTION: [%s]\n", (*(t_token*)token->content).instr);
-	printf("ARGUMENTS:\n");
-	i = -1;
-	while (++i < MAX_ARGS_NUMBER - 1)
-		printf("arg[%zu] -> %s\n", i, (*(t_token*)token->content).args[i]);
-	printf("\n-----------TOKEN-----------\n");
-}
-
-ssize_t			get_invalid_symbols(char *line, size_t len)
+void			get_arguemnts(t_token *token)
 {
 	ssize_t	i;
 
 	i = -1;
-	while (line[++i] && i < (ssize_t)len)
-	{
-		if (!ft_strchr(LABEL_CHARS, line[i]))
-			return(i);
-	}
-	return (i == len ? -1 : i);
-}
-
-void			get_arguemnts(t_token *token)
-{
-	ssize_t	i = -1;
 	while (++i < MAX_ARGS_NUMBER - 1)
 		token->args[i] = ft_strtrim(ft_strtok(NULL, ","));
 }
@@ -76,69 +60,59 @@ char			*get_instruction(char *fline, char *current_line, t_counter *counter)
 	return (instr);
 }
 
-void    		append_token(t_list **token_head, t_token *token)
+// t_token			*token_copy(token *token)
+// {
+// 	t_token *new_token;
+
+// 	new_token = ft_memalloc(sizeof(t_token));
+// 	new_token	
+// }
+
+void			append_token(t_list **token_head, t_token *token)
 {
 	ft_lstaddend(token_head, ft_lstnew(token, sizeof(t_token)));
-	// free(label);
+	ft_memdel((void**)&token);
 }
 
-t_token 		*new_token(t_list *labels, char *fline, t_counter *c)
+static t_token	*new_token(t_list *labels, char *fline, t_counter *c)
 {
 	t_token		*token;
-	char		*label;
-	size_t		label_len;
+	t_label		*label;
 
 	token = ft_memalloc(sizeof(t_token));
-	if ((label = get_label(fline, c))) // label with instr
+	if ((label = get_label(fline, c)))	/* label with instr */
 	{
-		label_len = ft_strlen(label);
-		append_label(&labels, label, label_len);
-		token->instr = get_instruction(fline, fline + label_len + 1, c);
+		append_label(&labels, label);
+		token->instr = get_instruction(fline, fline + label->len + 1, c);
 	}
-	else // instr without label
+	else	/* instr without label */ 
 		token->instr = get_instruction(fline, fline, c);
-	token->labels = ft_lstmap(labels, ft_lstcopy);
+	token->labels = ft_lstmap(labels, ft_lstget);
 	get_arguemnts(token);
 	return (token);
 }
 
-// void			token_free(t_token **token) // does not work
-// {
-// 	ssize_t	i = -1;
-
-// 	ft_lstdel(&(*token)->labels, ft_lstelemfree);
-// 	ft_strdel(&(*token)->instr);
-// 	while (++i < MAX_ARGS_NUMBER - 1)
-// 		ft_strdel(&(*token)->args[i]);
-// }
 
 t_list			*tokens_make(t_file *f, t_counter *c) // test version
 {
 	t_list		*tokens;
 	t_list		*labels;
-	t_token		*token;
 	t_label		*label;
 
-    label = ft_memalloc(sizeof(t_label));
 	labels = NULL;
-	while ((file_get_line(f, c, 0)) == 1)
+	tokens = NULL;
+	while ((file_get_line(f, c, false)) == 1)
 	{
-        printf("line: %s\n", f->line);
-		// if ((label->name = get_solo_label(f->line, c)))
-		// {
-		// 	label->len = ft_strlen(label->name);
-		// 	append_label(&labels, label, label->len);
-		// }
-		// else
-		// {
-		// 	token = new_token(labels, f->line, c);
-			// append_token(&tokens, token);
-			// token_free(&token);
-			// ft_lstdel(&labels, ft_lstelemfree);
-			// append_linker_label(&lists->link_labels, token);
-			// append_linker_refs(&lists->link_refs, token);
+		if ((label = get_solo_label(f->line, c)))
+			append_label(&labels, label);
+		else
+		{
+			append_token(&tokens, new_token(labels, f->line, c));
+			ft_lstdel(&labels, ft_lstelemfree);
 		}
-	// }
-	// ft_lstiter(tokens, token_print);
+	}
+	ft_lstiter(tokens, token_print);
+	// ft_lstdel(&labels, ft_lstelemfree);
+	// ft_memdel((void**)&labels);
     return (tokens);
 }

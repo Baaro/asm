@@ -3,27 +3,15 @@
 static void	cmd_str_del(t_cmd_str **str)
 {
 	free((*str)->value);
-	free(*str);
+	ft_memdel((void**)str);
 }
 
-static void	cmd_str_save(t_header *h, t_cmd_str *str, t_counter *c)
+static void	cmd_str_save(t_file *f, t_header *h, t_cmd_str *str, t_counter *c)
 {
-	size_t	after_end_quotes;
-	char	*new_str;
-
-	new_str = NULL;
-	after_end_quotes = c->column + str->len + 1;
-	after_end_quotes += ft_strspn(str->value + after_end_quotes, DELIMS_CHARS);
-	after_end_quotes += ft_strspn(str->value + after_end_quotes, "\n");
-	if (str->value[after_end_quotes] != '\0'
-	&& str->value[after_end_quotes] != COMMENT_CHAR
-	&& str->value[after_end_quotes] != COMMENT_CHAR_ALT)
-		lexical_errors(E_INVALID_SYMBOLS, str->value, c);
-	new_str = ft_strsub(str->value, c->column, str->len - 1);
 	if (h->is_name_cmd)
-		ft_strncpy(h->prog_name, new_str, str->len);
+		ft_strncpy(h->prog_name, str->value, str->len);
 	else if (h->is_comment_cmd)
-		ft_strncpy(h->comment, new_str, str->len);
+		ft_strncpy(h->comment, str->value, str->len);
 }
 
 static char	*cmd_str_read(t_file *f, t_counter *c)
@@ -34,7 +22,7 @@ static char	*cmd_str_read(t_file *f, t_counter *c)
 	str = ft_strjoincl(str, "\n", 0);
 	while (!(ft_strchr(str, QUOTES_CHAR)))
 	{
-		if ((file_get_line(f, c, 1)) == 0)
+		if ((file_get_line(f, c, true)) == 0)
 			lexical_errors(E_IS_NOT_ENOUGH_DATA, f->line, c);
 		str = ft_strjoincl(str, f->line, 0);
 	}
@@ -43,6 +31,8 @@ static char	*cmd_str_read(t_file *f, t_counter *c)
 
 static void	cmd_str_valid(t_file *f, t_header *h, t_cmd_str *str, t_counter *c)
 {
+	size_t	after_end_quotes;
+
 	while (str->len <= str->maxlen
 	&& str->value[str->len] != QUOTES_CHAR)
 	{
@@ -60,6 +50,13 @@ static void	cmd_str_valid(t_file *f, t_header *h, t_cmd_str *str, t_counter *c)
 		}
 		str->len++;
 	}
+	after_end_quotes = str->len + 1;
+	after_end_quotes += ft_strspn(str->value + after_end_quotes, DELIMS_CHARS);
+	after_end_quotes += ft_strspn(str->value + after_end_quotes, "\n");
+	if (str->value[after_end_quotes] != '\0'
+	&& str->value[after_end_quotes] != COMMENT_CHAR
+	&& str->value[after_end_quotes] != COMMENT_CHAR_ALT)
+		lexical_errors(E_INVALID_SYMBOLS, str->value, c);
 }
 
 void		cmd_str_set(t_file *f, t_header *h, t_counter *c)
@@ -86,7 +83,7 @@ void		cmd_str_set(t_file *f, t_header *h, t_counter *c)
 		lexical_errors(E_NO_BEGIN_QUOTES, f->line, c);
 	str->value = cmd_str_read(f, c);
 	cmd_str_valid(f, h, str, c);
-	cmd_str_save(h, str, c);
+	cmd_str_save(f, h, str, c);
 	h->is_name_cmd = false;
 	h->is_comment_cmd = false;
 	cmd_str_del(&str);

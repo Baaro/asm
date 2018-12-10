@@ -21,7 +21,7 @@ char	*ft_strretrim(char *s)
 
 	if (s == NULL)
 		return (NULL);
-	end = ft_strlen(s);
+	end = ft_strlen(s) - 1;
 	begin = 0;
 	len = 0;
 	while ((s[end] == '\n' || s[end] == '\t' || s[end] == ' ') && (end > 0))
@@ -31,8 +31,7 @@ char	*ft_strretrim(char *s)
 	while (s[begin] == '\n' || s[begin] == '\t' || s[begin] == ' ')
 		begin++;
 	len = end - begin + 1;
-	if (!(cs = ft_strsub(s, begin, len)))
+	if (!(cs = ft_strsubcl(s, begin, len, 1)))
 		return (NULL);
-	free(s);
 	return (cs);
 }

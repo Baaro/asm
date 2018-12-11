@@ -14,7 +14,6 @@ static void		header_set_cmds(t_file *f, t_header *h, t_counter *c)
 {
 	while ((file_get_line(f, c, false)) == 1)
 	{
-		// printf("%s\n", f->line);
 		if (is_dot_char(f->line + c->begin_whitespaces))
 		{
 			if (ft_strnequ(f->line, NAME_CMD_STR, ft_strlen(NAME_CMD_STR)))

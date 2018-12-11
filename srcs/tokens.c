@@ -37,7 +37,7 @@
 // 	ft_memdel((void**)&token);
 // }
 
-void			get_arguemnts(t_token *token)
+static void			get_arguemnts(t_token *token)
 {
 	ssize_t	i;
 
@@ -46,7 +46,7 @@ void			get_arguemnts(t_token *token)
 		token->args[i] = ft_strtrim(ft_strtok(NULL, ","));
 }
 
-char			*get_instruction(char *fline, char *current_line, t_counter *counter)
+static char			*get_instruction(char *fline, char *current_line, t_counter *counter)
 {
 	ssize_t		invalid_symbol;
 	char		*instr;
@@ -60,17 +60,36 @@ char			*get_instruction(char *fline, char *current_line, t_counter *counter)
 	return (instr);
 }
 
-// t_token			*token_copy(token *token)
-// {
-// 	t_token *new_token;
-
-// 	new_token = ft_memalloc(sizeof(t_token));
-// 	new_token	
-// }
-
-void			append_token(t_list **token_head, t_token *token)
+static void		append_token(t_list **token_head, t_token *token)
 {
+	// t_token	*new;
+// 
+	// new = ft_memalloc(sizeof(t_token));
+	// new->labels = ft_lstmap(token->labels, ft_lstcopy);
+	// ft_lstdel(&token->labels, ft_lstelemfree);
+	// new->instr = ft_strredup(token->instr);
+	// ssize_t i = -1;
+	// while (++i < MAX_ARGS_NUMBER - 1)
+		// new->args[i] = ft_strredup(token->args[i]);
 	ft_lstaddend(token_head, ft_lstnew(token, sizeof(t_token)));
+	printf("size: %zu\n", sizeof(t_token));
+	// free(token->labels);
+	// free(token->instr);
+	// free(token->args[0]);
+
+	// t_list *tmp;
+
+	// tmp = token->labels;
+	// while (tmp)
+	// {
+	// 	free(((t_label *)tmp)->name);
+	// 	tmp = tmp->next;
+	// }
+	// free(token->instr);
+	// i = -1;
+	// while (++i < MAX_ARGS_NUMBER - 1)
+	// 	free(token->args[i]);
+	// ft_memdel((void**)&new);
 	ft_memdel((void**)&token);
 }
 
@@ -85,17 +104,17 @@ static t_token	*new_token(t_list *labels, char *fline, t_counter *c)
 		append_label(&labels, label);
 		token->instr = get_instruction(fline, fline + label->len + 1, c);
 	}
-	else	/* instr without label */ 
+	else	/* instr without label */
 		token->instr = get_instruction(fline, fline, c);
 	token->labels = ft_lstmap(labels, ft_lstget);
 	get_arguemnts(token);
 	return (token);
 }
 
-
 t_list			*tokens_make(t_file *f, t_counter *c) // test version
 {
-	t_list		*tokens;
+	// t_list		*tokens;
+	t_token		*tokens;
 	t_list		*labels;
 	t_label		*label;
 
@@ -112,7 +131,5 @@ t_list			*tokens_make(t_file *f, t_counter *c) // test version
 		}
 	}
 	ft_lstiter(tokens, token_print);
-	// ft_lstdel(&labels, ft_lstelemfree);
-	// ft_memdel((void**)&labels);
     return (tokens);
 }

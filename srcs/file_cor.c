@@ -45,8 +45,7 @@ t_file_cor			*file_cor_make(t_file *f, t_counter *c) // test version
 
 	fc = file_cor_new();
 	fc->header = header_get(f, c);
-	printf("name: %s\ncomment: %s\n", fc->header->prog_name, fc->header->comment);
-	// tokens = tokens_make(f, c);
+	tokens = tokens_make(f, c);
 	// append_linker_label(&lists->link_labels, token);
 	// append_linker_refs(&lists->link_refs, token);
 	// tokens_link(tokens);

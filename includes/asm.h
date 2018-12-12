@@ -9,6 +9,7 @@
 # define FLAG_A 					1
 # define FLAG_M 					2
 # define INSTR_CHARS				"abcdefghijklmnopqrstuvwxyz"
+# define VALID_CHARS	        	"abcdefghijklmnopqrstuvwxyz_0123456789%:"
 # define NUM_INSTRUCTIONS			16
 # define VALID	 					2
 # define COMMENT_CHARS		 		";#"
@@ -58,8 +59,13 @@ typedef struct				s_file_cor
 {
 	t_header				*header;
 	char					*name;
-	unsigned int			*bytecode;
 }							t_file_cor;
+
+typedef	struct				s_memory
+{
+	size_t					size;
+	size_t					*field;
+}							t_memory;
 
 typedef	struct				s_cmd_str
 {
@@ -74,47 +80,44 @@ typedef struct				s_label
 	size_t					len;
 }							t_label;
 
+typedef struct				s_reference
+{
+	char					*name;
+	size_t					len;
+}							t_reference;
+
+typedef struct				s_arg
+{
+	uint8_t					type;
+	t_reference				ref;
+	uint8_t					size;
+	uint32_t				value;
+}							t_arg;
+
 typedef struct				s_token
 {
 	t_list					*labels;
 	char					*instr;
 	char					*args[MAX_ARGS_NUMBER - 1];
-	// struct s_token			*next;
-	// size_t					position;
 }							t_token;
 
-typedef struct				s_byte_code
+typedef struct				s_bytecode
 {
 	uint8_t   				instr_code;
-	uint8_t					arg_code;
-	uint8_t					reg;
-	uint16_t				dir2;
-	uint32_t				dir4;
-	uint16_t				ind;
-	size_t					size_bytes;
-}							t_byte_code;
+	size_t					pos;
+	size_t					size;
+	uint8_t					args_code;
+	t_arg					args[MAX_ARGS_NUMBER - 1];
+	t_list					*labels;
+}							t_bytecode;
 
 typedef struct				s_instr
 {
 	const char				*name;
-	const uint8_t			op_code;
-	uint8_t					args[MAX_ARGS_NUMBER - 1];
-	t_byte_code				*(*bytecode_make)(t_list *tokens, t_counter *c);
+	const uint8_t			instr_code;
+	const uint8_t			args[MAX_ARGS_NUMBER - 1];
+	t_bytecode				*(*bytecode_make)(t_token *t);
 }							t_instr;
-
-// typedef struct				s_linker_label
-// {
-// 	t_list					*token;
-// 	size_t					position;
-// } 							t_linker_label;
-
-// typedef struct				s_linker_ref
-// {
-// 	// t_token					*token;
-// 	char					*reference;
-// 	uint8_t					position;
-// 	// struct s_linker_refs	*next;
-// } 							t_linker_ref;
 
 void				usage(void); // test version
 
@@ -159,14 +162,24 @@ void				cmd_str_set(t_file *f, t_header *h, t_counter *c);
 /*
 ** label
 */
-void    			append_label(t_list **label_head, t_label *label);
-t_label				*get_solo_label(char *line, t_counter *counter);
-t_label				*get_label(char *line, t_counter *counter);
+void    			label_append(t_list **label_head, t_label *label);
+t_label				*label_get_solo(char *line, t_counter *counter);
+t_label				*label_get(char *line, t_counter *counter);
 /*
 ** token
 */
 t_list				*tokens_make(t_file *f, t_counter *c); // test version
 void				token_print(t_list *token);
+
+/*
+** instruction
+*/
+char				*instruction_get_str(char *fline, char *cur_line, t_counter *c);
+
+/*
+** arguments
+*/
+void				arguments_get_str(t_token *token, t_counter *c);
 /*
 ** Errors
 */
@@ -189,7 +202,8 @@ void    			semantic_errors(t_errors error, char *line, t_counter *c);
 bool				is_whitespaces(const char c);
 
 /* AUX */
-ssize_t				get_invalid_symbols(char *line, size_t len);
+// ssize_t				get_invalid_symbols(char *line, size_t len);
+ssize_t				get_invalid_symbols(char *line, size_t len, char *valid_symbols);
 void				ft_lstprint(t_list *elem);
 
 t_token 			*live_compute(char *line, t_counter *counter);

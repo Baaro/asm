@@ -38,14 +38,14 @@ void			token_print(t_list *token)
 	printf("\n-----------TOKEN-----------\n");
 }
 
-ssize_t			get_invalid_symbols(char *line, size_t len)
+ssize_t			get_invalid_symbols(char *line, size_t len, char *valid_symbols)
 {
 	ssize_t	i;
 
 	i = -1;
 	while (line[++i] && i < (ssize_t)len)
 	{
-		if (!ft_strchr(LABEL_CHARS, line[i]))
+		if (!ft_strchr(valid_symbols, line[i]))
 			return(i);
 	}
 	return (i == len ? -1 : i);

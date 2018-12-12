@@ -1,26 +1,5 @@
 #include "asm.h"
 
-// t_instr 	g_instrs_tab[NUM_INSTRUCTIONS + 1] =
-// {
-// 	{"live",	1,	{T_DIR},												4,	live_compute},
-// 	{"ld",		2,	{T_DIR | T_IND, T_REG},									4,	ld_compute},
-// 	{"st",		3,	{T_REG, T_IND | T_REG},									4,	st_compute},
-// 	{"add",		4,	{T_REG, T_REG, T_REG},									4,	add_compute},
-// 	{"sub",		5,	{T_REG, T_REG, T_REG},									4,	sub_compute},	
-// 	{"and",		6,	{T_REG | T_IND | T_DIR, T_REG | T_IND | T_DIR, T_REG},	4,	and_compute},
-// 	{"or",		7,	{T_REG | T_IND | T_DIR, T_REG | T_IND | T_DIR, T_REG},	4,	or_compute},
-// 	{"xor",		8,	{T_REG | T_IND | T_DIR, T_REG | T_IND | T_DIR, T_REG},	4,	xor_compute},
-// 	{"zjmp",	9,	{T_DIR},												2,	zjmp_compute},
-// 	{"ldi",		10,	{T_REG | T_DIR | T_IND, T_DIR | T_REG, T_REG},			2,	ldi_compute},
-// 	{"sti",		11,	{T_REG, T_REG | T_DIR | T_IND, T_DIR | T_REG},			2,	sti_compute},
-// 	{"fork",	12,	{T_DIR},												2,	fork_compute},
-// 	{"lld",		13,	{T_DIR | T_IND, T_REG},									4,	lld_compute},
-// 	{"lldi", 	14,	{T_REG | T_DIR | T_IND, T_DIR | T_REG, T_REG},			2,	lldi_compute},
-// 	{"lfork",	15,	{T_DIR},												2,	lfork_compute},
-// 	{"aff",		16,	{T_REG},												4,	aff_compute},
-// 	{0, 		0,	{0}}
-// };
-
 // void			token_free(t_token *token) // does not work
 // {
 // 	ssize_t	i = -1;
@@ -37,99 +16,49 @@
 // 	ft_memdel((void**)&token);
 // }
 
-static void			get_arguemnts(t_token *token)
+static void		token_append(t_list **token_head, t_token *token)
 {
-	ssize_t	i;
-
-	i = -1;
-	while (++i < MAX_ARGS_NUMBER - 1)
-		token->args[i] = ft_strtrim(ft_strtok(NULL, ","));
-}
-
-static char			*get_instruction(char *fline, char *current_line, t_counter *counter)
-{
-	ssize_t		invalid_symbol;
-	char		*instr;
-
-	instr = ft_strtrim(ft_strtok(current_line, DELIMS_CHARS));
-	if ((invalid_symbol = get_invalid_symbols(instr, ft_strlen(instr))) != -1)
-	{
-		counter->column += ft_strlen(instr) + (size_t)invalid_symbol;
-		lexical_errors(E_INVALID_SYMBOLS, fline, counter);
-	}
-	return (instr);
-}
-
-static void		append_token(t_list **token_head, t_token *token)
-{
-	// t_token	*new;
-// 
-	// new = ft_memalloc(sizeof(t_token));
-	// new->labels = ft_lstmap(token->labels, ft_lstcopy);
-	// ft_lstdel(&token->labels, ft_lstelemfree);
-	// new->instr = ft_strredup(token->instr);
-	// ssize_t i = -1;
-	// while (++i < MAX_ARGS_NUMBER - 1)
-		// new->args[i] = ft_strredup(token->args[i]);
 	ft_lstaddend(token_head, ft_lstnew(token, sizeof(t_token)));
-	printf("size: %zu\n", sizeof(t_token));
-	// free(token->labels);
-	// free(token->instr);
-	// free(token->args[0]);
-
-	// t_list *tmp;
-
-	// tmp = token->labels;
-	// while (tmp)
-	// {
-	// 	free(((t_label *)tmp)->name);
-	// 	tmp = tmp->next;
-	// }
-	// free(token->instr);
-	// i = -1;
-	// while (++i < MAX_ARGS_NUMBER - 1)
-	// 	free(token->args[i]);
-	// ft_memdel((void**)&new);
 	ft_memdel((void**)&token);
 }
 
-static t_token	*new_token(t_list *labels, char *fline, t_counter *c)
+static t_token	*token_new(t_list *labels, char *fline, t_counter *c)
 {
 	t_token		*token;
 	t_label		*label;
 
 	token = ft_memalloc(sizeof(t_token));
-	if ((label = get_label(fline, c)))	/* label with instr */
+	if ((label = label_get(fline, c)))	/* label with instr */
 	{
-		append_label(&labels, label);
-		token->instr = get_instruction(fline, fline + label->len + 1, c);
+		label_append(&labels, label);
+		token->instr = instruction_get_str(fline, fline + label->len + 1, c);
 	}
-	else	/* instr without label */
-		token->instr = get_instruction(fline, fline, c);
+	else	/* instr without label */ 
+		token->instr = instruction_get_str(fline, fline, c);
 	token->labels = ft_lstmap(labels, ft_lstget);
-	get_arguemnts(token);
+	arguments_get_str(token, c);
 	return (token);
 }
 
 t_list			*tokens_make(t_file *f, t_counter *c) // test version
 {
-	// t_list		*tokens;
-	t_token		*tokens;
+	t_list		*tokens;
 	t_list		*labels;
+	t_token		*token;
 	t_label		*label;
 
 	labels = NULL;
 	tokens = NULL;
 	while ((file_get_line(f, c, false)) == 1)
 	{
-		if ((label = get_solo_label(f->line, c)))
-			append_label(&labels, label);
+		if ((label = label_get_solo(f->line, c)))
+			label_append(&labels, label);
 		else
 		{
-			append_token(&tokens, new_token(labels, f->line, c));
+			token = token_new(labels, f->line, c);
+			token_append(&tokens, token);
 			ft_lstdel(&labels, ft_lstelemfree);
 		}
 	}
-	ft_lstiter(tokens, token_print);
     return (tokens);
 }

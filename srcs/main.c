@@ -2,10 +2,10 @@
 
 void	usage(void) // test version
 {
-	ft_printf("Usage: ./asm [-a] <sourcefile.s>\n");
-	ft_printf("    -a : Instead of creating a .cor file, ");
-	ft_printf("outputs a stripped and annotated ");
-	ft_printf("version of the code to the standard output\n");
+	ft_printf("\nUsage: ./asm [-a] <sourcefile.s>"
+			"\n    -a : Instead of creating a .cor file, "
+			"outputs a stripped and annotated "
+			"version of the code to the standard output.\n");
 	exit(EXIT_FAILURE);
 }
 
@@ -34,6 +34,6 @@ int		main(int ac, char **av)
 		}
 		counter_del(&c);
 	}
-	system("leaks asm");
+	// system("leaks asm");
 	return (EXIT_SUCCESS);
 }

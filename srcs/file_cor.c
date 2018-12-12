@@ -38,18 +38,65 @@ void    			file_cor_del(t_file_cor **fc)
 	free(*fc);
 }
 
+// void	valid_instruction()
+// {
+
+// }
+
+// void	valid_arguments()
+// {
+
+// }
+
+t_bytecode			*token_convert_to_bytecode(t_bytecode *prev_elem, t_token *token)
+{
+    t_bytecode	*elem;
+
+    elem = ft_memalloc(sizeof(t_bytecode));
+
+    elem->instr_code = instruction_get_code(token);
+    elem->pos = instruction_get_pos(prev_elem);
+    elem->size = instruction_get_size(elem);
+
+    elem->args_code = agruments_get_code(elem, token);
+    arguments_valid_code(elem);
+
+	ssize_t	i = -1;
+
+	while (++i < MAX_ARGS_NUMBER - 1)
+	{
+
+	}
+
+    arguments_convert_to_bytecode(elem, token);
+	elem->labels = ft_lstmap(token->labels, ft_lstget);
+    return (elem);
+}
+
+t_list				*tokens_convert_to_bytecode(t_list *tokens)
+{
+	t_list		*bytecoded_tokens;
+	t_bytecode	*b_token;
+
+
+}
+
 t_file_cor			*file_cor_make(t_file *f, t_counter *c) // test version
 {
-	t_file_cor	*fc;
-	t_list		*tokens;
+	t_file_cor		*fc;
+	t_memory		*m;
+	t_list			*tokens;
+	t_list			*bytecoded_tokens;
 
 	fc = file_cor_new();
 	fc->header = header_get(f, c);
+	ft_lstiter(tokens, token_print);
+
 	tokens = tokens_make(f, c);
-	// append_linker_label(&lists->link_labels, token);
-	// append_linker_refs(&lists->link_refs, token);
-	// tokens_link(tokens);
-	// fc->bytecode = file_cor_make_bytecode(fc->header, tokens);
-	// file_cor_compile(file_cor, file);
+	bytecoded_tokens = tokens_convert_to_bytecode(tokens);
+	link_references(bytecoded_tokens, tokens);
+
+	m = memory_new(bytecoded_tokens);
+	m->field = memory_get_field(m, bytecoded_tokens);
 	return (fc);
 }

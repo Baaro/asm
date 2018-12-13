@@ -13,6 +13,7 @@
 # define NUM_INSTRUCTIONS			16
 # define VALID	 					2
 # define COMMENT_CHARS		 		";#"
+# define REG_CHAR					'r'
 # define COMMENT_CHAR_ALT			';'
 # define DELIMS_CHARS				" \t"
 # define QUOTES_CHAR		 		'\"'
@@ -55,17 +56,18 @@ typedef struct				s_file
 	char					*line;
 }							t_file;
 
-typedef struct				s_file_cor
-{
-	t_header				*header;
-	char					*name;
-}							t_file_cor;
-
 typedef	struct				s_memory
 {
 	size_t					size;
 	size_t					*field;
 }							t_memory;
+
+typedef struct				s_file_cor
+{
+	t_header				*header;
+	t_memory				*memory;
+	char					*name;
+}							t_file_cor;
 
 typedef	struct				s_cmd_str
 {
@@ -86,13 +88,13 @@ typedef struct				s_reference
 	size_t					len;
 }							t_reference;
 
-typedef struct				s_arg
+typedef struct				s_argument
 {
 	uint8_t					type;
 	t_reference				ref;
 	uint8_t					size;
 	uint32_t				value;
-}							t_arg;
+}							t_argument;
 
 typedef struct				s_token
 {
@@ -107,7 +109,7 @@ typedef struct				s_bytecode
 	size_t					pos;
 	size_t					size;
 	uint8_t					args_code;
-	t_arg					args[MAX_ARGS_NUMBER - 1];
+	t_argument				args[MAX_ARGS_NUMBER - 1];
 	t_list					*labels;
 }							t_bytecode;
 
@@ -116,7 +118,7 @@ typedef struct				s_instr
 	const char				*name;
 	const uint8_t			instr_code;
 	const uint8_t			args[MAX_ARGS_NUMBER - 1];
-	t_bytecode				*(*bytecode_make)(t_token *t);
+	const uint8_t			dir_size;
 }							t_instr;
 
 void				usage(void); // test version
@@ -169,6 +171,7 @@ t_label				*label_get(char *line, t_counter *counter);
 ** token
 */
 t_list				*tokens_make(t_file *f, t_counter *c); // test version
+void				tokens_del(t_list **tokens);
 void				token_print(t_list *token);
 
 /*
@@ -206,20 +209,4 @@ bool				is_whitespaces(const char c);
 ssize_t				get_invalid_symbols(char *line, size_t len, char *valid_symbols);
 void				ft_lstprint(t_list *elem);
 
-t_token 			*live_compute(char *line, t_counter *counter);
-t_token 			*ld_compute(char *line, t_counter *counter);
-t_token 			*st_compute(char *line, t_counter *counter);
-t_token 			*add_compute(char *line, t_counter *counter);
-t_token 			*sub_compute(char *line, t_counter *counter);
-t_token 			*and_compute(char *line, t_counter *counter);
-t_token 			*or_compute(char *line, t_counter *counter);
-t_token 			*xor_compute(char *line, t_counter *counter);
-t_token 			*zjmp_compute(char *line, t_counter *counter);
-t_token 			*ldi_compute(char *line, t_counter *counter);
-t_token 			*sti_compute(char *line, t_counter *counter);
-t_token 			*fork_compute(char *line, t_counter *counter);
-t_token 			*lld_compute(char *line, t_counter *counter);
-t_token 			*lldi_compute(char *line, t_counter *counter);
-t_token 			*lfork_compute(char *line, t_counter *counter);
-t_token 			*aff_compute(char *line, t_counter *counter);
 #endif

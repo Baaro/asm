@@ -34,6 +34,6 @@ int		main(int ac, char **av)
 		}
 		counter_del(&c);
 	}
-	// system("leaks asm");
+	system("leaks asm");
 	return (EXIT_SUCCESS);
 }

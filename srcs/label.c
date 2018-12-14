@@ -1,5 +1,16 @@
 #include "asm.h"
 
+bool	is_label(char *line)
+{
+	while (*line)
+	{
+		if (!(ft_strchr(*line, LABEL_CHARS)))
+			return (false);
+		line++;
+	}
+	return (true);
+}
+
 t_label	*label_get(char *line, t_counter *counter)
 {
 	size_t	label_char;

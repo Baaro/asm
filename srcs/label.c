@@ -4,11 +4,25 @@ bool	is_label(char *line)
 {
 	while (*line)
 	{
-		if (!(ft_strchr(*line, LABEL_CHARS)))
+		if (!(ft_strchr(LABEL_CHARS, *line)))
 			return (false);
 		line++;
 	}
 	return (true);
+}
+
+bool	label_exists(t_list	*all_labels, t_label *label)
+{
+	t_list *tmp;
+
+	tmp = all_labels;
+	while (tmp)
+	{
+		if (ft_strnequ(((t_label *)tmp->content)->name, label->name, label->len))
+			return (true);
+		tmp = tmp->next;
+	}
+	return (false);
 }
 
 t_label	*label_get(char *line, t_counter *counter)
@@ -58,5 +72,4 @@ t_label	*label_get_solo(char *line, t_counter *counter)
 void	label_append(t_list **label_head, t_label *label)
 {
 	ft_lstaddend(label_head, ft_lstnew(label, sizeof(t_label)));
-	ft_memdel((void**)&label);
 }

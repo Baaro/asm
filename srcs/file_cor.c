@@ -58,8 +58,8 @@ t_file_cor			*file_cor_make(t_file *f, t_counter *c) // test version
 	fc = file_cor_new();
 	fc->header = header_get(f, c);
 	tokens = tokens_make(f, c);
-	// ft_lstiter(tokens, token_print);
-	b_tokens = tokens_tbc(tokens); /* tbc - to bytecode */
+	ft_lstiter(tokens, token_print);
+	// b_tokens = tokens_tbc(tokens); /* tbc - to bytecode */
 	// link_references(b_tokens, tokens);
 
 	// fc->memory = memory_new(b_tokens);

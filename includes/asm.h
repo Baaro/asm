@@ -93,7 +93,7 @@ typedef struct				s_argument
 	uint8_t					code;
 	t_reference				ref;
 	uint8_t					dir_size;
-	uint32_t				value;
+	int32_t					value;
 }							t_argument;
 
 typedef struct				s_token
@@ -168,6 +168,7 @@ bool				is_label(char *line);
 void    			label_append(t_list **label_head, t_label *label);
 t_label				*label_get_solo(char *line, t_counter *counter);
 t_label				*label_get(char *line, t_counter *counter);
+bool				label_exists(t_list	*all_labels, t_label *label);
 
 /*
 ** token

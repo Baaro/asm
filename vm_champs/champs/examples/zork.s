@@ -10,24 +10,10 @@
 
 ###	size: 5b,		pos: 8b + 7b = 15b; 							// instr: 0x01
 	l3:
-	live:	live %1
+	live:	live %4294967295
 ###	size: 3b,		pos: 5b + 15b = 20b,	ref: 15b - 20b = -5b.	// instr: 0x09
 	zjmp %:live
 
 # pos_cur = pos_prev + size_prev;
 # ref = label_pos - ref_pos;
 # size = instr_code + args1_size + args2_size + args3_size;
-
-# sti r1, :live, %1
-#         ^ -> ERROR; // wrong argument
-# the same labels at the different instructions -> ?
-#	live:	live 1 -> UNKNOWN ERROR
-#
-#valid_token:
-#		valid instruction:
-#			get byte code of this instruction
-#			while arguments exist
-#				if current argument valid
-#					get byte code of this argument
-#				else
-#					show error

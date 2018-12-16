@@ -9,9 +9,11 @@
 # define FLAG_A 					1
 # define FLAG_M 					2
 # define INSTR_CHARS				"abcdefghijklmnopqrstuvwxyz"
-# define VALID_CHARS	        	"abcdefghijklmnopqrstuvwxyz_0123456789%:"
+# define VALID_CHARS	        	"abcdefghijklmnopqrstuvwxyz_0123456789%:-"
 # define NUM_INSTRUCTIONS			16
 # define VALID	 					2
+# define USHORT 					2
+# define UINT	 					4
 # define COMMENT_CHARS		 		";#"
 # define REG_CHAR					'r'
 # define COMMENT_CHAR_ALT			';'
@@ -93,7 +95,8 @@ typedef struct				s_argument
 	uint8_t					code;
 	t_reference				ref;
 	uint8_t					dir_size;
-	int32_t					value;
+	uint16_t				val16;
+	uint32_t				val32;
 }							t_argument;
 
 typedef struct				s_token
@@ -108,7 +111,7 @@ typedef struct				s_bytecode
 	t_list					*labels;
 	uint8_t   				instr_code;
 	uint8_t					args_code;
-	t_argument				args[MAX_ARGS_NUMBER - 1];
+	t_argument				*args[MAX_ARGS_NUMBER - 1];
 	size_t					pos;
 	size_t					size;
 }							t_bytecode;
@@ -118,6 +121,7 @@ typedef struct				s_instr
 	const char				*name;
 	const uint8_t			instr_code;
 	const uint8_t			args[MAX_ARGS_NUMBER - 1];
+	const bool				args_types;
 	const uint8_t			dir_size;
 }							t_instr;
 
@@ -165,7 +169,7 @@ void				cmd_str_set(t_file *f, t_header *h, t_counter *c);
 ** label
 */
 bool				is_label(char *line);
-void    			label_append(t_list **label_head, t_label *label);
+void				label_append(t_list **curr_labs, t_list **all_labs, t_label *label);
 t_label				*label_get_solo(char *line, t_counter *counter);
 t_label				*label_get(char *line, t_counter *counter);
 bool				label_exists(t_list	*all_labels, t_label *label);
@@ -186,31 +190,33 @@ t_bytecode			*token_tbc(t_bytecode *b_prevtoken, t_token *token);
 /*
 ** instruction
 */
-char				*instruction_get_str(char *fline, char *cur_line, t_counter *c);
+char				*instr_get_str(char *fline, char *cur_line, t_counter *c);
+size_t				instr_get_pos(t_bytecode *b_prevtoken);
+uint8_t				instr_get_code(char *instr);
 
 /*
 ** arguments
 */
-void				arguments_get_str(t_token *token, t_counter *c);
-void				arguments_set(t_bytecode *b_token, t_token *token);
+void				args_get_strs(t_token *token, t_counter *c);
+void				args_set(t_bytecode *b_token, t_token *token);
 
 /*
 ** dir
 */
 bool				is_dir(char *arg);
-t_argument			dir_get(uint8_t instr_code, char *arg_str);
+t_argument			*dir_get(uint8_t instr_code, char *arg_str);
 
 /*
 ** ind
 */
 bool				is_ind(char *arg);
-t_argument			ind_get(uint8_t instr_code, char *arg_str);
+t_argument			*ind_get(uint8_t instr_code, char *arg_str);
 
 /*
 ** reg
 */
 bool				is_reg(char *arg);
-t_argument			reg_get(uint8_t instr_code, char *arg_str);
+t_argument			*reg_get(uint8_t instr_code, char *arg_str);
 
 /*
 ** Errors
@@ -234,7 +240,7 @@ void    			semantic_errors(t_errors error, char *line, t_counter *c);
 bool				is_whitespaces(const char c);
 
 /* AUX */
-// ssize_t				get_invalid_symbols(char *line, size_t len);
+bool				is_valid_val(char *arg_str);
 ssize_t				get_invalid_symbols(char *line, size_t len, char *valid_symbols);
 void				ft_lstprint(t_list *elem);
 

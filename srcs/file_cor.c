@@ -1,16 +1,5 @@
 #include "asm.h"
 
-#define BYTE_TO_BINARY_PATTERN "%c%c%c%c%c%c%c%c"
-#define BYTE_TO_BINARY(byte)  \
-  (byte & 0x80 ? '1' : '0'), \
-  (byte & 0x40 ? '1' : '0'), \
-  (byte & 0x20 ? '1' : '0'), \
-  (byte & 0x10 ? '1' : '0'), \
-  (byte & 0x08 ? '1' : '0'), \
-  (byte & 0x04 ? '1' : '0'), \
-  (byte & 0x02 ? '1' : '0'), \
-  (byte & 0x01 ? '1' : '0')
-
 static t_file_cor	*file_cor_new(void)
 {
 	return (ft_memalloc(sizeof(t_file_cor)));
@@ -59,7 +48,7 @@ t_file_cor			*file_cor_make(t_file *f, t_counter *c) // test version
 	fc->header = header_get(f, c);
 	tokens = tokens_make(f, c);
 	ft_lstiter(tokens, token_print);
-	// b_tokens = tokens_tbc(tokens); /* tbc - to bytecode */
+	b_tokens = tokens_tbc(tokens); /* tbc - to bytecode */
 	// link_references(b_tokens, tokens);
 
 	// fc->memory = memory_new(b_tokens);

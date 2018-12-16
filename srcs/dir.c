@@ -1,32 +1,53 @@
-// #include "asm.h"
+#include "asm.h"
 
-// bool				is_dir(char *arg)
-// {
-// 	return (*arg == DIRECT_CHAR);
-// }
-// // %123
-// // %:label
-// // %-123
+const t_instr	g_instrs_tab[NUM_INSTRUCTIONS + 1];
 
-// t_argument			dir_get(uint8_t instr_code, char *arg_str)
-// {
-// 	t_argument	arg;
+/*
+** possible values
+** %:label
+** %-123
+** %123
+*/
 
-// 	ft_memset(&arg, 0, sizeof(arg));
-// 	ft_memset(&arg.ref, 0, sizeof(t_reference));
-// 	arg.code = DIR_CODE;
-// 	if (*(arg_str + 1) == LABEL_CHAR && is_label(arg_str + 2))
-// 	{
-// 		arg.ref.len = ft_strlen(arg_str + 2);
-// 		arg.ref.name = ft_strsub(arg_str, 2, arg.ref.len);
-// 	}
-// 	else
-// 	{
-// 		arg.value = (size_t)ft_atoi(arg_str);
-// 		if (ft_strlen(ft_itoa((int)arg.value)) != ft_strlen(arg_str))
-// 		{
-// 			printf("WRONG_SYMB: %s\n", arg_str);
-// 			exit(1);
-// 		}
-// 	}
-// }
+bool				is_dir(char *arg_str) // add counter
+{
+	if (*arg_str == DIRECT_CHAR)
+	{
+		if (*(arg_str + 1) == LABEL_CHAR)
+		{
+			if (!is_label(arg_str + 2))
+			{
+				printf("wrong ref: %s\n", arg_str);
+				exit(1);
+			}
+		}
+		else if (!is_valid_val(arg_str + 1))
+		{
+			printf("wrong val: %s\n", arg_str);
+			exit(1);
+		}
+		return (true);
+	}
+	return (false);
+}
+
+t_argument			*dir_get(uint8_t instr_code, char *arg_str) // add counter
+{
+	t_argument	*arg;
+
+	arg = ft_memalloc(sizeof(t_argument));
+	arg->code = DIR_CODE;
+	if (*(arg_str + 1) == LABEL_CHAR)
+	{
+		arg->ref.len = ft_strlen(arg_str + 2);
+		arg->ref.name = ft_strsub(arg_str, 2, arg->ref.len);
+	}
+	else
+	{
+		if (g_instrs_tab[instr_code - 1].dir_size == USHORT)
+			arg->val16 = ft_atoi64(arg_str + 1);
+		else if (g_instrs_tab[instr_code - 1].dir_size == UINT)
+			arg->val32 = ft_atoi64(arg_str + 1);
+	}
+	return (arg);
+}

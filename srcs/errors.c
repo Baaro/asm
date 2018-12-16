@@ -127,8 +127,9 @@ void	semantic_errors(t_errors error, char *line, t_counter *counter)
 	**	[+]  3. Double comment
 	**
 	*/
-	ft_printf("\x1b[31mSemantic error\x1b[0m");
-	ft_printf("[%zu:%zu]", counter->row, get_currunet_column(counter));
+	ft_printf("\x1b[31mSemantic error: \x1b[0m");
+	if (counter)
+		ft_printf("[%zu:%zu]", counter->row, get_currunet_column(counter));
 	if (error == E_DOUBLE_NAME)
 		ft_printf("The Name command has already read!\n");
 	else if (error == E_DOUBLE_COMMENT)
@@ -149,7 +150,7 @@ void	semantic_errors(t_errors error, char *line, t_counter *counter)
 		point_to_bad_symb(line, counter->column);
 	}
 	else if (error == E_UNKNOWN_INSTR)
-		ft_printf("Unknown instruction: %s!\n", line);
+		ft_printf("Unknown instruction: [%s]!\n", line);
 	exit(EXIT_FAILURE);
 }
 

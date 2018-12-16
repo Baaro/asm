@@ -23,6 +23,19 @@ void			ft_lstprint(t_list *elem)
 	}
 }
 
+bool				is_valid_val(char *arg_str)
+{
+	if (*arg_str == '-')
+		arg_str++;
+	while (ft_isdigit(*arg_str))
+	{
+		if (*(arg_str + 1) == '\0')	
+			return (true);
+		arg_str++;
+	}
+	return (false);
+}
+
 void			token_print(t_list *token)
 {
 	ssize_t i;

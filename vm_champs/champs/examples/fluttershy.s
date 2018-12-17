@@ -8,7 +8,7 @@ entry:
 	fork	%:coregeni
 	st		r1, 6
 	live	%42
-	fork	%:torpgeni
+	# fork	%:torpgeni
 	st		r1, 6
 	live	%42
 	fork	%:avdefgeni
@@ -26,7 +26,7 @@ ardefinit:
 	sti		r1, %:ardefl1, %1
 	st		r1, 6
 	live	%43123
-	sti		r1, %:ardefchk, %1
+	# sti		r1, %:ardefchk, %1
 	ld		%-6, r2
 	ld		%-6, r3
 	ld		%150994953, r4
@@ -92,7 +92,7 @@ avdefinit:
 	sti		r1, %:avdefl1, %1
 	st		r1, 6
 	live	%43123
-	sti		r1, %:avdefchk, %1
+	# sti		r1, %:avdefchk, %1
 	ld		%0, r2
 	ld		%6, r3
 	ld		%150994953, r4
@@ -105,43 +105,43 @@ avdefl1:
 	add		r2, r3, r2
 	sti		r4, %:avdeftgt, r2
 	add		r2, r3, r2
-avdefchk:
-	live	%3940641
-	xor		r2, r5, r15
-	zjmp	%:avdefinit
-avdefloop:	
-	ld		%0, r16
-	zjmp	%:avdefwrite
+# avdefchk:
+# 	live	%3940641
+# 	xor		r2, r5, r15
+# 	zjmp	%:avdefinit
+# avdefloop:	
+# 	ld		%0, r16
+# 	zjmp	%:avdefwrite
 
-torpgeni:
-	st		r1, 6
+# torpgeni:
+# 	st		r1, 6
 
-torpgen:
-	live	%96824
-	fork	%:torpgen
+# torpgen:
+# 	live	%96824
+# 	fork	%:torpgen
 
-torpinit:
-	ld		%0, r2
-	ld		%4, r3
-	ld		%96, r5
-	sti		r1, %:torpchk, %1
-	st		r1, 6
+# torpinit:
+# 	ld		%0, r2
+# 	ld		%4, r3
+# 	ld		%96, r5
+# 	sti		r1, %:torpchk, %1
+# 	st		r1, 6
 
-torpwrite:
-torpl1:
-	live	%8008135
-	ldi		%:torpinit, r2, r4
-	sti		r4, %400, r2
-	add		r2, r3, r2
-	ldi		%:torpinit, r2, r4
-	sti		r4, %383, r2
-	add		r2, r3, r2
-torpchk:
-	live	%89523
-	xor		r2, r5, r15	
-	zjmp	%362
-torploop:
-	ld		%0, r15
-	zjmp	%:torpwrite
+# torpwrite:
+# torpl1:
+# 	live	%8008135
+# 	ldi		%:torpinit, r2, r4
+# 	sti		r4, %400, r2
+# 	add		r2, r3, r2
+# 	ldi		%:torpinit, r2, r4
+# 	sti		r4, %383, r2
+# 	add		r2, r3, r2
+# torpchk:
+# 	live	%89523
+# 	xor		r2, r5, r15	
+# 	zjmp	%362
+# torploop:
+# 	ld		%0, r15
+# 	zjmp	%:torpwrite
 
 avdeftgt:

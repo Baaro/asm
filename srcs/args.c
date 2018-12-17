@@ -56,6 +56,7 @@ void				arg_valid(uint8_t instr_code, uint8_t arg_code, ssize_t curr_arg) // add
 		return ;
 	else
 	{
+		printf("instr: %d\n", instr_code);
 		printf("Wrong argument for [%s]!\n", g_instrs_tab[instr_code - 1].name);
 		exit(1);
 	}
@@ -80,10 +81,11 @@ void				args_set(t_bytecode *bc, t_token *t)
 				shift -= 2;
 			}
 		}
-		else if (g_instrs_tab[bc->instr_code - 1].args[curr_arg])
-		{
-			printf("Wrong argument for [%s]!\n", g_instrs_tab[bc->instr_code - 1].name);
-			exit(1);
-		}
+		// else if (g_instrs_tab[bc->instr_code - 1].args[curr_arg])
+		// {
+		// 	printf("instr: %d\n", g_instrs_tab[bc->instr_code - 1].instr_code);
+		// 	printf("Wrong argument for [%s]!\n", g_instrs_tab[bc->instr_code - 1].name);
+		// 	exit(1);
+		// }
 	}
 }

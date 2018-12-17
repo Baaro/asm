@@ -18,7 +18,7 @@ bool	label_exists(t_list	*all_labels, t_label *label)
 	tmp = all_labels;
 	while (tmp)
 	{
-		if (ft_strnequ(((t_label *)tmp->content)->name, label->name, label->len))
+		if (ft_strequ(((t_label *)tmp->content)->name, label->name))
 			return (true);
 		tmp = tmp->next;
 	}

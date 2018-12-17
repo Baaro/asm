@@ -2,17 +2,6 @@
 
 const t_instr 	g_instrs_tab[NUM_INSTRUCTIONS + 1];
 
-#define BYTE_TO_BINARY_PATTERN "%c%c%c%c%c%c%c%c"
-#define BYTE_TO_BINARY(byte)  \
-  (byte & 0x80 ? '1' : '0'), \
-  (byte & 0x40 ? '1' : '0'), \
-  (byte & 0x20 ? '1' : '0'), \
-  (byte & 0x10 ? '1' : '0'), \
-  (byte & 0x08 ? '1' : '0'), \
-  (byte & 0x04 ? '1' : '0'), \
-  (byte & 0x02 ? '1' : '0'), \
-  (byte & 0x01 ? '1' : '0')
-
 static void			arg_valid_str(char *arg, t_counter *c)
 {
 	ssize_t	invalid_symbol;
@@ -90,6 +79,11 @@ void				args_set(t_bytecode *bc, t_token *t)
 				bc->args_code |= bc->args[curr_arg]->code << shift;
 				shift -= 2;
 			}
+		}
+		else if (g_instrs_tab[bc->instr_code - 1].args[curr_arg])
+		{
+			printf("Wrong argument for [%s]!\n", g_instrs_tab[bc->instr_code - 1].name);
+			exit(1);
 		}
 	}
 }

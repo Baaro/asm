@@ -25,9 +25,6 @@ bool		is_reg(char *arg)
 	return (true);
 }
 
-// rnum
-// num = {1...16}
-
 t_argument			*reg_get(uint8_t instr_code, char *arg_str)
 {
 	t_argument	*arg;

@@ -49,5 +49,6 @@ t_argument			*dir_get(uint8_t instr_code, char *arg_str) // add counter
 		else if (g_instrs_tab[instr_code - 1].dir_size == UINT)
 			arg->val32 = ft_atoi64(arg_str + 1);
 	}
+	arg->dir_size = g_instrs_tab[instr_code - 1].dir_size;
 	return (arg);
 }

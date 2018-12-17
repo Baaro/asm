@@ -2,7 +2,7 @@
 
 const t_instr 	g_instrs_tab[NUM_INSTRUCTIONS + 1];
 
-uint8_t				instr_get_code(char *instr)
+uint8_t			instr_get_code(char *instr)
 {
 	uint8_t	instr_code;
 	ssize_t curr_instr;
@@ -19,15 +19,31 @@ uint8_t				instr_get_code(char *instr)
 	return (instr_code);
 }
 
-size_t				instr_get_pos(t_bytecode *b_prevtoken)
+size_t			instr_get_pos(t_bytecode *b_prevtoken)
 {
 	return (b_prevtoken ? b_prevtoken->pos + b_prevtoken->size : 0);
 }
 
-// size_t				instruction_get_size(t_bytecode *b_token)
-// {
+size_t		instr_get_size(t_bytecode *b_token)
+{
+	size_t	size;
+	ssize_t	curr_arg;
 
-// }
+	size = 1;
+	curr_arg = -1;
+	while (++curr_arg < MAX_ARGS_NUMBER - 1)
+	{
+		if (!b_token->args[curr_arg])
+			break ;
+		if (b_token->args[curr_arg]->code == REG_CODE)
+			size += 1;
+		else if (b_token->args[curr_arg]->code == DIR_CODE)
+			size += b_token->args[curr_arg]->dir_size;
+		else if (b_token->args[curr_arg]->code == IND_CODE)
+			size += 2;
+	}
+	return (curr_arg > 1 ? size + 1 : size);
+}
 
 char			*instr_get_str(char *fline, char *cur_line, t_counter *c)
 {

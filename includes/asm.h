@@ -180,6 +180,7 @@ bool				label_exists(t_list	*all_labels, t_label *label);
 t_list				*tokens_make(t_file *f, t_counter *c); // test version
 void				tokens_del(t_list **tokens);
 void				token_print(t_list *token);
+void				b_token_print(t_list *b_token);
 /*
 ** token to bytecode
 */
@@ -193,6 +194,7 @@ t_bytecode			*token_tbc(t_bytecode *b_prevtoken, t_token *token);
 char				*instr_get_str(char *fline, char *cur_line, t_counter *c);
 size_t				instr_get_pos(t_bytecode *b_prevtoken);
 uint8_t				instr_get_code(char *instr);
+size_t				instr_get_size(t_bytecode *b_token);
 
 /*
 ** arguments

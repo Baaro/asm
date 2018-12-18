@@ -9,9 +9,15 @@ static void	cmd_str_del(t_cmd_str **str)
 static void	cmd_str_save(t_file *f, t_header *h, t_cmd_str *str, t_counter *c)
 {
 	if (h->is_name_cmd)
+	{
+		ft_memset(h->prog_name, 0, PROG_NAME_LENGTH);
 		ft_strncpy(h->prog_name, str->value, str->len);
+	}
 	else if (h->is_comment_cmd)
+	{
+		ft_memset(h->comment, 0, COMMENT_LENGTH);
 		ft_strncpy(h->comment, str->value, str->len);
+	}
 }
 
 static char	*cmd_str_read(t_file *f, t_counter *c)

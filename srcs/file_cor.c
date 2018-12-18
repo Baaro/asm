@@ -93,23 +93,51 @@ void				link_references(t_list *b_tokens)
 	}
 }
 
+void			memory_print(t_file_cor *fc, t_list *b_tokens, int fd)
+{
+	ssize_t curr_arg;
+	write(fd, &fc->header->magic, sizeof(fc->header->magic));
+	write(fd, &fc->header->prog_name, PROG_NAME_LENGTH);
+	// write(fd, NULL, sizeof(NULL));
+	write(fd, &fc->header->comment, COMMENT_LENGTH);
+	// write(fd, NULL, sizeof(NULL));
+	// while (b_tokens)
+	// {
+	// 	write(fd, &((t_bytecode *)b_tokens->content)->instr_code, sizeof(((t_bytecode *)b_tokens->content)->instr_code));
+	// 	if (((t_bytecode *)b_tokens->content)->args_code)
+	// 		write(fd, &((t_bytecode *)b_tokens->content)->args_code, sizeof(((t_bytecode *)b_tokens->content)->args_code));
+	// 	curr_arg = -1;
+	// 	while (++curr_arg < MAX_ARGS_NUMBER - 1)
+	// 	{
+	// 		if (((t_bytecode *)b_tokens->content)->args[curr_arg]->val16)
+	// 			write(fd, &((t_bytecode *)b_tokens->content)->args[curr_arg]->val16, sizeof(((t_bytecode *)b_tokens->content)->args[curr_arg]->val16));
+	// 		else if (((t_bytecode *)b_tokens->content)->args[curr_arg]->val32)
+	// 			write(fd, &((t_bytecode *)b_tokens->content)->args[curr_arg]->val32, sizeof(((t_bytecode *)b_tokens->content)->args[curr_arg]->val32));
+	// 	}
+	// 	b_tokens = b_tokens->next;
+	// }
+}
+
 t_file_cor			*file_cor_make(t_file *f, t_counter *c) // test version
 {
 	t_file_cor		*fc;
 	t_list			*tokens;
 	t_list			*b_tokens;
 
+	// printf("fd: %d\n", f->fd);
+	int fd = open("hell", O_APPEND | O_RDWR | O_TRUNC | O_CREAT, S_IRWXU);
 	fc = file_cor_new();
 	fc->header = header_get(f, c);
+	fc->header->magic = COREWAR_EXEC_MAGIC;
 	tokens = tokens_make(f, c);
 	b_tokens = tokens_tbc(tokens); /* tbc - to bytecode */
 	link_references(b_tokens);
-	ft_lstiter(tokens, token_print);
-	ft_lstiter(b_tokens, b_token_print);
-
+	// ft_lstiter(tokens, token_print);
+	// ft_lstiter(b_tokens, b_token_print);
+	// fc->header->magic = COREWAR_EXEC_MAGIC;
+	memory_print(fc, b_tokens, fd);
 	// fc->memory = memory_new(b_tokens);
 	// fc->memory->field = memory_get_field(fc, b_tokens);
-	// ft_free_tocens(&tokens);
 	tokens_del(&tokens);
 	return (fc);
 }

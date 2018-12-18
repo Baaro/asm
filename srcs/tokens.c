@@ -86,9 +86,26 @@ t_list			*tokens_make(t_file *f, t_counter *c) // test version
 			ft_lstdel(&curr_labels, ft_lstelemfree);
 		}
 	}
-	if (((t_label *)curr_labels->content)->name)
-		printf("label: %s\n", ((t_label *)curr_labels->content)->name);
 	ft_lstdel(&all_labels, ft_lstelemfree);// system("leaks asm");
-	// free(all_labels);
+	if (((t_label *)curr_labels))
+	{
+		t_list *tmp;
+
+		tmp = curr_labels;
+		while (tmp)
+		{
+			if (((t_label *)tmp->content)->name)
+				printf("label: %s\n", ((t_label *)tmp->content)->name);
+			tmp = tmp->next;
+		}
+		tmp = curr_labels;
+		while (tmp)
+		{
+			if (((t_label *)tmp->content)->name)
+				free(((t_label *)tmp->content)->name);
+			tmp = tmp->next;
+		}
+		ft_lstdel(&curr_labels, ft_lstelemfree);
+	}
     return (tokens);
 }

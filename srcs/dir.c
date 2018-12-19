@@ -2,13 +2,6 @@
 
 const t_instr	g_instrs_tab[NUM_INSTRUCTIONS + 1];
 
-/*
-** possible values
-** %:label
-** %-123
-** %123
-*/
-
 bool				is_dir(char *arg_str) // add counter
 {
 	if (*arg_str == DIRECT_CHAR)
@@ -45,9 +38,9 @@ t_argument			*dir_get(uint8_t instr_code, char *arg_str) // add counter
 	else
 	{
 		if (g_instrs_tab[instr_code - 1].dir_size == USHORT)
-			arg->val16 = ft_atoi64(arg_str + 1);
+			arg->dir16 = swap_uint16(ft_atoi64(arg_str + 1));
 		else if (g_instrs_tab[instr_code - 1].dir_size == UINT)
-			arg->val32 = ft_atoi64(arg_str + 1);
+			arg->dir32 = swap_uint32(ft_atoi64(arg_str + 1));
 	}
 	arg->dir_size = g_instrs_tab[instr_code - 1].dir_size;
 	return (arg);

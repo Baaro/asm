@@ -31,8 +31,8 @@ t_argument			*reg_get(uint8_t instr_code, char *arg_str)
 
 	arg = ft_memalloc(sizeof(t_argument));
 	arg->code = REG_CODE;
-	arg->val16 = ft_atoi64(arg_str + 1);
-	if (arg->val16 < 1 || arg->val16 > 16)
+	arg->reg = ft_atoi64(arg_str + 1);
+	if (arg->reg < 1 || arg->reg > 16)
 	{
 		printf("wrong reg: %s\n", arg_str);
 		exit(1);

@@ -1,6 +1,6 @@
 #include "asm.h"
 
-const t_instr 	g_instrs_tab[NUM_INSTRUCTIONS + 1];
+const t_instr 		g_instrs_tab[NUM_INSTRUCTIONS + 1];
 
 static void			arg_valid_str(char *arg, t_counter *c)
 {
@@ -62,7 +62,7 @@ void				arg_valid(uint8_t instr_code, uint8_t arg_code, ssize_t curr_arg) // add
 	}
 }
 
-void				args_set(t_bytecode *bc, t_token *t)
+void				args_set(t_b_token *bc, t_token *t)
 {
 	uint8_t		shift;
 	ssize_t		curr_arg;
@@ -81,11 +81,11 @@ void				args_set(t_bytecode *bc, t_token *t)
 				shift -= 2;
 			}
 		}
-		// else if (g_instrs_tab[bc->instr_code - 1].args[curr_arg])
-		// {
-		// 	printf("instr: %d\n", g_instrs_tab[bc->instr_code - 1].instr_code);
-		// 	printf("Wrong argument for [%s]!\n", g_instrs_tab[bc->instr_code - 1].name);
-		// 	exit(1);
-		// }
+		else if (g_instrs_tab[bc->instr_code - 1].args[curr_arg])
+		{
+			printf("instr: %d\n", g_instrs_tab[bc->instr_code - 1].instr_code);
+			printf("Wrong argument for [%s]!\n", g_instrs_tab[bc->instr_code - 1].name);
+			exit(1);
+		}
 	}
 }

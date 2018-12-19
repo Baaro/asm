@@ -58,17 +58,14 @@ typedef struct				s_file
 	char					*line;
 }							t_file;
 
-typedef	struct				s_memory
-{
-	size_t					size;
-	size_t					*field;
-}							t_memory;
-
 typedef struct				s_file_cor
 {
 	t_header				*header;
-	t_memory				*memory;
+	t_list					*tokens;
+	t_list					*b_tokens;
 	char					*name;
+	int						fd;
+	uint32_t				size;
 }							t_file_cor;
 
 typedef	struct				s_cmd_str
@@ -95,8 +92,10 @@ typedef struct				s_argument
 	uint8_t					code;
 	t_reference				ref;
 	uint8_t					dir_size;
-	uint16_t				val16;
-	uint32_t				val32;
+	uint8_t					reg;
+	uint16_t				ind;
+	uint16_t				dir16;
+	uint32_t				dir32;
 }							t_argument;
 
 typedef struct				s_token
@@ -106,15 +105,15 @@ typedef struct				s_token
 	char					*args[MAX_ARGS_NUMBER - 1];
 }							t_token;
 
-typedef struct				s_bytecode
+typedef struct				s_b_token
 {
-	t_list					*labels;
 	uint8_t   				instr_code;
 	uint8_t					args_code;
+	uint32_t				pos;
+	uint32_t				size;
+	t_list					*labels;
 	t_argument				*args[MAX_ARGS_NUMBER - 1];
-	size_t					pos;
-	size_t					size;
-}							t_bytecode;
+}							t_b_token;
 
 typedef struct				s_instr
 {
@@ -149,6 +148,7 @@ uint8_t				flags_get(int *ac, char ***av, t_counter *c);
 ** filename.cor
 */
 t_file_cor			*file_cor_make(t_file *f, t_counter *c);		// test version
+void				file_cor_write(t_file_cor *fc, uint8_t flags, t_counter *c);
 void			    file_cor_del(t_file_cor **fc);
 
 int		         	file_get_line(t_file *f, t_counter *c, bool is_cmds);
@@ -180,27 +180,27 @@ bool				label_exists(t_list	*all_labels, t_label *label);
 t_list				*tokens_make(t_file *f, t_counter *c); // test version
 void				tokens_del(t_list **tokens);
 void				token_print(t_list *token);
-void				b_token_print(t_list *b_token);
 /*
 ** token to bytecode
 */
-t_list				*tokens_tbc(t_list *tokens);
-void				append_bytecoded_tokens(t_list **b_tokens, t_bytecode *b_token);
-t_bytecode			*token_tbc(t_bytecode *b_prevtoken, t_token *token);
-
+t_list				*b_tokens_make(t_list *tokens);
+t_b_token			*b_token_make(t_b_token *b_prevtoken, t_token *token);
+void				b_tokens_del(t_list **b_tokens);
+void				append_b_tokens(t_list **b_tokens, t_b_token *b_token);
+void				b_token_print(t_list *b_token);
 /*
 ** instruction
 */
 char				*instr_get_str(char *fline, char *cur_line, t_counter *c);
-size_t				instr_get_pos(t_bytecode *b_prevtoken);
+uint32_t			instr_get_pos(t_b_token *b_prevtoken);
 uint8_t				instr_get_code(char *instr);
-size_t				instr_get_size(t_bytecode *b_token);
+uint32_t			instr_get_size(t_b_token *b_token);
 
 /*
 ** arguments
 */
 void				args_get_strs(t_token *token, t_counter *c);
-void				args_set(t_bytecode *b_token, t_token *token);
+void				args_set(t_b_token *b_token, t_token *token);
 
 /*
 ** dir
@@ -242,6 +242,8 @@ void    			semantic_errors(t_errors error, char *line, t_counter *c);
 bool				is_whitespaces(const char c);
 
 /* AUX */
+uint16_t			swap_uint16(uint16_t val);
+uint32_t			swap_uint32(uint32_t val);
 bool				is_valid_val(char *arg_str);
 ssize_t				get_invalid_symbols(char *line, size_t len, char *valid_symbols);
 void				ft_lstprint(t_list *elem);

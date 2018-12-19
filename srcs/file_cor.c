@@ -1,44 +1,6 @@
 #include "asm.h"
 
-static t_file_cor	*file_cor_new(void)
-{
-	return (ft_memalloc(sizeof(t_file_cor)));
-}
-
-void    			file_cor_del(t_file_cor **fc)
-{
-	ft_memdel((void**)&(*fc)->header);
-	free((*fc)->name);
-	// free((*fc)->bytecode);
-	free(*fc);
-}
-
-// void	file_cor_write(t_file_cor file_cor, uint8_t flags)
-// {
-	// if (i->flags & FLAG_A)
-	// 	ft_printf("Output a stripped and annotated version\n");
-	// else
-	// {
-	// 	ft_printf("convert to byte-code\n");
-	// 	// i->byte_code = convert_to_byte_code(i->compiled_data);
-	// 	// write_cor_file(&i->file);
-	// }
-	// file_clear(&i->file);
-// }
-
-// void        file_cor_compile(t_file_cor *file_cor, t_file *file) // test version
-// {
-// 	// link_labels(stacks);
-// 	// make_bytecode(stacks, file_cor);
-// 	// ft_printf(".name: %s\n", file->hdr.prog_name);
-// 	// ft_printf(".comment: %s\n", file->hdr.comment);
-// 	// ft_printf("DATA: \n%s\n", file->data);
-// 	file_cor = NULL;
-// 	// free(lists);
-// 	free(counter);
-// }
-
-void				link_references(t_list *b_tokens)
+void				link_references(t_list **b_tokens, uint32_t *size)
 {
 	ssize_t		curr_arg;
 	t_list		*refs;
@@ -51,29 +13,36 @@ void				link_references(t_list *b_tokens)
 	// 			set value
 	//		else
 	//			error: no label with this name
-	refs = b_tokens;
+	refs = *b_tokens;
 	while (refs)
 	{
 		found = false;
 		curr_arg = -1;
 		while (++curr_arg < MAX_ARGS_NUMBER - 1)
 		{
-			if (((t_bytecode *)refs->content)->args[curr_arg]
-			&& ((t_bytecode *)refs->content)->args[curr_arg]->ref.name)
+			if (((t_b_token *)refs->content)->args[curr_arg]
+			&& ((t_b_token *)refs->content)->args[curr_arg]->ref.name)
 			{
-				labels_in = b_tokens;
+				labels_in = *b_tokens;
 				while (labels_in)
 				{
-					label_tmp = ((t_bytecode *)labels_in->content)->labels;
+					label_tmp = ((t_b_token *)labels_in->content)->labels;
 					while (label_tmp)
 					{
-						if (ft_strnequ(((t_bytecode *)refs->content)->args[curr_arg]->ref.name, ((t_label *)label_tmp->content)->name, ((t_label *)label_tmp->content)->len))
+						if (ft_strequ(((t_b_token *)refs->content)->args[curr_arg]->ref.name, ((t_label *)label_tmp->content)->name))
 						{
 							found = true;
-							if (((t_bytecode *)refs->content)->args[curr_arg]->dir_size == USHORT)
-								((t_bytecode *)refs->content)->args[curr_arg]->val16 = ((t_bytecode *)labels_in->content)->pos - ((t_bytecode *)refs->content)->pos;
-							else if (((t_bytecode *)refs->content)->args[curr_arg]->dir_size == UINT)
-								((t_bytecode *)refs->content)->args[curr_arg]->val32 = ((t_bytecode *)labels_in->content)->pos - ((t_bytecode *)refs->content)->pos;
+							if (((t_b_token *)refs->content)->args[curr_arg]->code == IND_CODE)
+							{
+								((t_b_token *)refs->content)->args[curr_arg]->ind = swap_uint16(((t_b_token *)labels_in->content)->pos - ((t_b_token *)refs->content)->pos);
+							}
+							else if (((t_b_token *)refs->content)->args[curr_arg]->code == DIR_CODE)
+							{
+								if (((t_b_token *)refs->content)->args[curr_arg]->dir_size == USHORT)
+									((t_b_token *)refs->content)->args[curr_arg]->dir16 = swap_uint16(((t_b_token *)labels_in->content)->pos - ((t_b_token *)refs->content)->pos);
+								else if (((t_b_token *)refs->content)->args[curr_arg]->dir_size == UINT)
+									((t_b_token *)refs->content)->args[curr_arg]->dir32 = swap_uint32(((t_b_token *)labels_in->content)->pos - ((t_b_token *)refs->content)->pos);
+							}
 						}
 						label_tmp = label_tmp->next;
 					}
@@ -81,63 +50,84 @@ void				link_references(t_list *b_tokens)
 				}
 				if (!found)
 				{
-					if (((t_bytecode *)refs->content)->args[curr_arg]->code == DIR_CODE)
-						printf("ERROR: UNKNWON REFERENCE: \"%c%c%s\"\n", DIRECT_CHAR, LABEL_CHAR, ((t_bytecode *)refs->content)->args[curr_arg]->ref.name);
-					else if (((t_bytecode *)refs->content)->args[curr_arg]->code == IND_CODE)
-						printf("ERROR: UNKNWON REFERENCE: \"%c%s\"\n", LABEL_CHAR,((t_bytecode *)refs->content)->args[curr_arg]->ref.name);
+					if (((t_b_token *)refs->content)->args[curr_arg]->code == DIR_CODE)
+						printf("ERROR: UNKNWON REFERENCE: \"%c%c%s\"\n", DIRECT_CHAR, LABEL_CHAR, ((t_b_token *)refs->content)->args[curr_arg]->ref.name);
+					else if (((t_b_token *)refs->content)->args[curr_arg]->code == IND_CODE)
+						printf("ERROR: UNKNWON REFERENCE: \"%c%s\"\n", LABEL_CHAR,((t_b_token *)refs->content)->args[curr_arg]->ref.name);
 					exit(1);
 				}
 			}
 		}
+		*size += ((t_b_token*)refs->content)->size;
 		refs = refs->next;
 	}
 }
 
-void			memory_print(t_file_cor *fc, t_list *b_tokens, int fd)
+static t_file_cor	*file_cor_new(void)
+{
+	return (ft_memalloc(sizeof(t_file_cor)));
+}
+
+void    			file_cor_del(t_file_cor **fc)
+{
+	ft_memdel((void**)&(*fc)->header);
+	tokens_del(&(*fc)->tokens);
+	b_tokens_del(&(*fc)->b_tokens);
+	free((*fc)->name);
+	free(*fc);
+}
+
+void			file_cor_write(t_file_cor *fc, uint8_t flags, t_counter *c)
 {
 	ssize_t curr_arg;
-	write(fd, &fc->header->magic, sizeof(fc->header->magic));
-	write(fd, &fc->header->prog_name, PROG_NAME_LENGTH);
-	// write(fd, NULL, sizeof(NULL));
-	write(fd, &fc->header->comment, COMMENT_LENGTH);
-	// write(fd, NULL, sizeof(NULL));
-	// while (b_tokens)
-	// {
-	// 	write(fd, &((t_bytecode *)b_tokens->content)->instr_code, sizeof(((t_bytecode *)b_tokens->content)->instr_code));
-	// 	if (((t_bytecode *)b_tokens->content)->args_code)
-	// 		write(fd, &((t_bytecode *)b_tokens->content)->args_code, sizeof(((t_bytecode *)b_tokens->content)->args_code));
-	// 	curr_arg = -1;
-	// 	while (++curr_arg < MAX_ARGS_NUMBER - 1)
-	// 	{
-	// 		if (((t_bytecode *)b_tokens->content)->args[curr_arg]->val16)
-	// 			write(fd, &((t_bytecode *)b_tokens->content)->args[curr_arg]->val16, sizeof(((t_bytecode *)b_tokens->content)->args[curr_arg]->val16));
-	// 		else if (((t_bytecode *)b_tokens->content)->args[curr_arg]->val32)
-	// 			write(fd, &((t_bytecode *)b_tokens->content)->args[curr_arg]->val32, sizeof(((t_bytecode *)b_tokens->content)->args[curr_arg]->val32));
-	// 	}
-	// 	b_tokens = b_tokens->next;
-	// }
+	uint32_t null = 0;
+	write(fc->fd, &fc->header->magic, sizeof(fc->header->magic));
+	write(fc->fd, &fc->header->prog_name, PROG_NAME_LENGTH);
+	write(fc->fd, &null, sizeof(uint32_t));
+	fc->size = swap_uint32(fc->size);
+	write(fc->fd, &fc->size, sizeof(uint32_t));
+	write(fc->fd, &fc->header->comment, COMMENT_LENGTH);
+	write(fc->fd, &null, sizeof(uint32_t));
+	t_list *b_tokens = fc->b_tokens;
+	while (b_tokens)
+	{
+		write(fc->fd, &((t_b_token *)b_tokens->content)->instr_code, sizeof(uint8_t));
+		if (((t_b_token *)b_tokens->content)->args_code)
+			write(fc->fd, &((t_b_token *)b_tokens->content)->args_code, sizeof(uint8_t));
+		curr_arg = -1;
+		while (++curr_arg < MAX_ARGS_NUMBER - 1)
+		{
+			if (((t_b_token *)b_tokens->content)->args[curr_arg])
+			{
+				if (((t_b_token *)b_tokens->content)->args[curr_arg]->code == REG_CODE)
+					write(fc->fd, &((t_b_token *)b_tokens->content)->args[curr_arg]->reg, sizeof(uint8_t));
+				else if (((t_b_token *)b_tokens->content)->args[curr_arg]->code == DIR_CODE)
+				{
+					if (((t_b_token *)b_tokens->content)->args[curr_arg]->dir_size == USHORT)
+						write(fc->fd, &((t_b_token *)b_tokens->content)->args[curr_arg]->dir16, sizeof(uint16_t));
+					else if (((t_b_token *)b_tokens->content)->args[curr_arg]->dir_size == UINT)
+						write(fc->fd, &((t_b_token *)b_tokens->content)->args[curr_arg]->dir32, sizeof(uint32_t));
+				}
+				else if (((t_b_token *)b_tokens->content)->args[curr_arg]->code == IND_CODE)
+					write(fc->fd, &((t_b_token *)b_tokens->content)->args[curr_arg]->ind, sizeof(uint16_t));
+			}
+		}
+		b_tokens = b_tokens->next;
+	}
 }
 
 t_file_cor			*file_cor_make(t_file *f, t_counter *c) // test version
 {
-	t_file_cor		*fc;
-	t_list			*tokens;
-	t_list			*b_tokens;
+	t_file_cor	*fc;
 
-	// printf("fd: %d\n", f->fd);
-	int fd = open("hell", O_APPEND | O_RDWR | O_TRUNC | O_CREAT, S_IRWXU);
 	fc = file_cor_new();
+	fc->fd = open("hell", O_APPEND | O_RDWR | O_TRUNC | O_CREAT, S_IRUSR);
 	fc->header = header_get(f, c);
-	fc->header->magic = COREWAR_EXEC_MAGIC;
-	tokens = tokens_make(f, c);
-	b_tokens = tokens_tbc(tokens); /* tbc - to bytecode */
-	link_references(b_tokens);
-	// ft_lstiter(tokens, token_print);
-	// ft_lstiter(b_tokens, b_token_print);
-	// fc->header->magic = COREWAR_EXEC_MAGIC;
-	memory_print(fc, b_tokens, fd);
-	// fc->memory = memory_new(b_tokens);
-	// fc->memory->field = memory_get_field(fc, b_tokens);
-	tokens_del(&tokens);
+	fc->header->magic = swap_uint32(COREWAR_EXEC_MAGIC);
+	fc->tokens = tokens_make(f, c);
+	fc->b_tokens = b_tokens_make(fc->tokens); /* b - bytecoded */
+	link_references(&fc->b_tokens, &fc->size);
+	ft_lstiter(fc->tokens, token_print);
+	ft_lstiter(fc->b_tokens, b_token_print);
 	return (fc);
 }

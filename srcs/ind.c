@@ -1,12 +1,5 @@
 #include "asm.h"
 
-/*
-** possible values
-** :label
-** -123
-** 123
-*/
-
 bool				is_ind(char *arg_str) // add counter
 {
 	if (*arg_str == LABEL_CHAR)
@@ -47,6 +40,6 @@ t_argument			*ind_get(uint8_t instr_code, char *arg_str) // add counter
 		arg->ref.name = ft_strsub(arg_str, 1, arg->ref.len);
 	}
 	else
-		arg->val16 = ft_atoi64(arg_str);
+		arg->ind = swap_uint16(ft_atoi64(arg_str));
     return (arg);
 }

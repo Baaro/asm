@@ -1,5 +1,11 @@
 #include "asm.h"
 
+void	label_append(t_list **curr_labs, t_list **all_labs, t_label *label)
+{
+	ft_lstaddend(curr_labs, ft_lstnew(label, sizeof(t_label)));
+	ft_lstaddend(all_labs, ft_lstnew(label, sizeof(t_label)));
+}
+
 bool	is_label(char *line)
 {
 	while (*line)
@@ -67,10 +73,4 @@ t_label	*label_get_solo(char *line, t_counter *counter)
 		return (label);
 	}
 	return (NULL);
-}
-
-void	label_append(t_list **curr_labs, t_list **all_labs, t_label *label)
-{
-	ft_lstaddend(curr_labs, ft_lstnew(label, sizeof(t_label)));
-	ft_lstaddend(all_labs, ft_lstnew(label, sizeof(t_label)));
 }

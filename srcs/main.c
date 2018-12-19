@@ -26,7 +26,7 @@ int		main(int ac, char **av)
 		{
 			f = file_get(av[c->args]);
 			fc = file_cor_make(f, c);
-			// file_cor_write(fc, flags, c);
+			file_cor_write(fc, flags, c);
 			file_del(&f);
 			file_cor_del(&fc);
 			counter_clear(c);
@@ -34,6 +34,6 @@ int		main(int ac, char **av)
 		}
 		counter_del(&c);
 	}
-	// system("leaks --hex asm");
+	system("leaks --hex asm");
 	return (EXIT_SUCCESS);
 }

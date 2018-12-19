@@ -16,11 +16,6 @@ size_t		get_currunet_column(t_counter *counter)
 	return (counter->column + counter->begin_whitespaces); 
 }
 
-size_t		get_currunet_position(t_counter *counter)
-{
-	return (counter->column);
-}
-
 bool	is_whitespaces(const char c)
 {
 	return (c == '\t' || c == ' ');
@@ -29,9 +24,7 @@ bool	is_whitespaces(const char c)
 void			ft_lstprint(t_list *elem)
 {
 	if (elem)
-	{
 		printf("%s\n", ((t_label *)elem->content)->name);
-	}
 }
 
 bool				is_valid_val(char *arg_str)
@@ -67,25 +60,37 @@ void			b_token_print(t_list *b_token)
 	ssize_t i;
 
 	printf("\n-----------B-TOKEN-----------\n");
+	printf("LABELS:\n");
+	ft_lstiter(((t_b_token *)b_token->content)->labels, ft_lstprint);
 	printf("INSTR_CODE: ");
-	printf(BYTE_TO_BINARY_PATTERN, BYTE_TO_BINARY(((t_bytecode *)b_token->content)->instr_code));
+	printf(BYTE_TO_BINARY_PATTERN, BYTE_TO_BINARY(((t_b_token *)b_token->content)->instr_code));
 	printf("\nARGS_CODE: ");
-	printf(BYTE_TO_BINARY_PATTERN, BYTE_TO_BINARY(((t_bytecode *)b_token->content)->args_code));
+	printf(BYTE_TO_BINARY_PATTERN, BYTE_TO_BINARY(((t_b_token *)b_token->content)->args_code));
 	printf("\nARGUMENTS:\n");
 	i = -1;
 	while (++i < MAX_ARGS_NUMBER - 1)
 	{
-		if (((t_bytecode*)b_token->content)->args[i])
+		if (((t_b_token*)b_token->content)->args[i])
 		{
-			if (((t_bytecode*)b_token->content)->args[i]->code == REG_CODE
-			|| ((t_bytecode*)b_token->content)->args[i]->code == IND_CODE
-			|| ((t_bytecode*)b_token->content)->args[i]->dir_size == USHORT)
-				printf("args[%zd] -> code:[%hhu] val:[%d]\n", i, ((t_bytecode*)b_token->content)->args[i]->code, ((t_bytecode*)b_token->content)->args[i]->val16);
-			else if (((t_bytecode*)b_token->content)->args[i]->dir_size == UINT)
-				printf("args[%zd] -> code:[%hhu] val:[%u]\n", i, ((t_bytecode*)b_token->content)->args[i]->code, ((t_bytecode*)b_token->content)->args[i]->val32);
+			if (((t_b_token *)b_token->content)->args[i]->code == REG_CODE)
+				printf("args[%zd] -> code:[%hhu] val:[%d]\n", i, ((t_b_token*)b_token->content)->args[i]->code, ((t_b_token*)b_token->content)->args[i]->reg);
+			else if (((t_b_token *)b_token->content)->args[i]->code == IND_CODE)
+				printf("args[%zd] -> code:[%hhu] val:[%d]\n", i, ((t_b_token*)b_token->content)->args[i]->code, ((t_b_token*)b_token->content)->args[i]->ind);
+			else if (((t_b_token *)b_token->content)->args[i]->code == DIR_CODE)
+			{
+				if (((t_b_token *)b_token->content)->args[i]->dir_size == USHORT)
+					printf("args[%zd] -> code:[%hhu] val:[%d]\n", i, ((t_b_token*)b_token->content)->args[i]->code, ((t_b_token*)b_token->content)->args[i]->dir16);
+				else if (((t_b_token*)b_token->content)->args[i]->dir_size == UINT)
+					printf("args[%zd] -> code:[%hhu] val:[%u]\n", i, ((t_b_token*)b_token->content)->args[i]->code, ((t_b_token*)b_token->content)->args[i]->dir32);
+			}
 		}
 	}
 	printf("\n-----------B-TOKEN-----------\n");
+}
+
+void			label_print(t_list *label)
+{
+	printf("name: %s\n", ((t_label *)label->content)->name);
 }
 
 ssize_t			get_invalid_symbols(char *line, size_t len, char *valid_symbols)
@@ -101,4 +106,14 @@ ssize_t			get_invalid_symbols(char *line, size_t len, char *valid_symbols)
 	return (i == len ? -1 : i);
 }
 
+uint16_t swap_uint16(uint16_t val) 
+{
+    return ((val << 8) | (val >> 8 ));
+}
+
+uint32_t swap_uint32(uint32_t val)
+{
+    val = ((val << 8) & 0xFF00FF00 ) | ((val >> 8) & 0xFF00FF);
+    return ((val << 16) | (val >> 16));
+}
 

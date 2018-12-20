@@ -10,12 +10,13 @@
 # live3:
 ###	size: 8b,		pos: 0b + 7b = 7b;								// instr: 0x06 args: 0110 0100
 	and r1, %0, r1
-
+	aff r1
 ###	size: 5b,		pos: 8b + 7b = 15b; 							// instr: 0x01
 	# l3:
-	live:	live %4294967295
+	live %4294967295
 ###	size: 3b,		pos: 5b + 15b = 20b,	ref: 15b - 20b = -5b.	// instr: 0x09
 	zjmp %:live
+live:
 
 # pos_cur = pos_prev + size_prev;
 # ref = label_pos - ref_pos;

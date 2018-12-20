@@ -32,8 +32,9 @@ t_argument			*dir_get(uint8_t instr_code, char *arg_str) // add counter
 	arg->code = DIR_CODE;
 	if (*(arg_str + 1) == LABEL_CHAR)
 	{
-		arg->ref.len = ft_strlen(arg_str + 2);
-		arg->ref.name = ft_strsub(arg_str, 2, arg->ref.len);
+		arg->ref = ft_memalloc(sizeof(t_reference));
+		arg->ref->len = ft_strlen(arg_str + 2);
+		arg->ref->name = ft_strsub(arg_str, 2, arg->ref->len);
 	}
 	else
 	{

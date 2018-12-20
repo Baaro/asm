@@ -21,7 +21,7 @@ void				link_references(t_list **b_tokens, uint32_t *size)
 		while (++curr_arg < MAX_ARGS_NUMBER - 1)
 		{
 			if (((t_b_token *)refs->content)->args[curr_arg]
-			&& ((t_b_token *)refs->content)->args[curr_arg]->ref.name)
+			&& ((t_b_token *)refs->content)->args[curr_arg]->ref)
 			{
 				labels_in = *b_tokens;
 				while (labels_in)
@@ -29,7 +29,7 @@ void				link_references(t_list **b_tokens, uint32_t *size)
 					label_tmp = ((t_b_token *)labels_in->content)->labels;
 					while (label_tmp)
 					{
-						if (ft_strequ(((t_b_token *)refs->content)->args[curr_arg]->ref.name, ((t_label *)label_tmp->content)->name))
+						if (ft_strequ(((t_b_token *)refs->content)->args[curr_arg]->ref->name, ((t_label *)label_tmp->content)->name))
 						{
 							found = true;
 							if (((t_b_token *)refs->content)->args[curr_arg]->code == IND_CODE)
@@ -51,9 +51,9 @@ void				link_references(t_list **b_tokens, uint32_t *size)
 				if (!found)
 				{
 					if (((t_b_token *)refs->content)->args[curr_arg]->code == DIR_CODE)
-						printf("ERROR: UNKNWON REFERENCE: \"%c%c%s\"\n", DIRECT_CHAR, LABEL_CHAR, ((t_b_token *)refs->content)->args[curr_arg]->ref.name);
+						printf("ERROR: UNKNWON REFERENCE: \"%c%c%s\"\n", DIRECT_CHAR, LABEL_CHAR, ((t_b_token *)refs->content)->args[curr_arg]->ref->name);
 					else if (((t_b_token *)refs->content)->args[curr_arg]->code == IND_CODE)
-						printf("ERROR: UNKNWON REFERENCE: \"%c%s\"\n", LABEL_CHAR,((t_b_token *)refs->content)->args[curr_arg]->ref.name);
+						printf("ERROR: UNKNWON REFERENCE: \"%c%s\"\n", LABEL_CHAR, ((t_b_token *)refs->content)->args[curr_arg]->ref->name);
 					exit(1);
 				}
 			}

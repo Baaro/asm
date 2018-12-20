@@ -75,7 +75,7 @@ void				args_set(t_b_token *bc, t_token *t)
 		{
 			bc->args[curr_arg] = arg_get(bc->instr_code, t->args[curr_arg]);
 			arg_valid(bc->instr_code, bc->args[curr_arg]->code, curr_arg);
-			if (g_instrs_tab[bc->instr_code - 1].args_types)
+			if (g_instrs_tab[bc->instr_code - 1].codage)
 			{
 				bc->args_code |= bc->args[curr_arg]->code << shift;
 				shift -= 2;

@@ -21,9 +21,9 @@ uint8_t			instr_get_code(char *instr)
 	return (instr_code);
 }
 
-uint32_t		instr_get_pos(t_b_token *b_prevtoken)
+uint32_t		instr_get_pos(uint32_t pos, uint32_t size)
 {
-	return (b_prevtoken ? b_prevtoken->pos + b_prevtoken->size : 0);
+	return (size || pos ? pos + size : 0);
 }
 
 uint32_t		instr_get_size(t_b_token *b_token)
@@ -33,6 +33,8 @@ uint32_t		instr_get_size(t_b_token *b_token)
 
 	size = 1;
 	curr_arg = -1;
+	if (!b_token->instr_code)
+		return (0);
 	while (++curr_arg < MAX_ARGS_NUMBER - 1)
 	{
 		if (!b_token->args[curr_arg])

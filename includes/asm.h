@@ -90,12 +90,12 @@ typedef struct				s_reference
 typedef struct				s_argument
 {
 	uint8_t					code;
-	t_reference				ref;
 	uint8_t					dir_size;
 	uint8_t					reg;
 	uint16_t				ind;
 	uint16_t				dir16;
 	uint32_t				dir32;
+	t_reference				*ref;
 }							t_argument;
 
 typedef struct				s_token
@@ -120,7 +120,7 @@ typedef struct				s_instr
 	const char				*name;
 	const uint8_t			instr_code;
 	const uint8_t			args[MAX_ARGS_NUMBER - 1];
-	const bool				args_types;
+	const bool				codage;
 	const uint8_t			dir_size;
 }							t_instr;
 
@@ -184,7 +184,7 @@ void				token_print(t_list *token);
 ** token to bytecode
 */
 t_list				*b_tokens_make(t_list *tokens);
-t_b_token			*b_token_make(t_b_token *b_prevtoken, t_token *token);
+t_b_token			*b_token_make(t_token *token, uint32_t size_prev, uint32_t pos_prev);
 void				b_tokens_del(t_list **b_tokens);
 void				append_b_tokens(t_list **b_tokens, t_b_token *b_token);
 void				b_token_print(t_list *b_token);
@@ -192,7 +192,7 @@ void				b_token_print(t_list *b_token);
 ** instruction
 */
 char				*instr_get_str(char *fline, char *cur_line, t_counter *c);
-uint32_t			instr_get_pos(t_b_token *b_prevtoken);
+uint32_t			instr_get_pos(uint32_t pos, uint32_t size);
 uint8_t				instr_get_code(char *instr);
 uint32_t			instr_get_size(t_b_token *b_token);
 

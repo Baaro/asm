@@ -85,6 +85,8 @@ void			b_token_print(t_list *b_token)
 			}
 		}
 	}
+	printf("\nPOSITION: %u\n", ((t_b_token*)b_token->content)->pos);
+	printf("\nSIZE: %u\n", ((t_b_token*)b_token->content)->size);
 	printf("\n-----------B-TOKEN-----------\n");
 }
 

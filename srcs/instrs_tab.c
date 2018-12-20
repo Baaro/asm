@@ -17,6 +17,6 @@ const t_instr 	g_instrs_tab[NUM_INSTRUCTIONS + 1] =
 	{"lld",		13,	{T_DIR | T_IND, T_REG},									true,	4},
 	{"lldi", 	14,	{T_REG | T_DIR | T_IND, T_DIR | T_REG, T_REG},			true,	2},
 	{"lfork",	15,	{T_DIR},												false,	2},
-	{"aff",		16,	{T_REG},												false,	4},
+	{"aff",		16,	{T_REG},												true,	4},
 	{0, 		0,	{0}}
 };

@@ -36,8 +36,9 @@ t_argument			*ind_get(uint8_t instr_code, char *arg_str) // add counter
 	arg->code = IND_CODE;
 	if (*arg_str == LABEL_CHAR)
 	{
-		arg->ref.len = ft_strlen(arg_str + 1);
-		arg->ref.name = ft_strsub(arg_str, 1, arg->ref.len);
+		arg->ref = ft_memalloc(sizeof(t_reference));
+		arg->ref->len = ft_strlen(arg_str + 1);
+		arg->ref->name = ft_strsub(arg_str, 1, arg->ref->len);
 	}
 	else
 		arg->ind = swap_uint16(ft_atoi64(arg_str));

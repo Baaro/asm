@@ -28,7 +28,7 @@ bool				is_ind(char *arg_str) // add counter
 	return (false);
 }
 
-t_argument			*ind_get(uint8_t instr_code, char *arg_str) // add counter
+t_argument			*ind_get(char *arg_str) // add counter
 {
 	t_argument	*arg;
 

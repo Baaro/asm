@@ -1,25 +1,27 @@
 #include "asm.h"
 
-void				append_b_tokens(t_list **b_tokens, t_b_token *b_token)
+void				append_b_tokens(t_list **b_tokens, t_b_token *bt)
 {
-	ft_lstaddend(b_tokens, ft_lstnew(b_token, sizeof(t_b_token)));
-	free(b_token);
+	ft_lstaddend(b_tokens, ft_lstnew(bt, sizeof(t_b_token)));
+	ft_memdel((void**)&bt);
 }
 
-t_b_token			*b_token_make(t_token *token, uint32_t size_prev, uint32_t pos_prev)
+t_b_token			*b_token_make(t_token *t, uint32_t sizeprv, uint32_t posprv)
 {
-    t_b_token	*b_token;
+    t_b_token	*bt;
 
-	b_token = ft_memalloc(sizeof(t_b_token));
-	if (token->instr)
+	bt = ft_memalloc(sizeof(t_b_token));
+	if (t->op)
 	{
-		b_token->instr_code = instr_get_code(token->instr);
-    	args_set(b_token, token);
+		bt->op_code = op_get_code(t->op);
+		bt->op_template = (t_op_template *)&g_op_template_tab[bt->op_code - 1];
+		bt->codage = bt->op_template->codage;
+    	args_set(bt, t);
 	}
-	b_token->pos = instr_get_pos(pos_prev, size_prev);
-    b_token->size = instr_get_size(b_token);
-	b_token->labels = ft_lstmap(token->labels, ft_lstget);
-    return (b_token);
+	bt->pos = op_get_pos(posprv, sizeprv);
+    bt->size = op_get_size(bt);
+	bt->labels = ft_lstmap(t->labels, ft_lstget);
+    return (bt);
 }
 
 void				b_tokens_del(t_list **b_tokens)
@@ -60,17 +62,17 @@ t_list				*b_tokens_make(t_list *tokens)
 	uint32_t	pos;
 	uint32_t	size;
 	t_list		*b_tokens;
-	t_b_token	*b_token;
+	t_b_token	*bt;
 
 	pos = 0;
 	size = 0;
 	b_tokens = NULL;
 	while (tokens)
 	{
-		b_token = b_token_make((t_token *)tokens->content, pos, size);
-		pos = b_token->pos;
-		size = b_token->size;
-		append_b_tokens(&b_tokens, b_token);
+		bt = b_token_make((t_token *)tokens->content, pos, size);
+		pos = bt->pos;
+		size = bt->size;
+		append_b_tokens(&b_tokens, bt);
 		tokens = tokens->next;
 	}
 	return (b_tokens);

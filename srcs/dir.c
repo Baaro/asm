@@ -1,7 +1,5 @@
 #include "asm.h"
 
-const t_instr	g_instrs_tab[NUM_INSTRUCTIONS + 1];
-
 bool				is_dir(char *arg_str) // add counter
 {
 	if (*arg_str == DIRECT_CHAR)
@@ -24,7 +22,7 @@ bool				is_dir(char *arg_str) // add counter
 	return (false);
 }
 
-t_argument			*dir_get(uint8_t instr_code, char *arg_str) // add counter
+t_argument			*dir_get(uint8_t dir_size, char *arg_str) // add counter
 {
 	t_argument	*arg;
 
@@ -38,11 +36,11 @@ t_argument			*dir_get(uint8_t instr_code, char *arg_str) // add counter
 	}
 	else
 	{
-		if (g_instrs_tab[instr_code - 1].dir_size == USHORT)
+		if (dir_size == USHORT)
 			arg->dir16 = swap_uint16(ft_atoi64(arg_str + 1));
-		else if (g_instrs_tab[instr_code - 1].dir_size == UINT)
+		else if (dir_size == UINT)
 			arg->dir32 = swap_uint32(ft_atoi64(arg_str + 1));
 	}
-	arg->dir_size = g_instrs_tab[instr_code - 1].dir_size;
+	arg->dir_size = dir_size;
 	return (arg);
 }

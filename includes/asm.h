@@ -8,7 +8,7 @@
 # include "op.h"
 # define FLAG_A 					1
 # define FLAG_M 					2
-# define INSTR_CHARS				"abcdefghijklmnopqrstuvwxyz"
+# define OPS_CHARS					"abcdefghijklmnopqrstuvwxyz"
 # define VALID_CHARS	        	"abcdefghijklmnopqrstuvwxyz_0123456789%:-"
 # define NUM_INSTRUCTIONS			16
 # define VALID	 					2
@@ -60,11 +60,13 @@ typedef struct				s_file
 
 typedef struct				s_file_cor
 {
+	char					*name;
+	uint32_t				modes;
+	uint32_t				permissions;
+	int						fd;
 	t_header				*header;
 	t_list					*tokens;
 	t_list					*b_tokens;
-	char					*name;
-	int						fd;
 	uint32_t				size;
 }							t_file_cor;
 
@@ -101,51 +103,54 @@ typedef struct				s_argument
 typedef struct				s_token
 {
 	t_list					*labels;
-	char					*instr;
+	t_counter				*counter;
+	char					*op;
 	char					*args[MAX_ARGS_NUMBER - 1];
 }							t_token;
 
-typedef struct				s_b_token
-{
-	uint8_t   				instr_code;
-	uint8_t					args_code;
-	uint32_t				pos;
-	uint32_t				size;
-	t_list					*labels;
-	t_argument				*args[MAX_ARGS_NUMBER - 1];
-}							t_b_token;
-
-typedef struct				s_instr
+typedef struct				s_op_template
 {
 	const char				*name;
-	const uint8_t			instr_code;
+	const uint8_t			code;
 	const uint8_t			args[MAX_ARGS_NUMBER - 1];
 	const bool				codage;
 	const uint8_t			dir_size;
-}							t_instr;
+}							t_op_template;
+
+typedef struct				s_b_token
+{
+	uint8_t   				op_code;
+	uint8_t					args_code;
+	uint32_t				pos;
+	uint32_t				size;
+	t_argument				*args[MAX_ARGS_NUMBER - 1];
+	t_list					*labels;
+	t_op_template			*op_template;
+	bool					codage;
+}							t_b_token;
 
 void				usage(void); // test version
 
 /*
-** counter
+** Counter
 */
 t_counter			*counter_new(void);
 void				counter_del(t_counter **c);
 void				counter_clear(t_counter *c);
 
 /*
-** filename.*
+** Filename.*
 */
 t_file 				*file_get(char *filename);
 void				file_del(t_file **f);
 
 /*
-** flags
+** Flags
 */
 uint8_t				flags_get(int *ac, char ***av, t_counter *c);
 
 /*
-** filename.cor
+** Filename.cor
 */
 t_file_cor			*file_cor_make(t_file *f, t_counter *c);		// test version
 void				file_cor_write(t_file_cor *fc, uint8_t flags, t_counter *c);
@@ -155,18 +160,18 @@ int		         	file_get_line(t_file *f, t_counter *c, bool is_cmds);
 size_t				get_currunet_column(t_counter *c);
 
 /*
-** header
+** Header
 */
 t_header			*header_get(t_file *f, t_counter *c);
 void				header_del(t_header **h);
 
 /*
-** cmd
+** Cmd
 */
 void				cmd_str_set(t_file *f, t_header *h, t_counter *c);
 
 /*
-** label
+** Label
 */
 bool				is_label(char *line);
 void				label_append(t_list **curr_labs, t_list **all_labs, t_label *label);
@@ -175,7 +180,7 @@ t_label				*label_get(char *line, t_counter *counter);
 bool				label_exists(t_list	*all_labels, t_label *label);
 
 /*
-** token
+** Token
 */
 t_list				*tokens_make(t_file *f, t_counter *c); // test version
 void				tokens_del(t_list **tokens);
@@ -189,36 +194,36 @@ void				b_tokens_del(t_list **b_tokens);
 void				append_b_tokens(t_list **b_tokens, t_b_token *b_token);
 void				b_token_print(t_list *b_token);
 /*
-** instruction
+** Operations
 */
-char				*instr_get_str(char *fline, char *cur_line, t_counter *c);
-uint32_t			instr_get_pos(uint32_t pos, uint32_t size);
-uint8_t				instr_get_code(char *instr);
-uint32_t			instr_get_size(t_b_token *b_token);
+char				*op_get_str(char *fline, char *cur_line, t_counter *c);
+uint32_t			op_get_pos(uint32_t pos, uint32_t size);
+uint8_t				op_get_code(char *instr);
+uint32_t			op_get_size(t_b_token *b_token);
 
 /*
-** arguments
+** Arguments
 */
 void				args_get_strs(t_token *token, t_counter *c);
 void				args_set(t_b_token *b_token, t_token *token);
 
 /*
-** dir
+** Dir
 */
 bool				is_dir(char *arg);
-t_argument			*dir_get(uint8_t instr_code, char *arg_str);
+t_argument			*dir_get(uint8_t dir_size, char *arg_str); // add counter
 
 /*
-** ind
+** Ind
 */
 bool				is_ind(char *arg);
-t_argument			*ind_get(uint8_t instr_code, char *arg_str);
+t_argument			*ind_get(char *arg_str);
 
 /*
-** reg
+** Reg
 */
 bool				is_reg(char *arg);
-t_argument			*reg_get(uint8_t instr_code, char *arg_str);
+t_argument			*reg_get(char *arg_str);
 
 /*
 ** Errors
@@ -247,5 +252,26 @@ uint32_t			swap_uint32(uint32_t val);
 bool				is_valid_val(char *arg_str);
 ssize_t				get_invalid_symbols(char *line, size_t len, char *valid_symbols);
 void				ft_lstprint(t_list *elem);
+
+static const t_op_template	g_op_template_tab[NUM_INSTRUCTIONS + 1] =
+{
+	{"live",	1,	{T_DIR},												false,	4},
+	{"ld",		2,	{T_DIR | T_IND, T_REG},									true,	4},
+	{"st",		3,	{T_REG, T_IND | T_REG},									true,	4},
+	{"add",		4,	{T_REG, T_REG, T_REG},									true, 	4},
+	{"sub",		5,	{T_REG, T_REG, T_REG},									true, 	4},
+	{"and",		6,	{T_REG | T_IND | T_DIR, T_REG | T_IND | T_DIR, T_REG},	true, 	4},
+	{"or",		7,	{T_REG | T_IND | T_DIR, T_REG | T_IND | T_DIR, T_REG},	true, 	4},
+	{"xor",		8,	{T_REG | T_IND | T_DIR, T_REG | T_IND | T_DIR, T_REG},	true, 	4},
+	{"zjmp",	9,	{T_DIR},												false,	2},
+	{"ldi",		10,	{T_REG | T_DIR | T_IND, T_DIR | T_REG, T_REG},			true,	2},
+	{"sti",		11,	{T_REG, T_REG | T_DIR | T_IND, T_DIR | T_REG},			true,	2},
+	{"fork",	12,	{T_DIR},												false,	2},
+	{"lld",		13,	{T_DIR | T_IND, T_REG},									true,	4},
+	{"lldi", 	14,	{T_REG | T_DIR | T_IND, T_DIR | T_REG, T_REG},			true,	2},
+	{"lfork",	15,	{T_DIR},												false,	2},
+	{"aff",		16,	{T_REG},												true,	4},
+	{0, 		0,	{0}}
+};
 
 #endif

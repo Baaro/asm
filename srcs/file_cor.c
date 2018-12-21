@@ -7,6 +7,7 @@ void				link_references(t_list **b_tokens, uint32_t *size)
 	t_list		*labels_in;
 	t_list		*label_tmp;
 	bool		found;
+
 	// get ref
 	//	find label with the same name
 	//		if found
@@ -77,7 +78,7 @@ void    			file_cor_del(t_file_cor **fc)
 	free(*fc);
 }
 
-void			file_cor_write(t_file_cor *fc, uint8_t flags, t_counter *c)
+void				file_cor_write(t_file_cor *fc, uint8_t flags, t_counter *c)
 {
 	ssize_t curr_arg;
 	uint32_t null = 0;
@@ -91,7 +92,8 @@ void			file_cor_write(t_file_cor *fc, uint8_t flags, t_counter *c)
 	t_list *b_tokens = fc->b_tokens;
 	while (b_tokens)
 	{
-		write(fc->fd, &((t_b_token *)b_tokens->content)->instr_code, sizeof(uint8_t));
+		if (((t_b_token *)b_tokens->content)->op_code)
+			write(fc->fd, &((t_b_token *)b_tokens->content)->op_code, sizeof(uint8_t));
 		if (((t_b_token *)b_tokens->content)->args_code)
 			write(fc->fd, &((t_b_token *)b_tokens->content)->args_code, sizeof(uint8_t));
 		curr_arg = -1;
@@ -116,16 +118,31 @@ void			file_cor_write(t_file_cor *fc, uint8_t flags, t_counter *c)
 	}
 }
 
-t_file_cor			*file_cor_make(t_file *f, t_counter *c) // test version
+char				*file_cor_get_name(char *f_name)
+{
+	char	*slash;
+	char	*dot;
+	char	*fc_name;
+
+	slash = ft_strrchr(f_name, '/');
+	dot = ft_strchr(slash, '.');
+	fc_name = ft_strsub(slash + 1, 0, dot - slash);
+	fc_name = ft_strjoincl(fc_name, "cor", 0);
+	return (fc_name);
+}
+
+t_file_cor			*file_cor_make(t_file *f, t_counter *c)
 {
 	t_file_cor	*fc;
 
 	fc = file_cor_new();
-	fc->fd = open("hell", O_APPEND | O_RDWR | O_TRUNC | O_CREAT, S_IRUSR);
+	fc->name = file_cor_get_name(f->name);
+	fc->modes = O_APPEND | O_RDWR | O_TRUNC | O_CREAT;
+	fc->permissions = S_IWUSR | S_IRUSR;
+	fc->fd = open(fc->name, fc->modes, fc->permissions);
 	fc->header = header_get(f, c);
-	fc->header->magic = swap_uint32(COREWAR_EXEC_MAGIC);
 	fc->tokens = tokens_make(f, c);
-	fc->b_tokens = b_tokens_make(fc->tokens); /* b - bytecoded */
+	fc->b_tokens = b_tokens_make(fc->tokens);
 	link_references(&fc->b_tokens, &fc->size);
 	ft_lstiter(fc->tokens, token_print);
 	ft_lstiter(fc->b_tokens, b_token_print);

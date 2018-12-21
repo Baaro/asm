@@ -47,7 +47,7 @@ void			token_print(t_list *token)
 	printf("\n-----------TOKEN-----------\n");
 	printf("LABELS:\n");
 	ft_lstiter(((t_token *)token->content)->labels, ft_lstprint);
-	printf("INSTRUCTION: [%s]\n", ((t_token *)token->content)->instr);
+	printf("INSTRUCTION: [%s]\n", ((t_token *)token->content)->op);
 	printf("ARGUMENTS:\n");
 	i = -1;
 	while (++i < MAX_ARGS_NUMBER - 1)
@@ -63,9 +63,9 @@ void			b_token_print(t_list *b_token)
 	printf("LABELS:\n");
 	ft_lstiter(((t_b_token *)b_token->content)->labels, ft_lstprint);
 	printf("INSTR_CODE: ");
-	printf(BYTE_TO_BINARY_PATTERN, BYTE_TO_BINARY(((t_b_token *)b_token->content)->instr_code));
+	printf(BYTE_TO_BINARY_PATTERN, BYTE_TO_BINARY(((t_b_token *)b_token->content)->op_code));
 	printf("\nARGS_CODE: ");
-	printf(BYTE_TO_BINARY_PATTERN, BYTE_TO_BINARY(((t_b_token *)b_token->content)->args_code));
+	printf(BYTE_TO_BINARY_PATTERN, BYTE_TO_BINARY(((t_b_token *)b_token->content)->op_code));
 	printf("\nARGUMENTS:\n");
 	i = -1;
 	while (++i < MAX_ARGS_NUMBER - 1)

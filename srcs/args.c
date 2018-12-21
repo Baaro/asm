@@ -1,7 +1,5 @@
 #include "asm.h"
 
-const t_instr 		g_instrs_tab[NUM_INSTRUCTIONS + 1];
-
 static void			arg_valid_str(char *arg, t_counter *c)
 {
 	ssize_t	invalid_symbol;
@@ -28,41 +26,47 @@ void				args_get_strs(t_token *token, t_counter *c)
 	}
 }
 
-static t_argument	*arg_get(uint8_t instr_code, char *arg_str)
+static t_argument	*arg_get(t_b_token *bt, t_token *t, ssize_t curr_arg)
 {
 	t_argument	*arg;
 
-	if (is_reg(arg_str))
-		arg = reg_get(instr_code, arg_str);
-	else if (is_dir(arg_str))
-		arg = dir_get(instr_code, arg_str);
-	else if (is_ind(arg_str))
-		arg = ind_get(instr_code, arg_str);
+	if (is_reg(t->args[curr_arg]))
+		arg = reg_get(t->args[curr_arg]);
+	else if (is_dir(t->args[curr_arg]))
+		arg = dir_get(bt->op_template->dir_size, t->args[curr_arg]);
+	else if (is_ind(t->args[curr_arg]))
+		arg = ind_get(t->args[curr_arg]);
+	else
+	{
+		printf("instr: %d\n", bt->op_template->code);
+		printf("Wrong argument for token [%s]!\n", bt->op_template->name);
+		exit(1);	
+	}
 	return (arg);
 }
 
-void				arg_valid(uint8_t instr_code, uint8_t arg_code, ssize_t curr_arg) // add counter
+void				arg_valid(t_b_token *bt, ssize_t curr_arg) // add counter
 {
 	uint8_t arg_type;
 
 	arg_type = 0;
-	if (arg_code == REG_CODE)
+	if (bt->args[curr_arg]->code == REG_CODE)
 		arg_type = T_REG;
-	else if (arg_code == DIR_CODE)
+	else if (bt->args[curr_arg]->code == DIR_CODE)
 		arg_type = T_DIR;
-	else if (arg_code == IND_CODE)
+	else if (bt->args[curr_arg]->code == IND_CODE)
 		arg_type = T_IND;
-	if (g_instrs_tab[instr_code - 1].args[curr_arg] & arg_type)
+	if (bt->op_template->args[curr_arg] & arg_type)
 		return ;
 	else
 	{
-		printf("instr: %d\n", instr_code);
-		printf("Wrong argument for [%s]!\n", g_instrs_tab[instr_code - 1].name);
+		printf("instr: %d\n", bt->op_template->code);
+		printf("Wrong argument for [%s]!\n", bt->op_template->name);
 		exit(1);
 	}
 }
 
-void				args_set(t_b_token *bc, t_token *t)
+void				args_set(t_b_token *bt, t_token *t)
 {
 	uint8_t		shift;
 	ssize_t		curr_arg;
@@ -73,18 +77,18 @@ void				args_set(t_b_token *bc, t_token *t)
 	{
 		if (t->args[curr_arg])
 		{
-			bc->args[curr_arg] = arg_get(bc->instr_code, t->args[curr_arg]);
-			arg_valid(bc->instr_code, bc->args[curr_arg]->code, curr_arg);
-			if (g_instrs_tab[bc->instr_code - 1].codage)
+			bt->args[curr_arg] = arg_get(bt, t, curr_arg);
+			arg_valid(bt, curr_arg);
+			if (bt->op_template->codage)
 			{
-				bc->args_code |= bc->args[curr_arg]->code << shift;
+				bt->args_code |= bt->args[curr_arg]->code << shift;
 				shift -= 2;
 			}
 		}
-		else if (g_instrs_tab[bc->instr_code - 1].args[curr_arg])
+		else if (bt->op_template->args[curr_arg])
 		{
-			printf("instr: %d\n", g_instrs_tab[bc->instr_code - 1].instr_code);
-			printf("Wrong argument for [%s]!\n", g_instrs_tab[bc->instr_code - 1].name);
+			printf("instr: %d\n", bt->op_template->code);
+			printf("Wrong argument for [%s]!\n",  bt->op_template->name);
 			exit(1);
 		}
 	}

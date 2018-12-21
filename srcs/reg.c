@@ -14,7 +14,7 @@ bool		is_reg(char *arg)
 		{
 			if (!(ft_isdigit(*copy_arg)))
 			{
-				printf("ERROR: %s\n", arg);
+				printf("error at reg: %s\n", arg);
 				exit(1);
 			}
 			copy_arg++;
@@ -25,7 +25,7 @@ bool		is_reg(char *arg)
 	return (true);
 }
 
-t_argument			*reg_get(uint8_t instr_code, char *arg_str)
+t_argument			*reg_get(char *arg_str)
 {
 	t_argument	*arg;
 

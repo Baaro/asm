@@ -1,10 +1,17 @@
 #include "asm.h"
 
+static void		token_append(t_list **token_head, t_token *token)
+{
+	ft_lstaddend(token_head, ft_lstnew(token, sizeof(t_token)));
+	ft_memdel((void**)&token);
+}
+
 void			tokens_del(t_list **tokens)
 {
 	t_list		*to_free;
 	t_list		*to_free_label;
 	ssize_t		i;
+
 	while (*tokens)
 	{
 		to_free = *tokens;
@@ -16,7 +23,7 @@ void			tokens_del(t_list **tokens)
 			to_free_label = to_free_label->next;
 		}
 		ft_lstdel(&((t_token *)to_free->content)->labels, ft_lstelemfree);// system("leaks asm");
-		free(((t_token *)to_free->content)->instr);
+		free(((t_token *)to_free->content)->op);
 		i = -1;
 		while (++i < MAX_ARGS_NUMBER - 1)
 		{
@@ -28,29 +35,25 @@ void			tokens_del(t_list **tokens)
 	}
 }
 
-static void		token_append(t_list **token_head, t_token *token)
-{
-	ft_lstaddend(token_head, ft_lstnew(token, sizeof(t_token)));
-	ft_memdel((void**)&token);
-}
-
 static t_token	*token_new(t_list **curr_labels, t_list **all_labels, char *fline, t_counter *c)
 {
 	t_token		*token;
 	t_label		*label;
 
 	token = ft_memalloc(sizeof(t_token));
+	token->counter = counter_new();
+	token->counter = c;
 	if ((label = label_get(fline, c)))
 	{
 		if (!label_exists(*all_labels, label))
 			label_append(curr_labels, all_labels, label);
 		else
 			free(label->name);
-		token->instr = instr_get_str(fline, fline + label->len + 1, c);
+		token->op = op_get_str(fline, fline + label->len + 1, c);
 		ft_memdel((void**)&label);
 	}
 	else
-		token->instr = instr_get_str(fline, fline, c);
+		token->op = op_get_str(fline, fline, c);
 	token->labels = ft_lstmap(*curr_labels, ft_lstget);
 	args_get_strs(token, c);
 	return (token);

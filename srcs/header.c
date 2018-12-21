@@ -42,6 +42,7 @@ t_header		*header_get(t_file *f, t_counter *c)
 	ssize_t		h_cmds;
 
 	h = header_new();
+	h->magic = swap_uint32(COREWAR_EXEC_MAGIC);	
 	h_cmds = -1;
 	while (++h_cmds != VALID)
 		header_set_cmds(f, h, c);

@@ -1,6 +1,7 @@
 .name "kek"
 .comment "sas"
 
+aff
 entry:
 	sti			r1, %:zork, %1
 	sti			r1, %:ardef, %1
@@ -62,6 +63,7 @@ zork:
 
 avdef:
 	live		%42
+	st			r3, 400
 	st			r2, 400
 	st			r2, 400
 	st			r2, 400
@@ -90,8 +92,7 @@ avdef:
 	st			r2, 400
 	st			r2, 400
 	st			r2, 400
-	st			r2, -400
-	st			r, 400
+	st			r2, 400
 	st			r2, 400
 	zjmp		%:avdef
 

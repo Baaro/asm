@@ -81,14 +81,12 @@ void    			file_cor_del(t_file_cor **fc)
 void				file_cor_write(t_file_cor *fc, uint8_t flags, t_counter *c)
 {
 	ssize_t curr_arg;
-	uint32_t null = 0;
+
 	write(fc->fd, &fc->header->magic, sizeof(fc->header->magic));
-	write(fc->fd, &fc->header->prog_name, PROG_NAME_LENGTH);
-	write(fc->fd, &null, sizeof(uint32_t));
+	write(fc->fd, &fc->header->prog_name, PROG_NAME_LENGTH + 4);
 	fc->size = swap_uint32(fc->size);
 	write(fc->fd, &fc->size, sizeof(uint32_t));
-	write(fc->fd, &fc->header->comment, COMMENT_LENGTH);
-	write(fc->fd, &null, sizeof(uint32_t));
+	write(fc->fd, &fc->header->comment, COMMENT_LENGTH + 4);
 	t_list *b_tokens = fc->b_tokens;
 	while (b_tokens)
 	{
@@ -137,14 +135,19 @@ t_file_cor			*file_cor_make(t_file *f, t_counter *c)
 
 	fc = file_cor_new();
 	fc->name = file_cor_get_name(f->name);
-	fc->modes = O_APPEND | O_RDWR | O_TRUNC | O_CREAT;
-	fc->permissions = S_IWUSR | S_IRUSR;
-	fc->fd = open(fc->name, fc->modes, fc->permissions);
+
+
 	fc->header = header_get(f, c);
+	printf("name: [%s]\n", fc->header->prog_name);
+	printf("comment: [%s]\n", fc->header->comment);
 	fc->tokens = tokens_make(f, c);
 	fc->b_tokens = b_tokens_make(fc->tokens);
 	link_references(&fc->b_tokens, &fc->size);
-	ft_lstiter(fc->tokens, token_print);
-	ft_lstiter(fc->b_tokens, b_token_print);
+	fc->modes = O_RDWR | O_TRUNC | O_CREAT;
+	fc->permissions = S_IWUSR | S_IRUSR;
+	fc->fd = open(fc->name, fc->modes, fc->permissions);
+
+	// ft_lstiter(fc->tokens, token_print);
+	// ft_lstiter(fc->b_tokens, b_token_print);
 	return (fc);
 }

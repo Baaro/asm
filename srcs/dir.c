@@ -22,7 +22,7 @@ bool				is_dir(char *arg_str) // add counter
 	return (false);
 }
 
-t_argument			*dir_get(uint8_t dir_size, char *arg_str) // add counter
+t_argument			*dir_get(uint8_t dir_size, char *arg_str)
 {
 	t_argument	*arg;
 

@@ -10,6 +10,7 @@
 # define FLAG_M 					2
 # define OPS_CHARS					"abcdefghijklmnopqrstuvwxyz"
 # define VALID_CHARS	        	"abcdefghijklmnopqrstuvwxyz_0123456789%:-"
+# define ARGS_CHARS		        	"abcdefghijklmnopqrstuvwxyz_0123456789%:-, \t"
 # define NUM_INSTRUCTIONS			16
 # define VALID	 					2
 # define USHORT 					2
@@ -105,14 +106,14 @@ typedef struct				s_token
 	t_list					*labels;
 	t_counter				*counter;
 	char					*op;
-	char					*args[MAX_ARGS_NUMBER - 1];
+	char					*args[MAX_ARGS_NUMBER];
 }							t_token;
 
 typedef struct				s_op_template
 {
 	const char				*name;
 	const uint8_t			code;
-	const uint8_t			args[MAX_ARGS_NUMBER - 1];
+	const uint8_t			args[MAX_ARGS_NUMBER];
 	const bool				codage;
 	const uint8_t			dir_size;
 }							t_op_template;
@@ -255,22 +256,22 @@ void				ft_lstprint(t_list *elem);
 
 static const t_op_template	g_op_template_tab[NUM_INSTRUCTIONS + 1] =
 {
-	{"live",	1,	{T_DIR},												false,	4},
-	{"ld",		2,	{T_DIR | T_IND, T_REG},									true,	4},
-	{"st",		3,	{T_REG, T_IND | T_REG},									true,	4},
-	{"add",		4,	{T_REG, T_REG, T_REG},									true, 	4},
-	{"sub",		5,	{T_REG, T_REG, T_REG},									true, 	4},
-	{"and",		6,	{T_REG | T_IND | T_DIR, T_REG | T_IND | T_DIR, T_REG},	true, 	4},
-	{"or",		7,	{T_REG | T_IND | T_DIR, T_REG | T_IND | T_DIR, T_REG},	true, 	4},
-	{"xor",		8,	{T_REG | T_IND | T_DIR, T_REG | T_IND | T_DIR, T_REG},	true, 	4},
-	{"zjmp",	9,	{T_DIR},												false,	2},
-	{"ldi",		10,	{T_REG | T_DIR | T_IND, T_DIR | T_REG, T_REG},			true,	2},
-	{"sti",		11,	{T_REG, T_REG | T_DIR | T_IND, T_DIR | T_REG},			true,	2},
-	{"fork",	12,	{T_DIR},												false,	2},
-	{"lld",		13,	{T_DIR | T_IND, T_REG},									true,	4},
-	{"lldi", 	14,	{T_REG | T_DIR | T_IND, T_DIR | T_REG, T_REG},			true,	2},
-	{"lfork",	15,	{T_DIR},												false,	2},
-	{"aff",		16,	{T_REG},												true,	4},
+	{"live",	1,	{T_DIR},												 false,	4},
+	{"ld",		2,	{T_DIR | T_IND, T_REG},									 true,	4},
+	{"st",		3,	{T_REG, T_IND | T_REG},									 true,	4},
+	{"add",		4,	{T_REG, T_REG, T_REG},									 true, 	4},
+	{"sub",		5,	{T_REG, T_REG, T_REG},									 true, 	4},
+	{"and",		6,	{T_REG | T_IND | T_DIR, T_REG | T_IND | T_DIR, T_REG},	 true, 	4},
+	{"or",		7,	{T_REG | T_IND | T_DIR, T_REG | T_IND | T_DIR, T_REG},	 true, 	4},
+	{"xor",		8,	{T_REG | T_IND | T_DIR, T_REG | T_IND | T_DIR, T_REG},	 true, 	4},
+	{"zjmp",	9,	{T_DIR},												 false,	2},
+	{"ldi",		10,	{T_REG | T_DIR | T_IND, T_DIR | T_REG, T_REG},			 true,	2},
+	{"sti",		11,	{T_REG, T_REG | T_DIR | T_IND, T_DIR | T_REG},			 true,	2},
+	{"fork",	12,	{T_DIR},												 false,	2},
+	{"lld",		13,	{T_DIR | T_IND, T_REG},									 true,	4},
+	{"lldi", 	14,	{T_REG | T_DIR | T_IND, T_DIR | T_REG, T_REG},			 true,	2},
+	{"lfork",	15,	{T_DIR},												 false,	2},
+	{"aff",		16,	{T_REG},												 true,	4},
 	{0, 		0,	{0}}
 };
 

@@ -1,30 +1,53 @@
 #include "asm.h"
 
-static void			arg_valid_str(char *arg, t_counter *c)
+static void			args_valid_all_str(char *arg, t_counter *c)
 {
 	ssize_t	invalid_symbol;
 	size_t	arglen;
 
 	arglen = ft_strlen(arg);
-	if ((invalid_symbol = get_invalid_symbols(arg, arglen, VALID_CHARS)) != -1)
+	if ((invalid_symbol = get_invalid_symbols(arg, arglen, ARGS_CHARS)) != -1)
 	{
 		c->column += arglen + (size_t)invalid_symbol - 1;
 		lexical_errors(E_INVALID_SYMBOLS, arg, c);
 	}
 }
 
+void				args_valid_begin_char(char args_begin)
+{
+	if (!(ft_strchr(VALID_CHARS, args_begin)))
+	{
+		printf("wrong separator %c\n", args_begin);
+		exit(1);
+	}
+}
+
+void				args_valid_end_char(char args_begin)
+{
+	if (!(ft_strchr(VALID_CHARS, args_begin)))
+	{
+		printf("wrong separator %c\n", args_begin);
+		exit(1);
+	}
+}
+
 void				args_get_strs(t_token *token, t_counter *c)
 {
-	ssize_t	i;
+	ssize_t	args_counter;
+	char	*args_str;
 
-	i = -1;
-	while (++i < MAX_ARGS_NUMBER - 1)
+	args_str = ft_strtrim(ft_strtok(NULL, "\0"));
+	args_valid_all_str(args_str, c);
+	args_valid_begin_char(*args_str);
+	args_valid_end_char(args_str[ft_strlen(args_str) - 1]);
+	args_counter = -1;
+	token->args[++args_counter] = ft_strtrim(ft_strtok(args_str, " ,"));
+	// printf("arg: %s\n", token->args[args_counter]);
+	while (++args_counter < MAX_ARGS_NUMBER)
 	{
-		token->args[i] = ft_strtrim(ft_strtok(NULL, ","));
-		if (token->args[i])
-		{
-			arg_valid_str(token->args[i], c);
-		}
+		token->args[args_counter] = ft_strtrim(ft_strtok(NULL, ","));
+		// if (token->args[args_counter])
+			// printf("arg: %s\n", token->args[args_counter]);
 	}
 }
 
@@ -75,19 +98,28 @@ void				args_set(t_b_token *bt, t_token *t)
 
 	shift = 6;
 	curr_arg = -1;
-	while (++curr_arg < MAX_ARGS_NUMBER - 1)
+	while (++curr_arg < MAX_ARGS_NUMBER)
 	{
-		if (t->args[curr_arg])
+		if (bt->op_template->args[curr_arg])
 		{
-			bt->args[curr_arg] = arg_get(bt, t, curr_arg);
-			arg_valid(bt, curr_arg);
-			if (bt->op_template->codage)
+			if (t->args[curr_arg])
 			{
-				bt->args_code |= bt->args[curr_arg]->code << shift;
-				shift -= 2;
+				bt->args[curr_arg] = arg_get(bt, t, curr_arg);
+				arg_valid(bt, curr_arg);
+				if (bt->op_template->codage)
+				{
+					bt->args_code |= bt->args[curr_arg]->code << shift;
+					shift -= 2;
+				}
+			}
+			else
+			{
+				printf("instr1: %d\n", bt->op_template->code);
+				printf("Wrong argument for [%s]!\n",  bt->op_template->name);
+				exit(1);
 			}
 		}
-		else if (bt->op_template->args[curr_arg])
+		else if (t->args[curr_arg])
 		{
 			printf("instr: %d\n", bt->op_template->code);
 			printf("Wrong argument for [%s]!\n",  bt->op_template->name);

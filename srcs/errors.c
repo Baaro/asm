@@ -97,7 +97,7 @@ void	lexical_errors(t_errors error, char *line, t_counter *counter)
 		ft_printf("Wrong input!\n");
 	else if (error == E_IS_NOT_ENOUGH_DATA)
 		ft_printf("Doesn't enough data for compile [%s]\n");
-	exit(EXIT_FAILURE);
+	exit(-1);
 }
 
 void	syntactic_errors(t_errors error, char *line, t_counter *counter)
@@ -114,7 +114,7 @@ void	syntactic_errors(t_errors error, char *line, t_counter *counter)
 	ft_printf("[%zu:%zu]\n", counter->row, get_currunet_column(counter));
 	if (error == E_NOT_ALL_COMMAND)
 		ft_printf("Is not a .name or .comment!\n");
-	exit(EXIT_FAILURE);
+	exit(-1);
 }
 
 void	semantic_errors(t_errors error, char *line, t_counter *counter)
@@ -151,7 +151,7 @@ void	semantic_errors(t_errors error, char *line, t_counter *counter)
 	}
 	else if (error == E_UNKNOWN_INSTR)
 		ft_printf("Unknown instruction: [%s]!\n", line);
-	exit(EXIT_FAILURE);
+	exit(-1);
 }
 
 // void	linker_errors(t_errors error, char *line, t_counter *counter)

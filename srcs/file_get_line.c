@@ -39,7 +39,6 @@ int         	file_get_line(t_file *f, t_counter *c, bool is_cmds)
 			|| is_comment(f->line + c->begin_whitespaces))
 				continue ;
 			f->line = ft_strcutuntil(f->line, COMMENT_CHARS);
-			f->line = ft_strretrim(f->line);
 		}
 		f->data = file_append_data(&f->data, &f->line, is_cmds);
 		break ;

@@ -4,12 +4,22 @@ static void			args_valid_all_str(char *arg, t_counter *c)
 {
 	ssize_t	invalid_symbol;
 	size_t	arglen;
+	size_t	coma;
 
 	arglen = ft_strlen(arg);
 	if ((invalid_symbol = get_invalid_symbols(arg, arglen, ARGS_CHARS)) != -1)
 	{
 		c->column += arglen + (size_t)invalid_symbol - 1;
 		lexical_errors(E_INVALID_SYMBOLS, arg, c);
+	}
+	coma = 0;
+	while (*arg)
+	{
+		if (*arg == ',')
+			coma++;
+		if (coma > 2 || (*arg == ',' && *(arg + 1) == ','))
+			lexical_errors(E_INVALID_SYMBOLS, arg, c);
+		arg++;
 	}
 }
 
@@ -18,7 +28,7 @@ void				args_valid_begin_char(char args_begin)
 	if (!(ft_strchr(VALID_CHARS, args_begin)))
 	{
 		printf("wrong separator %c\n", args_begin);
-		exit(1);
+		exit(-1);
 	}
 }
 
@@ -27,7 +37,7 @@ void				args_valid_end_char(char args_begin)
 	if (!(ft_strchr(VALID_CHARS, args_begin)))
 	{
 		printf("wrong separator %c\n", args_begin);
-		exit(1);
+		exit(-1);
 	}
 }
 
@@ -35,19 +45,23 @@ void				args_get_strs(t_token *token, t_counter *c)
 {
 	ssize_t	args_counter;
 	char	*args_str;
+	char	*tmp;
 
-	args_str = ft_strtrim(ft_strtok(NULL, "\0"));
-	args_valid_all_str(args_str, c);
-	args_valid_begin_char(*args_str);
-	args_valid_end_char(args_str[ft_strlen(args_str) - 1]);
-	args_counter = -1;
-	token->args[++args_counter] = ft_strtrim(ft_strtok(args_str, " ,"));
-	// printf("arg: %s\n", token->args[args_counter]);
-	while (++args_counter < MAX_ARGS_NUMBER)
+	if ((args_str = ft_strtrim(ft_strtok(NULL, "\0"))))
 	{
-		token->args[args_counter] = ft_strtrim(ft_strtok(NULL, ","));
-		// if (token->args[args_counter])
-			// printf("arg: %s\n", token->args[args_counter]);
+		args_valid_all_str(args_str, c);
+		args_valid_begin_char(*args_str);
+		args_valid_end_char(args_str[ft_strlen(args_str) - 1]);
+		args_counter = 0;
+		token->args[args_counter] = ft_strtrim(ft_strtok(args_str, ","));
+		while (++args_counter < MAX_ARGS_NUMBER)
+			token->args[args_counter] = ft_strtrim(ft_strtok(NULL, ","));
+		free(args_str);
+	}
+	else
+	{
+		printf("ERROR: NO ARGS!\n");
+		exit(-1);
 	}
 }
 
@@ -65,7 +79,7 @@ static t_argument	*arg_get(t_b_token *bt, t_token *t, ssize_t curr_arg)
 	{
 		printf("instr: %d\n", bt->op_template->code);
 		printf("Wrong argument for [%s]!\n", bt->op_template->name);
-		exit(1);	
+		exit(-1);	
 	}
 	return (arg);
 }
@@ -87,7 +101,7 @@ void				arg_valid(t_b_token *bt, ssize_t curr_arg) // add counter
 	{
 		printf("instr: %d\n", bt->op_template->code);
 		printf("Wrong argument for [%s]!\n", bt->op_template->name);
-		exit(1);
+		exit(-1);
 	}
 }
 
@@ -116,14 +130,14 @@ void				args_set(t_b_token *bt, t_token *t)
 			{
 				printf("instr1: %d\n", bt->op_template->code);
 				printf("Wrong argument for [%s]!\n",  bt->op_template->name);
-				exit(1);
+				exit(-1);
 			}
 		}
 		else if (t->args[curr_arg])
 		{
 			printf("instr: %d\n", bt->op_template->code);
 			printf("Wrong argument for [%s]!\n",  bt->op_template->name);
-			exit(1);
+			exit(-1);
 		}
 	}
 }

@@ -49,6 +49,8 @@ void			token_print(t_list *token)
 	ft_lstiter(((t_token *)token->content)->labels, ft_lstprint);
 	printf("INSTRUCTION: [%s]\n", ((t_token *)token->content)->op);
 	printf("ARGUMENTS:\n");
+	printf("column: %zd\n", ((t_token *)token->content)->counter->column);
+	printf("row: %zd\n", ((t_token *)token->content)->counter->row);
 	i = -1;
 	while (++i < MAX_ARGS_NUMBER - 1)
 		printf("arg[%zu] -> %s\n", i, (*(t_token*)token->content).args[i]);

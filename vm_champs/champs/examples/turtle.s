@@ -1,7 +1,7 @@
 .name "kek"
 .comment "sas"
 
-aff
+#aff
 entry:
 	sti			r1, %:zork, %1
 	sti			r1, %:ardef, %1

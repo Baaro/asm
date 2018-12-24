@@ -33,6 +33,7 @@ VPATH := $(source_dirs)
 clean:
 	$(MAKE) clean -C ./libft
 	$(RM) $(OBJ) $(OBJ_DIR)
+	rm -rf *.cor
 
 fclean: clean
 	$(MAKE) fclean -C ./libft

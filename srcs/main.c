@@ -21,7 +21,7 @@ int		main(int ac, char **av)
 	else if (ac >= 2)
 	{
 		c = counter_new();
-		flags = flags_get(&ac, &av, c);
+		c->args = 1;
 		while (c->args < ac)
 		{
 			f = file_get(av[c->args]);

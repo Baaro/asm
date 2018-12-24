@@ -16,9 +16,9 @@ static void		header_set_cmds(t_file *f, t_header *h, t_counter *c)
 	{
 		if (is_dot_char(f->line + c->begin_whitespaces))
 		{
-			if (ft_strnequ(f->line, NAME_CMD_STR, ft_strlen(NAME_CMD_STR)))
+			if (ft_strnequ(f->line + c->begin_whitespaces, NAME_CMD_STR, ft_strlen(NAME_CMD_STR)))
 				h->is_name_cmd = true;
-			else if (ft_strnequ(f->line, COMMENT_CMD_STR, ft_strlen(COMMENT_CMD_STR)))
+			else if (ft_strnequ(f->line + c->begin_whitespaces, COMMENT_CMD_STR, ft_strlen(COMMENT_CMD_STR)))
 				h->is_comment_cmd = true;
 			else
 				semantic_errors(E_UNMATCHED_COMMAND, f->line, c);
@@ -42,7 +42,7 @@ t_header		*header_get(t_file *f, t_counter *c)
 	ssize_t		h_cmds;
 
 	h = header_new();
-	h->magic = swap_uint32(COREWAR_EXEC_MAGIC);	
+	h->magic = swap_uint32(COREWAR_EXEC_MAGIC);
 	h_cmds = -1;
 	while (++h_cmds != VALID)
 		header_set_cmds(f, h, c);

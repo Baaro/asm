@@ -1,6 +1,6 @@
 #include "asm.h"
 
-void				link_references(t_list **b_tokens, uint32_t *size)
+void				insert_adresses(t_list **b_tokens, uint32_t *size)
 {
 	ssize_t		curr_arg;
 	t_list		*refs;
@@ -134,15 +134,11 @@ t_file_cor			*file_cor_make(t_file *f, t_counter *c)
 	t_file_cor	*fc;
 
 	fc = file_cor_new();
-	fc->name = file_cor_get_name(f->name);
-
-
 	fc->header = header_get(f, c);
-	printf("name: [%s]\n", fc->header->prog_name);
-	printf("comment: [%s]\n", fc->header->comment);
 	fc->tokens = tokens_make(f, c);
 	fc->b_tokens = b_tokens_make(fc->tokens);
-	link_references(&fc->b_tokens, &fc->size);
+	insert_adresses(&fc->b_tokens, &fc->size);
+	fc->name = file_cor_get_name(f->name);
 	fc->modes = O_RDWR | O_TRUNC | O_CREAT;
 	fc->permissions = S_IWUSR | S_IRUSR;
 	fc->fd = open(fc->name, fc->modes, fc->permissions);

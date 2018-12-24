@@ -24,6 +24,7 @@ void			tokens_del(t_list **tokens)
 		}
 		ft_lstdel(&((t_token *)to_free->content)->labels, ft_lstelemfree);// system("leaks asm");
 		free(((t_token *)to_free->content)->op);
+		free(((t_token *)to_free->content)->counter);
 		i = -1;
 		while (++i < MAX_ARGS_NUMBER - 1)
 		{
@@ -42,7 +43,8 @@ static t_token	*token_new(t_list **curr_labels, t_list **all_labels, char *fline
 
 	token = ft_memalloc(sizeof(t_token));
 	token->counter = counter_new();
-	token->counter = c;
+	token->counter->column = c->column;
+	token->counter->row = c->row;
 	if ((label = label_get(fline, c)))
 	{
 		if (!label_exists(*all_labels, label))
@@ -72,6 +74,7 @@ t_list			*tokens_make(t_file *f, t_counter *c) // test version
 	curr_labels = NULL;
 	while ((file_get_line(f, c, false)) == 1)
 	{
+		f->line = ft_strretrim(f->line);
 		if ((label = label_get_solo(f->line, c)))
 		{
 			if (!label_exists(all_labels, label))

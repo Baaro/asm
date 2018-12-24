@@ -60,7 +60,6 @@ typedef struct		        	s_header
 	char						comment[COMMENT_LENGTH + 1];
 	bool						is_name_cmd;
 	bool						is_comment_cmd;
-	// bool						cmd_choose;
 }								t_header;
 
 #endif

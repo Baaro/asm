@@ -1,6 +1,6 @@
 #include "asm.h"
 
-void	usage(void) // test version
+void	usage(void)
 {
 	ft_printf("\nUsage: ./asm [-a] <sourcefile.s>"
 			"\n    -a : Instead of creating a .cor file, "

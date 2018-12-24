@@ -174,7 +174,7 @@ void				cmd_str_set(t_file *f, t_header *h, t_counter *c);
 /*
 ** Label
 */
-bool				is_label(char *line);
+bool				is_label(char *line, size_t len);
 void				label_append(t_list **curr_labs, t_list **all_labs, t_label *label);
 t_label				*label_get_solo(char *line, t_counter *counter);
 t_label				*label_get(char *line, t_counter *counter);
@@ -254,7 +254,7 @@ bool				is_valid_val(char *arg_str);
 ssize_t				get_invalid_symbols(char *line, size_t len, char *valid_symbols);
 void				ft_lstprint(t_list *elem);
 
-static const t_op_template	g_op_template_tab[NUM_INSTRUCTIONS + 1] =
+const static t_op_template	g_op_template_tab[NUM_INSTRUCTIONS + 1] =
 {
 	{"live",	1,	{T_DIR},												 false,	4},
 	{"ld",		2,	{T_DIR | T_IND, T_REG},									 true,	4},

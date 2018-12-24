@@ -4,7 +4,7 @@ bool				is_ind(char *arg_str) // add counter
 {
 	if (*arg_str == LABEL_CHAR)
 	{
-		if (!is_label(arg_str + 1))
+		if (!is_label(arg_str + 1, ft_strlen(arg_str + 1)))
 		{
 			printf("wrong ref: %s\n", arg_str);
 			exit(1);

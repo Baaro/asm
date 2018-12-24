@@ -55,7 +55,7 @@ void				insert_adresses(t_list **b_tokens, uint32_t *size)
 						printf("ERROR: UNKNWON REFERENCE: \"%c%c%s\"\n", DIRECT_CHAR, LABEL_CHAR, ((t_b_token *)refs->content)->args[curr_arg]->ref->name);
 					else if (((t_b_token *)refs->content)->args[curr_arg]->code == IND_CODE)
 						printf("ERROR: UNKNWON REFERENCE: \"%c%s\"\n", LABEL_CHAR, ((t_b_token *)refs->content)->args[curr_arg]->ref->name);
-					exit(1);
+					exit(EXIT_FAILURE);
 				}
 			}
 		}
@@ -123,7 +123,7 @@ char				*file_cor_get_name(char *f_name)
 	char	*fc_name;
 
 	slash = ft_strrchr(f_name, '/');
-	dot = ft_strchr(slash, '.');
+	dot = ft_strrchr(slash, '.');
 	fc_name = ft_strsub(slash + 1, 0, dot - slash);
 	fc_name = ft_strjoincl(fc_name, "cor", 0);
 	return (fc_name);
@@ -138,6 +138,7 @@ t_file_cor			*file_cor_make(t_file *f, t_counter *c)
 	fc->tokens = tokens_make(f, c);
 	fc->b_tokens = b_tokens_make(fc->tokens);
 	insert_adresses(&fc->b_tokens, &fc->size);
+
 	fc->name = file_cor_get_name(f->name);
 	fc->modes = O_RDWR | O_TRUNC | O_CREAT;
 	fc->permissions = S_IWUSR | S_IRUSR;

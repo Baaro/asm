@@ -6,16 +6,16 @@ bool				is_dir(char *arg_str) // add counter
 	{
 		if (*(arg_str + 1) == LABEL_CHAR)
 		{
-			if (!is_label(arg_str + 2))
+			if (!is_label(arg_str + 2, ft_strlen(arg_str + 2)))
 			{
 				printf("wrong ref: %s\n", arg_str);
-				exit(1);
+				exit(EXIT_FAILURE);
 			}
 		}
 		else if (!is_valid_val(arg_str + 1))
 		{
 			printf("wrong val: %s\n", arg_str);
-			exit(1);
+			exit(EXIT_FAILURE);
 		}
 		return (true);
 	}

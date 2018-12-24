@@ -22,7 +22,7 @@ void			tokens_del(t_list **tokens)
 			free(((t_label*)to_free_label->content)->name);
 			to_free_label = to_free_label->next;
 		}
-		ft_lstdel(&((t_token *)to_free->content)->labels, ft_lstelemfree);// system("leaks asm");
+		ft_lstdel(&((t_token *)to_free->content)->labels, ft_lstelemfree);
 		free(((t_token *)to_free->content)->op);
 		free(((t_token *)to_free->content)->counter);
 		i = -1;
@@ -55,7 +55,9 @@ static t_token	*token_new(t_list **curr_labels, t_list **all_labels, char *fline
 		ft_memdel((void**)&label);
 	}
 	else
+	{
 		token->op = op_get_str(fline, fline, c);
+	}
 	token->labels = ft_lstmap(*curr_labels, ft_lstget);
 	args_get_strs(token, c);
 	return (token);

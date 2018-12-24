@@ -6,13 +6,16 @@ void	label_append(t_list **curr_labs, t_list **all_labs, t_label *label)
 	ft_lstaddend(all_labs, ft_lstnew(label, sizeof(t_label)));
 }
 
-bool	is_label(char *line)
+bool	is_label(char *line, size_t len)
 {
-	while (*line)
+	size_t counter;
+
+	counter = -1;
+	while (++counter < len)
 	{
-		if (!(ft_strchr(LABEL_CHARS, *line)))
+		if (!(ft_strchr(LABEL_CHARS, line[counter])))
 			return (false);
-		line++;
+		counter++;
 	}
 	return (true);
 }
@@ -38,9 +41,9 @@ t_label	*label_get(char *line, t_counter *counter)
 	t_label	*label;
 
 	label_char = ft_strcspn(line, ":");
-	if (line[label_char] == LABEL_CHAR)
+	if (is_label(line, label_char))
 	{
-		if ((invalid_symbol = get_invalid_symbols(line, label_char - 1, LABEL_CHARS)) == -1)
+		if ((invalid_symbol = get_invalid_symbols(line, label_char, LABEL_CHARS)) == -1)
 		{
 			label = ft_memalloc(sizeof(t_label));
 			counter->column += label_char;

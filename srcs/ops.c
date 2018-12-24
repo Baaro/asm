@@ -6,9 +6,16 @@ char			*op_get_str(char *fline, char *cur_line, t_counter *c)
 {
 	ssize_t		invalid_symbol;
 	char		*op_name;
+	char		*tmp;
 	size_t		op_len;
 
 	op_name = ft_strtrim(ft_strtok(cur_line, DELIMS_CHARS));
+	if ((ft_strchr(op_name, '%')))
+	{
+		op_name = ft_strjoin(ft_strtok(op_name, "%"), " %");
+		op_name = ft_strjoincl(op_name, ft_strtok(NULL, "\0"), 0);
+		op_name = ft_strtrim(ft_strtok(op_name, DELIMS_CHARS));
+	}
 	op_len = ft_strlen(op_name);
 	if ((invalid_symbol = get_invalid_symbols(op_name, op_len, OPS_CHARS)) != -1)
 	{

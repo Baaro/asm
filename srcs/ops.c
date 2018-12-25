@@ -1,26 +1,41 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ops.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vsokolog <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/12/25 14:35:36 by vsokolog          #+#    #+#             */
+/*   Updated: 2018/12/25 14:35:38 by vsokolog         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "asm.h"
 
 const static t_op_template	g_op_template_tab[NUM_INSTRUCTIONS + 1];
 
-char			*op_get_str(char *fline, char *cur_line, t_counter *c)
+char			*op_get_str(char *cur_line, t_counter *c)
 {
-	ssize_t		invalid_symbol;
+	ssize_t		invld_symbol;
+	size_t		op_len;
 	char		*op_name;
 	char		*tmp;
-	size_t		op_len;
 
-	op_name = ft_strtrim(ft_strtok(cur_line, DELIMS_CHARS));
+	op_name = ft_strtok(cur_line, DELIMS_CHARS);
+	tmp = cur_line;
 	if ((ft_strchr(op_name, '%')))
 	{
-		op_name = ft_strjoin(ft_strtok(op_name, "%"), " %");
-		op_name = ft_strjoincl(op_name, ft_strtok(NULL, "\0"), 0);
-		op_name = ft_strtrim(ft_strtok(op_name, DELIMS_CHARS));
+		cur_line = ft_strjoin(ft_strtok(cur_line, "%"), " %");
+		cur_line = ft_strjoincl(cur_line, ft_strtok(NULL, "\0"), 0);
+		op_name = ft_strtrim(ft_strtok(cur_line, DELIMS_CHARS));
 	}
+	else
+		op_name = ft_strtrim(op_name);
 	op_len = ft_strlen(op_name);
-	if ((invalid_symbol = get_invalid_symbols(op_name, op_len, OPS_CHARS)) != -1)
+	if ((invld_symbol = get_invalid_symbols(op_name, op_len, OPS_CHARS)) != -1)
 	{
-		c->column += op_len + (size_t)invalid_symbol;
-		lexical_errors(E_INVALID_SYMBOLS, fline, c);
+		c->column += (size_t)invld_symbol;
+		lexical_errors(E_INVALID_SYMBOLS, tmp, c);
 	}
 	return (op_name);
 }
@@ -73,4 +88,3 @@ uint32_t		op_get_size(t_b_token *b_token)
 		size += 1;
 	return (size);
 }
-

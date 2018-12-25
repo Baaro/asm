@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   reg.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vsokolog <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/12/25 14:35:40 by vsokolog          #+#    #+#             */
+/*   Updated: 2018/12/25 14:35:42 by vsokolog         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "asm.h"
 
 bool		is_reg(char *arg)
@@ -25,7 +37,7 @@ bool		is_reg(char *arg)
 	return (true);
 }
 
-t_argument			*reg_get(char *arg_str)
+t_argument	*reg_get(char *arg_str)
 {
 	t_argument	*arg;
 
@@ -33,10 +45,6 @@ t_argument			*reg_get(char *arg_str)
 	arg->code = REG_CODE;
 	arg->reg = ft_atoi64(arg_str + 1);
 	if (arg->reg < 1 || arg->reg > 16)
-	{
-		printf("wrong reg: %s\n", arg_str);
-		exit(1);
-	}
-    return (arg);
-
+		semantic_errors(E_WRONG_ARGUMENT, arg_str, NULL);
+	return (arg);
 }

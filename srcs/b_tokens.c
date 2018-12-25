@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   b_tokens.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vsokolog <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/12/25 14:34:26 by vsokolog          #+#    #+#             */
+/*   Updated: 2018/12/25 14:34:27 by vsokolog         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "asm.h"
 
 void				append_b_tokens(t_list **b_tokens, t_b_token *bt)
@@ -8,7 +20,7 @@ void				append_b_tokens(t_list **b_tokens, t_b_token *bt)
 
 t_b_token			*b_token_make(t_token *t, uint32_t sizeprv, uint32_t posprv)
 {
-    t_b_token	*bt;
+	t_b_token	*bt;
 
 	bt = ft_memalloc(sizeof(t_b_token));
 	if (t->op)
@@ -16,12 +28,12 @@ t_b_token			*b_token_make(t_token *t, uint32_t sizeprv, uint32_t posprv)
 		bt->op_code = op_get_code(t->op);
 		bt->op_template = (t_op_template *)&g_op_template_tab[bt->op_code - 1];
 		bt->codage = bt->op_template->codage;
-    	args_set(bt, t);
+		args_set(bt, t);
 	}
 	bt->pos = op_get_pos(posprv, sizeprv);
-    bt->size = op_get_size(bt);
+	bt->size = op_get_size(bt);
 	bt->labels = ft_lstmap(t->labels, ft_lstget);
-    return (bt);
+	return (bt);
 }
 
 void				b_tokens_del(t_list **b_tokens)
@@ -39,18 +51,13 @@ void				b_tokens_del(t_list **b_tokens)
 		i = -1;
 		while (++i < MAX_ARGS_NUMBER - 1)
 		{
-			if (((t_b_token *)to_free->content)->args[i] != NULL)
+			if (((t_b_token *)to_free->content)->args[i]
+			&& ((t_b_token *)to_free->content)->args[i]->ref)
 			{
-				if (((t_b_token *)to_free->content)->args[i] != NULL)
-				{
-					if (((t_b_token *)to_free->content)->args[i]->ref)
-					{
-						free(((t_b_token *)to_free->content)->args[i]->ref->name);
-						free(((t_b_token *)to_free->content)->args[i]->ref);
-					}
-				}
-				free(((t_b_token *)to_free->content)->args[i]);
+				free(((t_b_token *)to_free->content)->args[i]->ref->name);
+				free(((t_b_token *)to_free->content)->args[i]->ref);
 			}
+			free(((t_b_token *)to_free->content)->args[i]);
 		}
 		free(to_free->content);
 		free(to_free);

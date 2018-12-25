@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tokens.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vsokolog <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/12/25 14:35:46 by vsokolog          #+#    #+#             */
+/*   Updated: 2018/12/25 14:35:48 by vsokolog         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "asm.h"
 
 static void		token_append(t_list **token_head, t_token *token)
@@ -27,16 +39,14 @@ void			tokens_del(t_list **tokens)
 		free(((t_token *)to_free->content)->counter);
 		i = -1;
 		while (++i < MAX_ARGS_NUMBER - 1)
-		{
 			if (((t_token *)to_free->content)->args[i] != NULL)
 				free(((t_token *)to_free->content)->args[i]);
-		}
 		free(to_free->content);
 		free(to_free);
 	}
 }
 
-static t_token	*token_new(t_list **curr_labels, t_list **all_labels, char *fline, t_counter *c)
+t_token	*token_new(t_list **clabs, t_list **alabs, char *fline, t_counter *c)
 {
 	t_token		*token;
 	t_label		*label;
@@ -47,18 +57,16 @@ static t_token	*token_new(t_list **curr_labels, t_list **all_labels, char *fline
 	token->counter->row = c->row;
 	if ((label = label_get(fline, c)))
 	{
-		if (!label_exists(*all_labels, label))
-			label_append(curr_labels, all_labels, label);
+		if (!label_exists(*alabs, label->name))
+			label_append(clabs, alabs, label);
 		else
 			free(label->name);
-		token->op = op_get_str(fline, fline + label->len + 1, c);
+		token->op = op_get_str(fline + label->len + 1, c);
 		ft_memdel((void**)&label);
 	}
 	else
-	{
-		token->op = op_get_str(fline, fline, c);
-	}
-	token->labels = ft_lstmap(*curr_labels, ft_lstget);
+		token->op = op_get_str(fline, c);
+	token->labels = ft_lstmap(*clabs, ft_lstget);
 	args_get_strs(token, c);
 	return (token);
 }
@@ -79,7 +87,7 @@ t_list			*tokens_make(t_file *f, t_counter *c) // test version
 		f->line = ft_strretrim(f->line);
 		if ((label = label_get_solo(f->line, c)))
 		{
-			if (!label_exists(all_labels, label))
+			if (!label_exists(all_labels, label->name))
 				label_append(&curr_labels, &all_labels, label);
 			ft_memdel((void**)&label);
 		}

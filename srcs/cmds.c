@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cmds.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vsokolog <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/12/25 14:34:32 by vsokolog          #+#    #+#             */
+/*   Updated: 2018/12/25 14:34:34 by vsokolog         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "asm.h"
 
 static void	cmd_str_del(t_cmd_str **str)
@@ -37,7 +49,7 @@ static char	*cmd_str_read(t_file *f, t_counter *c)
 
 static void	cmd_str_valid(t_file *f, t_header *h, t_cmd_str *str, t_counter *c)
 {
-	size_t	after_end_quotes;
+	size_t	a_end_q;
 
 	while (str->len <= str->maxlen
 	&& str->value[str->len] != QUOTES_CHAR)
@@ -56,12 +68,11 @@ static void	cmd_str_valid(t_file *f, t_header *h, t_cmd_str *str, t_counter *c)
 		}
 		str->len++;
 	}
-	after_end_quotes = str->len + 1;
-	after_end_quotes += ft_strspn(str->value + after_end_quotes, DELIMS_CHARS);
-	after_end_quotes += ft_strspn(str->value + after_end_quotes, "\n");
-	if (str->value[after_end_quotes] != '\0'
-	&& str->value[after_end_quotes] != COMMENT_CHAR
-	&& str->value[after_end_quotes] != COMMENT_CHAR_ALT)
+	a_end_q = str->len + 1;
+	a_end_q += ft_strspn(str->value + a_end_q, DELIMS_CHARS);
+	a_end_q += ft_strspn(str->value + a_end_q, "\n");
+	if (str->value[a_end_q] && str->value[a_end_q] != COMMENT_CHAR
+	&& str->value[a_end_q] != COMMENT_CHAR_ALT)
 		lexical_errors(E_INVALID_SYMBOLS, str->value, c);
 }
 

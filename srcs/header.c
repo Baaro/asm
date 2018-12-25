@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   header.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vsokolog <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/12/25 14:35:19 by vsokolog          #+#    #+#             */
+/*   Updated: 2018/12/25 14:35:21 by vsokolog         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "asm.h"
 
 static t_header	*header_new(void)
@@ -16,9 +28,11 @@ static void		header_set_cmds(t_file *f, t_header *h, t_counter *c)
 	{
 		if (is_dot_char(f->line + c->begin_whitespaces))
 		{
-			if (ft_strnequ(f->line + c->begin_whitespaces, NAME_CMD_STR, ft_strlen(NAME_CMD_STR)))
+			if (ft_strnequ(f->line + c->begin_whitespaces,\
+				NAME_CMD_STR, ft_strlen(NAME_CMD_STR)))
 				h->is_name_cmd = true;
-			else if (ft_strnequ(f->line + c->begin_whitespaces, COMMENT_CMD_STR, ft_strlen(COMMENT_CMD_STR)))
+			else if (ft_strnequ(f->line + c->begin_whitespaces,\
+				COMMENT_CMD_STR, ft_strlen(COMMENT_CMD_STR)))
 				h->is_comment_cmd = true;
 			else
 				semantic_errors(E_UNMATCHED_COMMAND, f->line, c);
@@ -38,7 +52,7 @@ void			header_del(t_header **h)
 
 t_header		*header_get(t_file *f, t_counter *c)
 {
-	t_header    *h;
+	t_header	*h;
 	ssize_t		h_cmds;
 
 	h = header_new();

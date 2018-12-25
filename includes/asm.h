@@ -6,22 +6,22 @@
 # include <stdbool.h>
 # include "../libft/includes/libft.h"
 # include "op.h"
-# define FLAG_A 					1
-# define FLAG_M 					2
-# define OPS_CHARS					"abcdefghijklmnopqrstuvwxyz"
-# define VALID_CHARS	        	"abcdefghijklmnopqrstuvwxyz_0123456789%:-"
-# define ARGS_CHARS		        	"abcdefghijklmnopqrstuvwxyz_0123456789%:-, \t"
-# define NUM_INSTRUCTIONS			16
-# define VALID	 					2
-# define USHORT 					2
-# define UINT	 					4
-# define COMMENT_CHARS		 		";#"
-# define REG_CHAR					'r'
-# define COMMENT_CHAR_ALT			';'
-# define DELIMS_CHARS				" \t"
-# define QUOTES_CHAR		 		'\"'
+// # define FLAG_A 1
+// # define FLAG_M 2
+# define OPS_CHARS "abcdefghijklmnopqrstuvwxyz"
+# define VALID_CHARS "abcdefghijklmnopqrstuvwxyz_0123456789%:-"
+# define ARGS_CHARS "abcdefghijklmnopqrstuvwxyz_0123456789%:-, \t"
+# define NUM_INSTRUCTIONS 16
+# define VALID 2
+# define USHORT 2
+# define UINT 4
+# define COMMENT_CHARS ";#"
+# define REG_CHAR 'r'
+# define COMMENT_CHAR_ALT ';'
+# define DELIMS_CHARS " \t"
+# define QUOTES_CHAR '\"'
 
-typedef enum 				e_errors
+typedef enum 	e_errors
 {
 	E_INVALID_COMMAND = 1,
 	E_SEMANTIC_ERROR,
@@ -40,95 +40,97 @@ typedef enum 				e_errors
 	E_COMMAND_READ,
 	E_IS_NOT_ENOUGH_DATA,
 	E_WRONG_INPUT,
-}							t_errors;
+	E_WRONG_ARGUMENT,
+}				t_errors;
 
-typedef struct				s_counter
+typedef struct		s_counter
 {
-	size_t					column;
-	size_t					row;
-	size_t					begin_whitespaces;
-	size_t					bytes;
-	int						args;
-}							t_counter;
+	size_t			column;
+	size_t			row;
+	size_t			begin_whitespaces;
+	size_t			bytes;
+	int				args;
+}					t_counter;
 
-typedef struct				s_file
+typedef struct		s_file
 {
-	int						fd;
-	char					*name;
-	char					*data;
-	char					*line;
-}							t_file;
+	int				fd;
+	char			*name;
+	char			*data;
+	char			*line;
+}					t_file;
 
-typedef struct				s_file_cor
+typedef struct		s_file_cor
 {
-	char					*name;
-	uint32_t				modes;
-	uint32_t				permissions;
-	int						fd;
-	t_header				*header;
-	t_list					*tokens;
-	t_list					*b_tokens;
-	uint32_t				size;
-}							t_file_cor;
+	char			*name;
+	uint32_t		modes;
+	uint32_t		permissions;
+	int				fd;
+	t_header		*header;
+	t_list			*tokens;
+	t_list			*b_tokens;
+	uint32_t		size;
+}					t_file_cor;
 
-typedef	struct				s_cmd_str
+typedef	struct		s_cmd_str
 {
-	char					*value;
-	size_t					maxlen;
-	size_t					len;
-}							t_cmd_str;
+	char			*value;
+	size_t			maxlen;
+	size_t			len;
+}					t_cmd_str;
 
-typedef struct				s_label
+typedef struct		s_label
 {
-	char					*name;
-	size_t					len;
-}							t_label;
+	char			*name;
+	size_t			len;
+}					t_label;
 
-typedef struct				s_reference
+typedef struct		s_reference
 {
-	char					*name;
-	size_t					len;
-}							t_reference;
+	char			*name;
+	size_t			len;
+}					t_reference;
 
-typedef struct				s_argument
+typedef struct		s_argument
 {
-	uint8_t					code;
-	uint8_t					dir_size;
-	uint8_t					reg;
-	uint16_t				ind;
-	uint16_t				dir16;
-	uint32_t				dir32;
-	t_reference				*ref;
-}							t_argument;
+	uint8_t			code;
+	uint8_t			dir_size;
+	uint8_t			reg;
+	uint16_t		ind;
+	uint16_t		dir16;
+	uint32_t		dir32;
+	uint32_t		val;
+	t_reference		*ref;
+}					t_argument;
 
-typedef struct				s_token
+typedef struct		s_token
 {
-	t_list					*labels;
-	t_counter				*counter;
-	char					*op;
-	char					*args[MAX_ARGS_NUMBER];
-}							t_token;
+	t_list			*labels;
+	t_counter		*counter;
+	char			*op;
+	char			*args[MAX_ARGS_NUMBER];
+}					t_token;
 
-typedef struct				s_op_template
+typedef struct		s_op_template
 {
-	const char				*name;
-	const uint8_t			code;
-	const uint8_t			args[MAX_ARGS_NUMBER];
-	const bool				codage;
-	const uint8_t			dir_size;
-}							t_op_template;
+	char			*name;
+	uint8_t			code;
+	uint8_t			args[MAX_ARGS_NUMBER];
+	bool			codage;
+	uint8_t			dir_size;
+}					t_op_template;
 
-typedef struct				s_b_token
+typedef struct		s_b_token
 {
-	uint8_t   				op_code;
-	uint8_t					args_code;
-	uint32_t				pos;
-	uint32_t				size;
-	t_argument				*args[MAX_ARGS_NUMBER - 1];
-	t_list					*labels;
-	t_op_template			*op_template;
-	bool					codage;
-}							t_b_token;
+	uint8_t   		op_code;
+	uint8_t			args_code;
+	uint32_t		pos;
+	uint32_t		size;
+	t_argument		*args[MAX_ARGS_NUMBER - 1];
+	t_list			*labels;
+	t_op_template	*op_template;
+	bool			codage;
+}					t_b_token;
 
 void				usage(void); // test version
 
@@ -178,12 +180,14 @@ bool				is_label(char *line, size_t len);
 void				label_append(t_list **curr_labs, t_list **all_labs, t_label *label);
 t_label				*label_get_solo(char *line, t_counter *counter);
 t_label				*label_get(char *line, t_counter *counter);
-bool				label_exists(t_list	*all_labels, t_label *label);
+bool				label_exists(t_list *labels, char *label);
+// bool				label_exists(t_list	*all_labels, t_label *label);
 
 /*
 ** Token
 */
 t_list				*tokens_make(t_file *f, t_counter *c); // test version
+t_token				*token_new(t_list **clabs, t_list **alabs, char *fline, t_counter *c);
 void				tokens_del(t_list **tokens);
 void				token_print(t_list *token);
 /*
@@ -197,7 +201,7 @@ void				b_token_print(t_list *b_token);
 /*
 ** Operations
 */
-char				*op_get_str(char *fline, char *cur_line, t_counter *c);
+char				*op_get_str(char *cur_line, t_counter *c);
 uint32_t			op_get_pos(uint32_t pos, uint32_t size);
 uint8_t				op_get_code(char *instr);
 uint32_t			op_get_size(t_b_token *b_token);
@@ -233,21 +237,10 @@ void    			lexical_errors(t_errors error, char *line, t_counter *c);
 void				syntactic_errors(t_errors error, char *line, t_counter *c);
 void    			semantic_errors(t_errors error, char *line, t_counter *c);
 
-/*
-**
-** 		 Compiler stages:
-**	|	------------------	|
-**	|	- Lexical analyz	|
-**	|	- Syntax analyz		|
-**	|	- Semantic analyz	|
-**	|	- Linker			|
-**	|	------------------	|
-**
-*/
-
 bool				is_whitespaces(const char c);
 
 /* AUX */
+void				insert_addresses(t_list **b_tokens, uint32_t *size);
 uint16_t			swap_uint16(uint16_t val);
 uint32_t			swap_uint32(uint32_t val);
 bool				is_valid_val(char *arg_str);

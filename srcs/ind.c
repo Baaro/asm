@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ind.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vsokolog <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/12/25 14:35:23 by vsokolog          #+#    #+#             */
+/*   Updated: 2018/12/25 14:35:24 by vsokolog         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "asm.h"
 
-bool				is_ind(char *arg_str) // add counter
+bool				is_ind(char *arg_str)
 {
 	if (*arg_str == LABEL_CHAR)
 	{
@@ -14,21 +26,15 @@ bool				is_ind(char *arg_str) // add counter
 	else if (*arg_str == '-' || ft_isdigit(*arg_str))
 	{
 		if (!is_valid_val(arg_str))
-		{
-			printf("wrong val: %s\n", arg_str);
-			exit(1);
-		}
+			semantic_errors(E_WRONG_ARGUMENT, arg_str, NULL);
 		return (true);
 	}
 	else if (ft_isalpha(*arg_str))
-	{
-		printf("wrong val: %s\n", arg_str);
-		exit(1);
-	}
+		semantic_errors(E_WRONG_ARGUMENT, arg_str, NULL);
 	return (false);
 }
 
-t_argument			*ind_get(char *arg_str) // add counter
+t_argument			*ind_get(char *arg_str)
 {
 	t_argument	*arg;
 
@@ -42,5 +48,5 @@ t_argument			*ind_get(char *arg_str) // add counter
 	}
 	else
 		arg->ind = swap_uint16(ft_atoi64(arg_str));
-    return (arg);
+	return (arg);
 }

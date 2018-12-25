@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   dir.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vsokolog <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/12/25 14:34:41 by vsokolog          #+#    #+#             */
+/*   Updated: 2018/12/25 14:34:42 by vsokolog         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "asm.h"
 
-bool				is_dir(char *arg_str) // add counter
+bool				is_dir(char *arg_str)
 {
 	if (*arg_str == DIRECT_CHAR)
 	{
@@ -13,10 +25,7 @@ bool				is_dir(char *arg_str) // add counter
 			}
 		}
 		else if (!is_valid_val(arg_str + 1))
-		{
-			printf("wrong val: %s\n", arg_str);
-			exit(EXIT_FAILURE);
-		}
+			semantic_errors(E_WRONG_ARGUMENT, arg_str, NULL);
 		return (true);
 	}
 	return (false);

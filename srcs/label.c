@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   label.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vsokolog <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/12/25 14:35:27 by vsokolog          #+#    #+#             */
+/*   Updated: 2018/12/25 14:35:28 by vsokolog         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "asm.h"
 
 void	label_append(t_list **curr_labs, t_list **all_labs, t_label *label)
@@ -15,19 +27,18 @@ bool	is_label(char *line, size_t len)
 	{
 		if (!(ft_strchr(LABEL_CHARS, line[counter])))
 			return (false);
-		counter++;
 	}
 	return (true);
 }
 
-bool	label_exists(t_list	*all_labels, t_label *label)
+bool	label_exists(t_list *labels, char *label)
 {
 	t_list *tmp;
 
-	tmp = all_labels;
+	tmp = labels;
 	while (tmp)
 	{
-		if (ft_strequ(((t_label *)tmp->content)->name, label->name))
+		if (ft_strequ(((t_label *)tmp->content)->name, label))
 			return (true);
 		tmp = tmp->next;
 	}
@@ -37,13 +48,14 @@ bool	label_exists(t_list	*all_labels, t_label *label)
 t_label	*label_get(char *line, t_counter *counter)
 {
 	size_t	label_char;
-	ssize_t	invalid_symbol;
+	ssize_t	invld_smbl;
 	t_label	*label;
 
 	label_char = ft_strcspn(line, ":");
 	if (is_label(line, label_char))
 	{
-		if ((invalid_symbol = get_invalid_symbols(line, label_char, LABEL_CHARS)) == -1)
+		if ((invld_smbl = get_invalid_symbols(line, label_char,\
+			LABEL_CHARS)) == -1)
 		{
 			label = ft_memalloc(sizeof(t_label));
 			counter->column += label_char;
@@ -58,7 +70,7 @@ t_label	*label_get(char *line, t_counter *counter)
 t_label	*label_get_solo(char *line, t_counter *counter)
 {
 	size_t	label_char;
-	ssize_t	invalid_symbol;
+	ssize_t	invld_smbl;
 	t_label	*label;
 
 	label_char = ft_strcspn(line, ":");
@@ -66,9 +78,10 @@ t_label	*label_get_solo(char *line, t_counter *counter)
 	&& line[label_char + 1] == '\0')
 	{
 		label = ft_memalloc(sizeof(t_label));
-		if ((invalid_symbol = get_invalid_symbols(line, label_char - 1, LABEL_CHARS)) != -1)
+		if ((invld_smbl = get_invalid_symbols(line, label_char - 1,\
+			LABEL_CHARS)) != -1)
 		{
-			counter->column += (size_t)invalid_symbol;
+			counter->column += (size_t)invld_smbl;
 			lexical_errors(E_INVALID_SYMBOLS, line, counter);
 		}
 		label->name = ft_strsub(line, 0, label_char);

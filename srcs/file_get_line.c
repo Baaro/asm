@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   file_get_line.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vsokolog <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/12/25 14:35:08 by vsokolog          #+#    #+#             */
+/*   Updated: 2018/12/25 14:35:10 by vsokolog         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "asm.h"
 
 static bool is_endline(char *str)
@@ -31,7 +43,7 @@ int         	file_get_line(t_file *f, t_counter *c, bool is_cmds)
 	while ((status = get_next_line(f->fd, &f->line) == 1))
 	{
 		c->row++;
-		c->column = 0;
+		c->column = 1;
 		c->begin_whitespaces = ft_strspn(f->line, DELIMS_CHARS);
 		if (!is_cmds)
 		{

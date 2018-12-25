@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   file.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vsokolog <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/12/25 14:34:54 by vsokolog          #+#    #+#             */
+/*   Updated: 2018/12/25 14:34:55 by vsokolog         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "asm.h"
 
 static t_file	*file_new(void)
@@ -22,7 +34,8 @@ t_file			*file_get(char *filename)
 	if (!ft_is_file(filename))
 	{
 		if ((slash = ft_strrchr(filename, '/')))
-			ft_printf("ERROR: Can't read source file [%s]\n", ft_strsub(slash + 1, 0, ft_strlen(slash)));
+			ft_printf("ERROR: Can't read source file\
+			[%s]\n", ft_strsub(slash + 1, 0, ft_strlen(slash)));
 		else
 			ft_printf("ERROR: Can't read source file [%s]\n", filename);
 		exit(EXIT_FAILURE);

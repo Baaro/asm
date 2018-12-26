@@ -22,12 +22,13 @@ char			*op_get_str(char *cur_line, t_counter *c)
 	char		*tmp;
 
 	op_name = ft_strtok(cur_line, DELIMS_CHARS);
-	tmp = cur_line;
+	// tmp = cur_line;
 	if ((ft_strchr(op_name, '%')))
 	{
-		cur_line = ft_strjoin(ft_strtok(cur_line, "%"), " %");
-		cur_line = ft_strjoincl(cur_line, ft_strtok(NULL, "\0"), 0);
-		op_name = ft_strtrim(ft_strtok(cur_line, DELIMS_CHARS));
+		op_name = ft_strjoin(ft_strtok(op_name, "%"), " %");
+		tmp = ft_strjoincl(op_name, ft_strtok(NULL, "\0"), 0);
+		tmp = ft_strtok(op_name, DELIMS_CHARS);
+		op_name = ft_strtrim(tmp);
 	}
 	else
 		op_name = ft_strtrim(op_name);

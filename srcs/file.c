@@ -47,5 +47,23 @@ t_file			*file_get(char *filename)
 		ft_printf("WRONG FILE ON INPUT!\n");
 		exit(EXIT_FAILURE);
 	}
+	// ssize_t	ret = 0;
+	// char	*tmp = ft_strnew(BUFF_SIZE);
+	// char	*data = ft_strnew(0);
+
+	// while ((ret = read(file->fd, tmp, BUFF_SIZE)))
+	// {
+	// 	data = ft_strjoincl(data, tmp, 0);
+	// 	ft_strclr(tmp);
+	// }
+	// char *last = data + ft_strlen(data) - 1;
+	// printf("1%s", last);
+
+	// last = last + ft_strspn(last, DELIMS_CHARS);
+	// printf("2%s", last);
+	// if (*last != '\n')
+	// 	lexical_errors(E_NO_ENDLINE, NULL, NULL);
+	// close(file->fd);
+	// file->fd = open(file->name, O_RDONLY);
 	return (file);
 }

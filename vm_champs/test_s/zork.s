@@ -1,8 +1,8 @@
-.name "zork"
-.comment "I'M ALIIIIVE"
+.name ""
+.comment ""
 
-l2:sti r1,%:live,%1
-		and r1, %0, r1
-		ld%:live,r1
-live:	live %1
-zjmp %:live
+#l2: sti r1,%:live,%1
+
+live:	live %18546744073709551616456
+#zjmp%:live
+

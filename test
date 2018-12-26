@@ -1,0 +1,7 @@
+line: .name ""
+line: .comment ""
+line: 
+line: l2: sti r1,%:live,%1
+line: 
+line: live:	live %1
+line: zjmp %:live

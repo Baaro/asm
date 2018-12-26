@@ -26,7 +26,7 @@ bool		is_reg(char *arg)
 		{
 			if (!(ft_isdigit(*copy_arg)))
 			{
-				printf("error at reg: %s\n", arg);
+				ft_printf("wrong reg: %s\n", arg);
 				exit(1);
 			}
 			copy_arg++;
@@ -43,8 +43,8 @@ t_argument	*reg_get(char *arg_str)
 
 	arg = ft_memalloc(sizeof(t_argument));
 	arg->code = REG_CODE;
-	arg->reg = ft_atoi64(arg_str + 1);
-	if (arg->reg < 1 || arg->reg > 16)
+	arg->val = ft_atoi32(arg_str + 1);
+	if (arg->val < 1 || arg->val > 16)
 		semantic_errors(E_WRONG_ARGUMENT, arg_str, NULL);
 	return (arg);
 }

@@ -12,82 +12,69 @@
 
 #include "asm.h"
 
-uint32_t	get_addresses(uint32_t label, t_b_token *ref, ssize_t curr_arg)
+static void	get_address(t_list *refs, t_list *b_tokens, ssize_t curr_arg)
 {
-	uint32_t val;
+	uint32_t	labpos;
+	uint32_t	refpos;
+	uint8_t		argcode;
+	uint32_t	val;
 
-	val = 0;
-	printf("lab_pos[%hhu]: %u ref_pos: %u\n", label, label, ref->pos);
-	if (ref->args[curr_arg]->code == IND_CODE)
-		val = label - ref->pos;
-		// val = swap_uint16(label->pos - ref->pos);		
-	else if (ref->args[curr_arg]->code == DIR_CODE)
+	labpos = ((t_b_token *)b_tokens->content)->pos;
+	refpos = ((t_b_token *)refs->content)->pos;
+	argcode = ((t_b_token *)refs->content)->args[curr_arg]->code;
+	if (argcode == IND_CODE)
+		val = swap_uint16(labpos - refpos);
+	else if (argcode == DIR_CODE)
 	{
-		if (ref->args[curr_arg]->dir_size == USHORT)
-			val = label - ref->pos;
-			// val = swap_uint16(label->pos - ref->pos);
-		else if (ref->args[curr_arg]->dir_size  == UINT)
-			val = label - ref->pos;
-			// val = swap_uint32(label->pos - ref->pos);
+		if (((t_b_token *)refs->content)->args[curr_arg]->dir_size == USHORT)
+			val = swap_uint16(labpos - refpos);
+		else if (((t_b_token *)refs->content)->args[curr_arg]->dir_size == UINT)
+			val = swap_uint32(labpos - refpos);
 	}
-	return (val);
+	((t_b_token *)refs->content)->args[curr_arg]->val = val;
 }
 
-uint32_t		get_label_pos(t_list *b_tokens, t_list *refs, ssize_t curr_arg)
+static void	compute_address(t_list *refs, t_list *b_tokens, ssize_t curr_arg)
 {
-	t_list		*tokens_labs;
+	char		*refname;
+	char		*labname;
 	t_list		*labels;
-	uint32_t	position;
-	char		*ref_name;
-	bool		found;
 
-	found = false;
-	position = 0;
-	if (((t_b_token *)refs->content)->args[curr_arg]
-	&& ((t_b_token *)refs->content)->args[curr_arg]->ref)
+	while (b_tokens)
 	{
-		tokens_labs = b_tokens;
-		while (tokens_labs)
+		labels = ((t_b_token *)b_tokens->content)->labels;
+		while (labels)
 		{
-			labels = ((t_b_token *)tokens_labs->content)->labels;
-			ref_name = ((t_b_token *)refs->content)->args[curr_arg]->ref->name;
-			if (label_exists(labels, ref_name))
+			refname = ((t_b_token *)refs->content)->args[curr_arg]->ref->name;
+			labname = ((t_label *)labels->content)->name;
+			if (ft_strequ(refname, labname))
 			{
-				found = true;
-				printf("lab_pos[%hhu]: %u\n", ((t_b_token *)tokens_labs->content)->op_code, ((t_b_token *)tokens_labs->content)->pos);	
-				position = ((t_b_token *)tokens_labs->content)->pos;
-				break ;
+				get_address(refs, b_tokens, curr_arg);
+				return ;
 			}
-			tokens_labs = tokens_labs->next;
+			labels = labels->next;
 		}
-		if (!found)
-			printf("ERROR: UNKNWON REFERENCE:\n");
+		b_tokens = b_tokens->next;
 	}
-	return (position);
+	linker_errors(((t_b_token *)refs->content)->args[curr_arg]->ref->name);
 }
 
-void	insert_addresses(t_list **b_tokens, uint32_t *size)
+void		insert_addresses(t_list **b_tokens, uint32_t *size)
 {
-	ssize_t		curr_arg;
-	t_list		*tokens_refs;
-	uint32_t	label_pos;
+	ssize_t	curr_arg;
+	t_list	*refs;
 
-	// get ref
-	//	find label with the same name
-	//		if found
-	// 			set value
-	//		else
-	//			error: no label with this name
-	tokens_refs = *b_tokens;
-	while (tokens_refs)
+	refs = *b_tokens;
+	while (refs)
 	{
 		curr_arg = -1;
 		while (++curr_arg < MAX_ARGS_NUMBER - 1)
 		{
-			if ((label_pos = get_label_pos(*b_tokens, tokens_refs, curr_arg)))
-				((t_b_token *)tokens_refs->content)->args[curr_arg]->val = get_addresses(label_pos, ((t_b_token *)tokens_refs->content), curr_arg);
+			if (((t_b_token *)refs->content)->args[curr_arg]
+			&& ((t_b_token *)refs->content)->args[curr_arg]->ref)
+				compute_address(refs, *b_tokens, curr_arg);
 		}
-		*size += ((t_b_token*)tokens_refs->content)->size;
-		tokens_refs = tokens_refs->next;
+		*size += ((t_b_token*)refs->content)->size;
+		refs = refs->next;
 	}
 }

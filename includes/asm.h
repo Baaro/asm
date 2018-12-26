@@ -41,6 +41,8 @@ typedef enum 	e_errors
 	E_IS_NOT_ENOUGH_DATA,
 	E_WRONG_INPUT,
 	E_WRONG_ARGUMENT,
+	E_UNKNOWN_REFERENCE,
+	E_NO_ENDLINE,
 }				t_errors;
 
 typedef struct		s_counter
@@ -95,10 +97,6 @@ typedef struct		s_argument
 {
 	uint8_t			code;
 	uint8_t			dir_size;
-	uint8_t			reg;
-	uint16_t		ind;
-	uint16_t		dir16;
-	uint32_t		dir32;
 	uint32_t		val;
 	t_reference		*ref;
 }					t_argument;
@@ -123,16 +121,22 @@ typedef struct		s_op_template
 typedef struct		s_b_token
 {
 	uint8_t   		op_code;
+	bool			codage;
 	uint8_t			args_code;
 	uint32_t		pos;
 	uint32_t		size;
 	t_argument		*args[MAX_ARGS_NUMBER - 1];
 	t_list			*labels;
 	t_op_template	*op_template;
-	bool			codage;
 }					t_b_token;
 
-void				usage(void); // test version
+typedef struct		s_labels
+{
+	t_list			*all;
+	t_list			*curr;
+}					t_labels;
+
+void				usage(void);
 
 /*
 ** Counter
@@ -155,7 +159,7 @@ uint8_t				flags_get(int *ac, char ***av, t_counter *c);
 /*
 ** Filename.cor
 */
-t_file_cor			*file_cor_make(t_file *f, t_counter *c);		// test version
+t_file_cor			*file_cor_make(t_file *f, t_counter *c);
 void				file_cor_write(t_file_cor *fc, uint8_t flags, t_counter *c);
 void			    file_cor_del(t_file_cor **fc);
 
@@ -177,17 +181,19 @@ void				cmd_str_set(t_file *f, t_header *h, t_counter *c);
 ** Label
 */
 bool				is_label(char *line, size_t len);
-void				label_append(t_list **curr_labs, t_list **all_labs, t_label *label);
+// void				label_append(t_labels **labels, t_label *label);
+void	label_append(t_list **curr_labs, t_list **all_labs, t_label *label);
 t_label				*label_get_solo(char *line, t_counter *counter);
 t_label				*label_get(char *line, t_counter *counter);
 bool				label_exists(t_list *labels, char *label);
-// bool				label_exists(t_list	*all_labels, t_label *label);
-
+// void			labels_del(t_labels **labels);
+// t_labels    	*labels_new(void);
 /*
 ** Token
 */
-t_list				*tokens_make(t_file *f, t_counter *c); // test version
-t_token				*token_new(t_list **clabs, t_list **alabs, char *fline, t_counter *c);
+t_list				*tokens_make(t_file *f, t_counter *c);
+// t_token				*token_new(t_labels *labels, char *fline, t_counter *c);
+t_token		*token_new(t_list **cls, t_list **als, char *fline, t_counter *c);
 void				tokens_del(t_list **tokens);
 void				token_print(t_list *token);
 /*
@@ -216,7 +222,7 @@ void				args_set(t_b_token *b_token, t_token *token);
 ** Dir
 */
 bool				is_dir(char *arg);
-t_argument			*dir_get(uint8_t dir_size, char *arg_str); // add counter
+t_argument			*dir_get(uint8_t dir_size, char *arg_str);
 
 /*
 ** Ind

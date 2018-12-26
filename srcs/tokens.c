@@ -12,13 +12,26 @@
 
 #include "asm.h"
 
-static void		token_append(t_list **token_head, t_token *token)
+static void	token_append(t_list **token_head, t_token *token)
 {
 	ft_lstaddend(token_head, ft_lstnew(token, sizeof(t_token)));
 	ft_memdel((void**)&token);
 }
 
-void			tokens_del(t_list **tokens)
+void		token_null(t_list **curr_labels, t_list **tokens)
+{
+	t_token *token;
+
+	token = NULL;
+	if (*curr_labels)
+	{
+		token = ft_memalloc(sizeof(t_token));
+		token->labels = ft_lstmap(*curr_labels, ft_lstget);
+		token_append(tokens, token);
+	}
+}
+
+void		tokens_del(t_list **tokens)
 {
 	t_list		*to_free;
 	t_list		*to_free_label;
@@ -46,7 +59,7 @@ void			tokens_del(t_list **tokens)
 	}
 }
 
-t_token	*token_new(t_list **clabs, t_list **alabs, char *fline, t_counter *c)
+t_token		*token_new(t_list **cls, t_list **als, char *fline, t_counter *c)
 {
 	t_token		*token;
 	t_label		*label;
@@ -57,8 +70,8 @@ t_token	*token_new(t_list **clabs, t_list **alabs, char *fline, t_counter *c)
 	token->counter->row = c->row;
 	if ((label = label_get(fline, c)))
 	{
-		if (!label_exists(*alabs, label->name))
-			label_append(clabs, alabs, label);
+		if (!label_exists(*als, label->name))
+			label_append(cls, als, label);
 		else
 			free(label->name);
 		token->op = op_get_str(fline + label->len + 1, c);
@@ -66,12 +79,12 @@ t_token	*token_new(t_list **clabs, t_list **alabs, char *fline, t_counter *c)
 	}
 	else
 		token->op = op_get_str(fline, c);
-	token->labels = ft_lstmap(*clabs, ft_lstget);
+	token->labels = ft_lstmap(*cls, ft_lstget);
 	args_get_strs(token, c);
 	return (token);
 }
 
-t_list			*tokens_make(t_file *f, t_counter *c) // test version
+t_list		*tokens_make(t_file *f, t_counter *c)
 {
 	t_list		*tokens;
 	t_list		*all_labels;
@@ -98,13 +111,8 @@ t_list			*tokens_make(t_file *f, t_counter *c) // test version
 			ft_lstdel(&curr_labels, ft_lstelemfree);
 		}
 	}
-	if (curr_labels)
-	{
-		token = ft_memalloc(sizeof(t_token));
-		token->labels = ft_lstmap(curr_labels, ft_lstget);
-		token_append(&tokens, token);
-	}
+	token_null(&curr_labels, &tokens);
 	ft_lstdel(&curr_labels, ft_lstelemfree);
 	ft_lstdel(&all_labels, ft_lstelemfree);
-    return (tokens);
+	return (tokens);
 }

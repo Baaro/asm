@@ -46,6 +46,5 @@ int		main(int ac, char **av)
 		}
 		counter_del(&c);
 	}
-	// system("leaks --hex asm");
 	return (EXIT_SUCCESS);
 }

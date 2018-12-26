@@ -43,6 +43,7 @@ mv *.cor vm_champs/test_cor/own
 echo "\033[093m[...CHECKING COR FILES...]\033[0m"
 for filename in $(find vm_champs/test_cor/original/ -name '*.cor' | awk -F/ '{print $5}'); do
     if (( $(diff vm_champs/test_cor/original/$filename vm_champs/test_cor/own/$filename 2>&1 | wc -l) != '0' )); then
+        echo "$filename"
         counter=$((counter+1))
     fi
 done

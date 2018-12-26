@@ -12,9 +12,9 @@
 
 #include "asm.h"
 
-static bool is_endline(char *str)
+static bool	is_endline(char *str)
 {
-    return (!(*str) || *str == '\n');
+	return (!(*str) || *str == '\n');
 }
 
 static bool	is_comment(char *str)
@@ -22,10 +22,10 @@ static bool	is_comment(char *str)
 	return (*str == ';' || *str == '#');
 }
 
-static char		*file_append_data(char **data, char **line, bool is_cmds)
+static char	*file_append_data(char **data, char **line, bool is_cmds)
 {
-	char 	*without_endline;
-	char    *with_endline;
+	char	*without_endline;
+	char	*with_endline;
 
 	without_endline = *data == NULL ? ft_strnew(0) : *data;
 	without_endline = ft_strjoincl(without_endline, *line, 0);
@@ -36,9 +36,9 @@ static char		*file_append_data(char **data, char **line, bool is_cmds)
 	return (*data);
 }
 
-int         	file_get_line(t_file *f, t_counter *c, bool is_cmds)
+int			file_get_line(t_file *f, t_counter *c, bool is_cmds)
 {
-	int		status;
+	int	status;
 
 	while ((status = get_next_line(f->fd, &f->line) == 1))
 	{

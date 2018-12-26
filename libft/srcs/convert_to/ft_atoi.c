@@ -15,7 +15,7 @@
 int		ft_atoi(const char *str)
 {
 	int					i;
-	unsigned long int	nbr;
+	int64_t				nbr;
 	int					nums;
 	int					negative;
 
@@ -31,6 +31,10 @@ int		ft_atoi(const char *str)
 		i++;
 	while (str[i] && (str[i] >= '0') && (str[i] <= '9'))
 	{
+		if (nbr > ((nbr * 10) + str[i] - '0') && !negative)
+			return (-1);
+		if (nbr > ((nbr * 10) + str[i] - '0') && negative)
+			return (0);
 		if ((nbr = (nbr * 10) + (int)str[i] - '0'))
 			nums++;
 		i++;

@@ -1,9 +1,9 @@
 #include "libft.h"
 
-int64_t		ft_atoi64(const char *str)
+int32_t		ft_atoi32(const char *str)
 {
 	size_t				i;
-	int64_t			    nbr;
+	int64_t		    	nbr;
 	size_t				nums;
 	bool				negative;
 
@@ -22,7 +22,11 @@ int64_t		ft_atoi64(const char *str)
 	}
 	while (str[i] && (str[i] >= '0') && (str[i] <= '9'))
 	{
-		if ((nbr = (nbr * 10) + (int64_t)str[i] - '0'))
+		if (nbr > ((nbr * 10) + str[i] - '0') && !negative)
+			return (-1);
+		if (nbr > ((nbr * 10) + str[i] - '0') && negative)
+			return (0);
+		if ((nbr = (nbr * 10) + str[i] - '0'))
 			nums++;
 		i++;
 	}

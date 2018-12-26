@@ -31,7 +31,7 @@ int					ft_printf(const char *format, ...);
 
 
 int					ft_atoi(const char *str);
-int64_t				ft_atoi64(const char *str);
+int32_t				ft_atoi32(const char *str);
 char				*ft_itoa(int n);
 
 void				*ft_memset(void *str, int c, size_t len);

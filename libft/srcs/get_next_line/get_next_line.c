@@ -47,12 +47,11 @@ static int		ft_cut_line(t_lst *lst, char *bf, char **line, int ret)
 	if (lst->str == NULL)
 		return (0);
 	pos = NULL;
-	del = lst->str;
-	(lst->str = ft_strjoin(lst->str, bf)) ? ft_strdel(&del) : 0;
+	lst->str = ft_strjoincl(lst->str, bf, 0);
 	ft_strclr(bf);
 	if ((pos = ft_strchr(lst->str, '\n')))
 	{
-		*line = ft_strsub(lst->str, 0, pos - (lst->str));
+		*line = ft_strsub(lst->str, 0, (pos - (lst->str)));
 		del = lst->str;
 		(lst->str = ft_strdup(pos + 1)) ? ft_strdel(&del) : 0;
 		ft_strdel(&bf);

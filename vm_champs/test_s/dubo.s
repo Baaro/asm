@@ -2,7 +2,7 @@
 .comment "Tu veux du pain"
 
 pede:
-live %1
+live %:pede
 live %1
 live %1
 live %1

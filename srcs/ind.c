@@ -18,7 +18,7 @@ bool				is_ind(char *arg_str)
 	{
 		if (!is_label(arg_str + 1, ft_strlen(arg_str + 1)))
 		{
-			printf("wrong ref: %s\n", arg_str);
+			ft_printf("wrong ref: %s\n", arg_str);
 			exit(1);
 		}
 		return (true);
@@ -47,6 +47,6 @@ t_argument			*ind_get(char *arg_str)
 		arg->ref->name = ft_strsub(arg_str, 1, arg->ref->len);
 	}
 	else
-		arg->ind = swap_uint16(ft_atoi64(arg_str));
+		arg->val = swap_uint16(ft_atoi32(arg_str));
 	return (arg);
 }

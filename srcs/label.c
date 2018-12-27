@@ -12,10 +12,13 @@
 
 #include "asm.h"
 
-void	label_append(t_list **curr_labs, t_list **all_labs, t_label *label)
+void	label_append(t_list **curr_labs, t_list **all_labs, t_label *l)
 {
-	ft_lstaddend(curr_labs, ft_lstnew(label, sizeof(t_label)));
-	ft_lstaddend(all_labs, ft_lstnew(label, sizeof(t_label)));
+	if (!label_exists(*all_labs, l->name))
+	{
+		ft_lstaddend(curr_labs, ft_lstnew(l, sizeof(t_label)));
+		ft_lstaddend(all_labs, ft_lstnew(l, sizeof(t_label)));
+	}
 }
 
 bool	is_label(char *line, size_t len)

@@ -32,9 +32,9 @@ uint32_t	swap_bytes(t_argument *arg)
 	uint32_t	val;
 
 	val = arg->val;
-	if (arg->code  == IND_CODE)
+	if (arg->code == IND_CODE)
 		val = swap_uint16(arg->val);
-	else if (arg->code  == DIR_CODE)
+	else if (arg->code == DIR_CODE)
 	{
 		if (arg->dir_size == USHORT)
 			val = swap_uint16(arg->val);

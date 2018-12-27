@@ -37,7 +37,7 @@ static void	print_b_token_args_code(t_b_token *b_tkn)
 static void	print_b_token_args_bytes(t_b_token *b_tkn)
 {
 	ssize_t		curr_arg;
-	int32_t	val;
+	int32_t		val;
 
 	val = 0;
 	curr_arg = -1;
@@ -47,26 +47,15 @@ static void	print_b_token_args_bytes(t_b_token *b_tkn)
 		{
 			val = b_tkn->args[curr_arg]->val;
 			if (b_tkn->args[curr_arg]->code == REG_CODE)
-				ft_printf("%-18u", b_tkn->args[curr_arg]->val);
+				ft_printf("%-18d", b_tkn->args[curr_arg]->val);
 			else if (b_tkn->args[curr_arg]->code == IND_CODE)
-			{
-    			ft_printf("%-4d", ((val >> 8) & 0xFF));
-				ft_printf("%-4d", (val & 0xFF));
-			}
+				print_bytes(val, false);
 			else if (b_tkn->args[curr_arg]->code == DIR_CODE)
 			{
 				if (b_tkn->args[curr_arg]->dir_size == USHORT)
-				{
-					ft_printf("%-4d", ((val >> 8) & 0xFF));
-					ft_printf("%-14d", (val & 0xFF));
-				}
+					print_bytes(val, false);
 				else if (b_tkn->args[curr_arg]->dir_size == UINT)
-				{
-    				ft_printf("%-4d", ((val >> 24) & 0xFF));
-    				ft_printf("%-4d", ((val >> 16) & 0xFF));
-    				ft_printf("%-4d", ((val >> 8) & 0xFF));
-				    ft_printf("%-6d", (val & 0xFF));
-				}
+					print_bytes(val, true);
 			}
 		}
 	}
@@ -82,7 +71,7 @@ static void	print_b_token_args_val(t_b_token *b_tkn)
 		if (b_tkn->args[curr_arg])
 		{
 			if (b_tkn->args[curr_arg]->code == REG_CODE)
-				ft_printf("%-18u", b_tkn->args[curr_arg]->val);
+				ft_printf("%-18d", b_tkn->args[curr_arg]->val);
 			else if (b_tkn->args[curr_arg]->code == IND_CODE)
 				ft_printf("%-18d", b_tkn->args[curr_arg]->val);
 			else if (b_tkn->args[curr_arg]->code == DIR_CODE)

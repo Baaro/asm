@@ -29,7 +29,6 @@ typedef struct		s_list
 int					get_next_line(const int fd, char **line);
 int					ft_printf(const char *format, ...);
 
-
 int					ft_atoi(const char *str);
 int32_t				ft_atoi32(const char *str);
 char				*ft_itoa(int n);
@@ -77,13 +76,13 @@ char				*ft_strmapi(char const *str, char (*f)(unsigned int, char));
 int					ft_strequ(char const *s1, char const *s2);
 int					ft_strnequ(char const *s1, char const *s2, size_t n);
 char				*ft_strsub(char const *s, unsigned int start, size_t len);
-char				*ft_strsubcl(char *s, unsigned int start, size_t len, bool clear);
+char				*ft_strsubcl(char *s, uint32_t start, size_t len, bool clr);
 char				*ft_strjoin(char const *s1, char const *s2);
 char				*ft_strjoincl(char *s1, char *s2, int free_both);
 char				*ft_strtrim(char const *s);
 char				*ft_strretrim(char *s);
 char				**ft_strsplit(char const *s, char c);
-size_t  			ft_strcspn(const char *s1, const char *s2);
+size_t				ft_strcspn(const char *s1, const char *s2);
 size_t				ft_strspn(const char *s1, const char *s2);
 char				*ft_strcutuntil(char *str, const char *until);
 char				*ft_strtok_r(char *s, const char *delimiters, char **lasts);
@@ -109,6 +108,11 @@ t_list				*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem));
 t_list				*ft_lstcopy(t_list *elem);
 t_list				*ft_lstget(t_list *elem);
 void				ft_lstelemfree(void *content, size_t content_size);
+
 bool				ft_is_dir(const char *filename);
 bool				ft_is_file(const char *filename);
+
+uint16_t			swap_uint16(uint16_t val);
+uint32_t			swap_uint32(uint32_t val);
+
 #endif

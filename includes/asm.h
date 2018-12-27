@@ -149,124 +149,73 @@ typedef struct	s_labels
 }				t_labels;
 
 void			usage(void);
-/*
-** Counter
-*/
+
 t_counter		*counter_new(void);
 void			counter_del(t_counter **c);
 void			counter_clear(t_counter *c);
 
-/*
-** Filename.*
-*/
 t_file			*file_get(char *filename);
 void			file_del(t_file **f);
 
-/*
-** Flags
-*/
 uint8_t			flags_get(int *ac, char ***av, t_counter *c);
 
-/*
-** Filename.cor
-*/
 t_file_cor		*file_cor_make(t_file *f, t_counter *c);
 void			file_cor_write(t_file_cor *fc, uint8_t flag);
 void			file_cor_del(t_file_cor **fc);
 
 int				file_get_line(t_file *f, t_counter *c, bool is_cmds);
-size_t			get_currunet_column(t_counter *c);
 
-/*
-** Header
-*/
 t_header		*header_get(t_file *f, t_counter *c);
 void			header_del(t_header **h);
 
-/*
-** Cmd
-*/
 void			cmd_str_set(t_file *f, t_header *h, t_counter *c);
 
-/*
-** Label
-*/
 bool			is_label(char *line, size_t len);
-// void				label_append(t_labels **labels, t_label *label);
-void			label_append(t_list **curr_labs, t_list **all_labs, t_label *label);
+void			label_append(t_list **curr_labs, t_list **all_labs, t_label *l);
 t_label			*label_get_solo(char *line, t_counter *counter);
 t_label			*label_get(char *line, t_counter *counter);
 bool			label_exists(t_list *labels, char *label);
-// void			labels_del(t_labels **labels);
-// t_labels    	*labels_new(void);
-/*
-** Token
-*/
+
 t_list			*tokens_make(t_file *f, t_counter *c);
-// t_token			*token_new(t_labels *labels, char *fline, t_counter *c);
-t_token			*token_new(t_list **cls, t_list **als, char *fline, t_counter *c);
 void			tokens_del(t_list **tokens);
-// void				token_print(t_list *token);
 void			print_token(t_token *tkn, uint32_t pos, uint32_t size);
-/*
-** token to bytecode
-*/
+
 t_list			*b_tokens_make(t_list *tokens);
-t_b_token		*b_token_make(t_token *token, uint32_t size_prev, uint32_t pos_prev);
 void			b_tokens_del(t_list **b_tokens);
-void			append_b_tokens(t_list **b_tokens, t_b_token *b_token);
 void			b_token_print(t_list *b_token);
 void			print_b_token(t_b_token *b_tkn);
-/*
-** Operations
-*/
+
 char			*op_get_str(char *cur_line, t_counter *c);
 uint32_t		op_get_pos(uint32_t pos, uint32_t size);
 uint8_t			op_get_code(char *instr);
 uint32_t		op_get_size(t_b_token *b_token);
 
-/*
-** Arguments
-*/
 void			args_get_strs(t_token *token, t_counter *c);
 void			args_set(t_b_token *b_token, t_token *token);
 
-/*
-** Dir
-*/
 bool			is_dir(char *arg);
 t_argument		*dir_get(uint8_t dir_size, char *arg_str);
 
-/*
-** Ind
-*/
 bool			is_ind(char *arg);
 t_argument		*ind_get(char *arg_str);
 
-/*
-** Reg
-*/
 bool			is_reg(char *arg);
 t_argument		*reg_get(char *arg_str);
 
-/*
-** Errors
-*/
 void			lexical_errors(t_errors error, t_counter *c);
 void			syntactic_errors(t_errors error, char *line, t_counter *c);
 void			semantic_errors(t_errors error, char *line, t_counter *c);
 void			linker_errors(t_errors error, char *line);
 
-/* AUX */
+void			print_bytes(int32_t val, bool four);
+void			lists_to_null(t_list **first, t_list **second, t_list **third);
 bool			is_whitespaces(const char c);
-void			print_bonus(t_list *b_tkn, t_list *tkn, t_header *h, size_t size);
+void			print_bonus(t_list *b_tkn, t_list *tkn, t_header *h, size_t s);
 bool			is_comment(char c);
 bool			is_endline(char c);
 void			insert_addresses(t_list **b_tokens, uint32_t *size);
-uint16_t		swap_uint16(uint16_t val);
-uint32_t		swap_uint32(uint32_t val);
 bool			is_valid_val(char *arg_str);
-ssize_t			get_invalid_symbols(char *line, size_t len, char *valid_symbols);
+ssize_t			get_invalid_symbols(char *line, size_t len, char *valid_smbls);
 void			ft_lstprint(t_list *elem);
 
 const static t_op_templ	g_op_template_tab[NUM_INSTRUCTIONS + 1] =

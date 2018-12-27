@@ -21,6 +21,12 @@ void	usage(void)
 	exit(EXIT_FAILURE);
 }
 
+void	files_del(t_file **f, t_file_cor **fc)
+{
+	file_del(f);
+	file_cor_del(fc);
+}
+
 int		main(int ac, char **av)
 {
 	uint8_t		flag;
@@ -41,13 +47,11 @@ int		main(int ac, char **av)
 			f = file_get(av[c->args]);
 			fc = file_cor_make(f, c);
 			file_cor_write(fc, flag);
-			file_del(&f);
-			file_cor_del(&fc);
+			files_del(&f, &fc);
 			counter_clear(c);
 			c->args++;
 		}
 		counter_del(&c);
 	}
-	// system("leaks asm");
 	return (EXIT_SUCCESS);
 }

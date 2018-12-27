@@ -12,13 +12,13 @@
 
 #include "asm.h"
 
-void				append_b_tokens(t_list **b_tokens, t_b_token *bt)
+static void			b_tokens_append(t_list **b_tokens, t_b_token *bt)
 {
 	ft_lstaddend(b_tokens, ft_lstnew(bt, sizeof(t_b_token)));
 	ft_memdel((void**)&bt);
 }
 
-t_b_token			*b_token_make(t_token *t, uint32_t sizeprv, uint32_t posprv)
+static t_b_token	*b_token_make(t_token *t, uint32_t sprv, uint32_t pprv)
 {
 	t_b_token	*bt;
 
@@ -30,7 +30,7 @@ t_b_token			*b_token_make(t_token *t, uint32_t sizeprv, uint32_t posprv)
 		bt->codage = bt->op_template->codage;
 		args_set(bt, t);
 	}
-	bt->pos = op_get_pos(posprv, sizeprv);
+	bt->pos = op_get_pos(pprv, sprv);
 	bt->size = op_get_size(bt);
 	bt->labels = ft_lstmap(t->labels, ft_lstget);
 	return (bt);
@@ -79,7 +79,7 @@ t_list				*b_tokens_make(t_list *tokens)
 		bt = b_token_make((t_token *)tokens->content, pos, size);
 		pos = bt->pos;
 		size = bt->size;
-		append_b_tokens(&b_tokens, bt);
+		b_tokens_append(&b_tokens, bt);
 		tokens = tokens->next;
 	}
 	return (b_tokens);

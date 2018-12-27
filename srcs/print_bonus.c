@@ -12,15 +12,15 @@
 
 #include "asm.h"
 
-void	print_bonus(t_list *b_tkn, t_list *tkn, t_header *h, size_t size)
+void	print_bonus(t_list *b_tkn, t_list *tkn, t_header *h, size_t s)
 {
-	t_list  *tmp_b_tkn;
-	t_list  *tmp_tkn;
+	t_list	*tmp_b_tkn;
+	t_list	*tmp_tkn;
 
 	tmp_b_tkn = b_tkn;
 	tmp_tkn = tkn;
 	ft_printf("Dumping annotated program on standard output\n");
-	ft_printf("Program size : %zu bytes\n", size);
+	ft_printf("Program size : %zu bytes\n", s);
 	ft_printf("Name : \"%s\"\n", h->prog_name);
 	ft_printf("Comment : \"%s\"\n\n", h->comment);
 	while (tmp_tkn)
@@ -33,5 +33,4 @@ void	print_bonus(t_list *b_tkn, t_list *tkn, t_header *h, size_t size)
 		tmp_b_tkn = tmp_b_tkn->next;
 		tmp_tkn = tmp_tkn->next;
 	}
-	exit(1);
 }

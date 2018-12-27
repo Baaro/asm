@@ -12,36 +12,38 @@
 
 #include "asm.h"
 
-static void	token_append(t_list **token_head, t_token *token)
+static void		token_append(t_list **token_head, t_token *token)
 {
 	ft_lstaddend(token_head, ft_lstnew(token, sizeof(t_token)));
 	ft_memdel((void**)&token);
 }
 
-void		token_null(t_list **curr_labels, t_list **tokens)
+static void		token_null(t_list **curr_labs, t_list **all_labs, t_list **tkns)
 {
 	t_token *token;
 
 	token = NULL;
-	if (*curr_labels)
+	if (*curr_labs)
 	{
 		token = ft_memalloc(sizeof(t_token));
-		token->labels = ft_lstmap(*curr_labels, ft_lstget);
-		token_append(tokens, token);
+		token->labels = ft_lstmap(*curr_labs, ft_lstget);
+		token_append(tkns, token);
 	}
+	ft_lstdel(curr_labs, ft_lstelemfree);
+	ft_lstdel(all_labs, ft_lstelemfree);
 }
 
-void		tokens_del(t_list **tokens)
+void			tokens_del(t_list **tkns)
 {
 	t_list		*to_free;
 	t_list		*to_free_label;
 	ssize_t		i;
 
-	while (*tokens)
+	while (*tkns)
 	{
-		to_free = *tokens;
+		to_free = *tkns;
 		to_free_label = ((t_token *)to_free->content)->labels;
-		*tokens = (*tokens)->next;
+		*tkns = (*tkns)->next;
 		while (to_free_label)
 		{
 			free(((t_label*)to_free_label->content)->name);
@@ -59,7 +61,7 @@ void		tokens_del(t_list **tokens)
 	}
 }
 
-t_token		*token_new(t_list **cls, t_list **als, char *fline, t_counter *c)
+static t_token	*token_new(t_list **cls, t_list **als, char *fl, t_counter *c)
 {
 	t_token		*token;
 	t_label		*label;
@@ -68,51 +70,46 @@ t_token		*token_new(t_list **cls, t_list **als, char *fline, t_counter *c)
 	token->counter = counter_new();
 	token->counter->column = c->column;
 	token->counter->row = c->row;
-	if ((label = label_get(fline, c)))
+	if ((label = label_get(fl, c)))
 	{
 		if (!label_exists(*als, label->name))
 			label_append(cls, als, label);
 		else
 			free(label->name);
-		token->op = op_get_str(fline + label->len + 1, c);
+		token->op = op_get_str(fl + label->len + 1, c);
 		ft_memdel((void**)&label);
 	}
 	else
-		token->op = op_get_str(fline, c);
+		token->op = op_get_str(fl, c);
 	token->labels = ft_lstmap(*cls, ft_lstget);
 	args_get_strs(token, c);
 	return (token);
 }
 
-t_list		*tokens_make(t_file *f, t_counter *c)
+t_list			*tokens_make(t_file *f, t_counter *c)
 {
-	t_list		*tokens;
-	t_list		*all_labels;
-	t_list		*curr_labels;
-	t_token		*token;
-	t_label		*label;
+	t_list		*tkns;
+	t_list		*all_labs;
+	t_list		*curr_labs;
+	t_token		*t;
+	t_label		*l;
 
-	tokens = NULL;
-	all_labels = NULL;
-	curr_labels = NULL;
+	lists_to_null(&tkns, &all_labs, &curr_labs);
 	while ((file_get_line(f, c, false)) == 1)
 	{
 		f->line = ft_strretrim(f->line);
-		if ((label = label_get_solo(f->line, c)))
+		if ((l = label_get_solo(f->line, c)))
 		{
-			if (!label_exists(all_labels, label->name))
-				label_append(&curr_labels, &all_labels, label);
-			ft_memdel((void**)&label);
+			label_append(&curr_labs, &all_labs, l);
+			ft_memdel((void**)&l);
 		}
 		else
 		{
-			token = token_new(&curr_labels, &all_labels, f->line, c);
-			token_append(&tokens, token);
-			ft_lstdel(&curr_labels, ft_lstelemfree);
+			t = token_new(&curr_labs, &all_labs, f->line, c);
+			token_append(&tkns, t);
+			ft_lstdel(&curr_labs, ft_lstelemfree);
 		}
 	}
-	token_null(&curr_labels, &tokens);
-	ft_lstdel(&curr_labels, ft_lstelemfree);
-	ft_lstdel(&all_labels, ft_lstelemfree);
-	return (tokens);
+	token_null(&curr_labs, &all_labs, &tkns);
+	return (tkns);
 }

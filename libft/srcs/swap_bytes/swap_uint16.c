@@ -1,27 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strcspn.c                                       :+:      :+:    :+:   */
+/*   swap_uint16.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vsokolog <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/12/28 00:23:53 by vsokolog          #+#    #+#             */
-/*   Updated: 2018/12/28 00:23:54 by vsokolog         ###   ########.fr       */
+/*   Created: 2018/12/27 23:52:44 by vsokolog          #+#    #+#             */
+/*   Updated: 2018/12/27 23:52:46 by vsokolog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-size_t	ft_strcspn(const char *s1, const char *s2)
+uint16_t	swap_uint16(uint16_t val)
 {
-	const char	*sc1;
-
-	sc1 = s1;
-	while (*sc1)
-	{
-		if (ft_strchr(s2, *sc1))
-			return (sc1 - s1);
-		sc1++;
-	}
-	return (sc1 - s1);
+	return ((val << 8) | (val >> 8));
 }

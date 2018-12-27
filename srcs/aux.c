@@ -30,26 +30,38 @@ bool		is_valid_val(char *arg_str)
 	return (false);
 }
 
-ssize_t		get_invalid_symbols(char *line, size_t len, char *valid_symbols)
+void		lists_to_null(t_list **first, t_list **second, t_list **third)
+{
+	*first = NULL;
+	*second = NULL;
+	*third = NULL;
+}
+
+ssize_t		get_invalid_symbols(char *line, size_t len, char *valid_smbls)
 {
 	ssize_t	i;
 
 	i = -1;
 	while (line[++i] && i < (ssize_t)len)
 	{
-		if (!ft_strchr(valid_symbols, line[i]))
+		if (!ft_strchr(valid_smbls, line[i]))
 			return (i);
 	}
 	return ((size_t)i == len ? -1 : i);
 }
 
-uint16_t	swap_uint16(uint16_t val)
+void		print_bytes(int32_t val, bool four)
 {
-	return ((val << 8) | (val >> 8));
-}
-
-uint32_t	swap_uint32(uint32_t val)
-{
-	val = ((val << 8) & 0xFF00FF00) | ((val >> 8) & 0xFF00FF);
-	return ((val << 16) | (val >> 16));
+	if (four)
+	{
+		ft_printf("%-4d", ((val >> 24) & 0xFF));
+		ft_printf("%-4d", ((val >> 16) & 0xFF));
+		ft_printf("%-4d", ((val >> 8) & 0xFF));
+		ft_printf("%-6d", (val & 0xFF));
+	}
+	else
+	{
+		ft_printf("%-4d", ((val >> 8) & 0xFF));
+		ft_printf("%-14d", (val & 0xFF));
+	}
 }

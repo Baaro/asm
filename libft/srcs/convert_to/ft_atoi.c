@@ -16,12 +16,11 @@ int		ft_atoi(const char *str)
 {
 	int					i;
 	int64_t				nbr;
-	int					nums;
 	int					negative;
 
 	i = 0;
 	nbr = 0;
-	nums = 0;
+	negative = 0;
 	while ((str[i] == '\n') || (str[i] == '\t') || (str[i] == ' ') ||
 		(str[i] == '\v') || (str[i] == '\f') || (str[i] == '\r'))
 		i++;
@@ -35,11 +34,8 @@ int		ft_atoi(const char *str)
 			return (-1);
 		if (nbr > ((nbr * 10) + str[i] - '0') && negative)
 			return (0);
-		if ((nbr = (nbr * 10) + (int)str[i] - '0'))
-			nums++;
+		nbr = (nbr * 10) + str[i] - '0';
 		i++;
 	}
-	if (negative == 1)
-		return (-nbr);
-	return (nbr);
+	return (negative ? -nbr : nbr);
 }

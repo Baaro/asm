@@ -12,12 +12,6 @@
 
 #include "asm.h"
 
-static void	cmd_str_del(t_cmd_str **str)
-{
-	free((*str)->value);
-	ft_memdel((void**)str);
-}
-
 static void	cmd_str_save(t_header *h, t_cmd_str *str)
 {
 	if (h->is_name_cmd)
@@ -76,6 +70,13 @@ static void	cmd_str_valid(t_header *h, t_cmd_str *str, t_counter *c)
 		lexical_errors(E_INVALID_SYMBOLS, c);
 }
 
+static void	cmd_str_manage(t_file *f, t_header *h, t_cmd_str *s, t_counter *c)
+{
+	s->value = cmd_str_read(f, c);
+	cmd_str_valid(h, s, c);
+	cmd_str_save(h, s);
+}
+
 void		cmd_str_set(t_file *f, t_header *h, t_counter *c)
 {
 	t_cmd_str	*str;
@@ -98,10 +99,9 @@ void		cmd_str_set(t_file *f, t_header *h, t_counter *c)
 	c->column += ft_strspn(f->line + c->column, DELIMS_CHARS);
 	if (f->line[c->column] != QUOTES_CHAR)
 		lexical_errors(E_NO_BEGIN_QUOTES, c);
-	str->value = cmd_str_read(f, c);
-	cmd_str_valid(h, str, c);
-	cmd_str_save(h, str);
+	cmd_str_manage(f, h, str, c);
 	h->is_name_cmd = false;
 	h->is_comment_cmd = false;
-	cmd_str_del(&str);
+	free(str->value);
+	ft_memdel((void**)&str);
 }

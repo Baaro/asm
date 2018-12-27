@@ -24,7 +24,7 @@ srcs/put											\
 srcs/str											\
 srcs/is_dir_file									\
 srcs/convert_to										\
-srcs/endian											\
+srcs/swap_bytes										\
 srcs/get_next_line									\
 srcs/ft_printf										\
 srcs/ft_printf/auxiliary							\

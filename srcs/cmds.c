@@ -18,7 +18,7 @@ static void	cmd_str_del(t_cmd_str **str)
 	ft_memdel((void**)str);
 }
 
-static void	cmd_str_save(t_file *f, t_header *h, t_cmd_str *str, t_counter *c)
+static void	cmd_str_save(t_header *h, t_cmd_str *str)
 {
 	if (h->is_name_cmd)
 	{
@@ -41,13 +41,13 @@ static char	*cmd_str_read(t_file *f, t_counter *c)
 	while (!(ft_strchr(str, QUOTES_CHAR)))
 	{
 		if ((file_get_line(f, c, true)) == 0)
-			lexical_errors(E_IS_NOT_ENOUGH_DATA, f->line, c);
+			lexical_errors(E_IS_NOT_ENOUGH_DATA, c);
 		str = ft_strjoincl(str, f->line, 0);
 	}
 	return (str);
 }
 
-static void	cmd_str_valid(t_file *f, t_header *h, t_cmd_str *str, t_counter *c)
+static void	cmd_str_valid(t_header *h, t_cmd_str *str, t_counter *c)
 {
 	size_t	a_end_q;
 
@@ -57,14 +57,14 @@ static void	cmd_str_valid(t_file *f, t_header *h, t_cmd_str *str, t_counter *c)
 		if (str->len == str->maxlen)
 		{
 			if (h->is_name_cmd)
-				lexical_errors(E_CHAMPION_NAME_TOO_LONG, f->line, c);
+				lexical_errors(E_CHAMPION_NAME_TOO_LONG, c);
 			else if (h->is_comment_cmd)
-				lexical_errors(E_CHAMPION_COMMENT_TOO_LONG, f->line, c);
+				lexical_errors(E_CHAMPION_COMMENT_TOO_LONG, c);
 		}
 		if (str->value[str->len + 1] == '\0')
 		{
 			c->column += str->len + 2;
-			lexical_errors(E_NO_END_QUOTES, f->line, c);
+			lexical_errors(E_NO_END_QUOTES, c);
 		}
 		str->len++;
 	}
@@ -73,7 +73,7 @@ static void	cmd_str_valid(t_file *f, t_header *h, t_cmd_str *str, t_counter *c)
 	a_end_q += ft_strspn(str->value + a_end_q, "\n");
 	if (str->value[a_end_q] && str->value[a_end_q] != COMMENT_CHAR
 	&& str->value[a_end_q] != COMMENT_CHAR_ALT)
-		lexical_errors(E_INVALID_SYMBOLS, str->value, c);
+		lexical_errors(E_INVALID_SYMBOLS, c);
 }
 
 void		cmd_str_set(t_file *f, t_header *h, t_counter *c)
@@ -97,10 +97,10 @@ void		cmd_str_set(t_file *f, t_header *h, t_counter *c)
 	}
 	c->column += ft_strspn(f->line + c->column, DELIMS_CHARS);
 	if (f->line[c->column] != QUOTES_CHAR)
-		lexical_errors(E_NO_BEGIN_QUOTES, f->line, c);
+		lexical_errors(E_NO_BEGIN_QUOTES, c);
 	str->value = cmd_str_read(f, c);
-	cmd_str_valid(f, h, str, c);
-	cmd_str_save(f, h, str, c);
+	cmd_str_valid(h, str, c);
+	cmd_str_save(h, str);
 	h->is_name_cmd = false;
 	h->is_comment_cmd = false;
 	cmd_str_del(&str);

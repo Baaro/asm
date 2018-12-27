@@ -1,8 +1,8 @@
-.name ""
+.name "a"
 .comment ""
 
-#l2: sti r1,%:live,%1
-
-live:	live %18546744073709551616456
-#zjmp%:live
-
+l2: sti r1,%:live,%1
+liasdasdav:
+live:	live %-1
+live1:
+zjmp%:live

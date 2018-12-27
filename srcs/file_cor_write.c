@@ -12,7 +12,7 @@
 
 #include "asm.h"
 
-void	header_write(t_file_cor *fc)
+void		header_write(t_file_cor *fc)
 {
 	write(fc->fd, &fc->header->magic, sizeof(fc->header->magic));
 	write(fc->fd, &fc->header->prog_name, PROG_NAME_LENGTH + 4);
@@ -21,16 +21,35 @@ void	header_write(t_file_cor *fc)
 	write(fc->fd, &fc->header->comment, COMMENT_LENGTH + 4);
 }
 
-void	op_write(int fd, t_b_token *b_token)
+void		op_write(int fd, t_b_token *b_token)
 {
 	if (b_token->op_code)
 		write(fd, &b_token->op_code, sizeof(uint8_t));
 }
 
-void	args_write(int fd, t_b_token *b_token)
+uint32_t	swap_bytes(t_argument *arg)
 {
-	ssize_t curr_arg;
+	uint32_t	val;
 
+	val = arg->val;
+	if (arg->code  == IND_CODE)
+		val = swap_uint16(arg->val);
+	else if (arg->code  == DIR_CODE)
+	{
+		if (arg->dir_size == USHORT)
+			val = swap_uint16(arg->val);
+		else if (arg->dir_size == UINT)
+			val = swap_uint32(arg->val);
+	}
+	return (val);
+}
+
+void		args_write(int fd, t_b_token *b_token)
+{
+	uint32_t	val;
+	ssize_t		curr_arg;
+
+	val = 0;
 	curr_arg = -1;
 	if (b_token->args_code)
 		write(fd, &b_token->args_code, sizeof(uint8_t));
@@ -38,32 +57,38 @@ void	args_write(int fd, t_b_token *b_token)
 	{
 		if (b_token->args[curr_arg])
 		{
+			val = swap_bytes(b_token->args[curr_arg]);
 			if (b_token->args[curr_arg]->code == REG_CODE)
-				write(fd, &b_token->args[curr_arg]->val, sizeof(uint8_t));
+				write(fd, &val, sizeof(uint8_t));
 			else if (b_token->args[curr_arg]->code == DIR_CODE)
 			{
 				if (b_token->args[curr_arg]->dir_size == USHORT)
-					write(fd, &b_token->args[curr_arg]->val, sizeof(uint16_t));
+					write(fd, &val, sizeof(uint16_t));
 				else if (b_token->args[curr_arg]->dir_size == UINT)
-					write(fd, &b_token->args[curr_arg]->val, sizeof(uint32_t));
+					write(fd, &val, sizeof(uint32_t));
 			}
 			else if (b_token->args[curr_arg]->code == IND_CODE)
-				write(fd, &b_token->args[curr_arg]->val, sizeof(uint16_t));
+				write(fd, &val, sizeof(uint16_t));
 		}
 	}
 }
 
-void	file_cor_write(t_file_cor *fc, uint8_t flags, t_counter *c)
+void		file_cor_write(t_file_cor *fc, uint8_t flag)
 {
 	t_list *b_tokens;
 
-	header_write(fc);
-	b_tokens = fc->b_tokens;
-	while (b_tokens)
+	if (flag & FLAG_A)
+		print_bonus(fc->b_tokens, fc->tokens, fc->header, fc->size);
+	else
 	{
-		op_write(fc->fd, (t_b_token *)b_tokens->content);
-		args_write(fc->fd, (t_b_token *)b_tokens->content);
-		b_tokens = b_tokens->next;
+		header_write(fc);
+		b_tokens = fc->b_tokens;
+		while (b_tokens)
+		{
+			op_write(fc->fd, (t_b_token *)b_tokens->content);
+			args_write(fc->fd, (t_b_token *)b_tokens->content);
+			b_tokens = b_tokens->next;
+		}
+		ft_printf("Writing output program to %s\n", fc->name);
 	}
-	ft_printf("Writing output program to %s\n", fc->name);
 }

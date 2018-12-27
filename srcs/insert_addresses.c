@@ -17,19 +17,20 @@ static void	get_address(t_list *refs, t_list *b_tokens, ssize_t curr_arg)
 	uint32_t	labpos;
 	uint32_t	refpos;
 	uint8_t		argcode;
-	uint32_t	val;
+	int32_t		val;
 
+	val = 0;
 	labpos = ((t_b_token *)b_tokens->content)->pos;
 	refpos = ((t_b_token *)refs->content)->pos;
 	argcode = ((t_b_token *)refs->content)->args[curr_arg]->code;
 	if (argcode == IND_CODE)
-		val = swap_uint16(labpos - refpos);
+		val = labpos - refpos;
 	else if (argcode == DIR_CODE)
 	{
 		if (((t_b_token *)refs->content)->args[curr_arg]->dir_size == USHORT)
-			val = swap_uint16(labpos - refpos);
+			val = labpos - refpos;
 		else if (((t_b_token *)refs->content)->args[curr_arg]->dir_size == UINT)
-			val = swap_uint32(labpos - refpos);
+			val = labpos - refpos;
 	}
 	((t_b_token *)refs->content)->args[curr_arg]->val = val;
 }
@@ -56,7 +57,8 @@ static void	compute_address(t_list *refs, t_list *b_tokens, ssize_t curr_arg)
 		}
 		b_tokens = b_tokens->next;
 	}
-	linker_errors(((t_b_token *)refs->content)->args[curr_arg]->ref->name);
+	linker_errors(E_UNKNOWN_REFERENCE,\
+	((t_b_token *)refs->content)->args[curr_arg]->ref->name);
 }
 
 void		insert_addresses(t_list **b_tokens, uint32_t *size)

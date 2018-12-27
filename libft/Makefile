@@ -12,7 +12,8 @@
 
 NAME = libft.a
 CC := gcc
-FLAGS := -Wall -Wextra -Werror
+FLAGS := -Wall -Wextra -Werror -g
+
 INCLUDES := includes/
 source_dirs := .									\
 srcs/convert_to/									\
@@ -34,7 +35,6 @@ srcs/ft_printf/form/form_num/get_num				\
 srcs/ft_printf/form/form_str_char					\
 srcs/ft_printf/form/form_str_char/form_unicode		\
 
-# OBJ_DIR := objs
 MAKE := make
 RM := rm -rf
 
@@ -45,20 +45,20 @@ OBJ = $(notdir $(patsubst %.c, %.o, $(wildcard $(search_wildcards))))
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	ar rc $@ $^
-	ranlib $@
+	@ar rc $@ $^
+	@ranlib $@
+	@echo "\033[092mLibft has compiled successfully!\033[0m"
 
 VPATH := $(source_dirs)
 
 %.o: %.c
-	$(CC) $(FLAGS) -I $(INCLUDES) -c $< -o $@
-	# $(CC) $(FLAGS) -c $(addprefix -I $(INCLUDES), $(source_dirs)) $<
+	@$(CC) $(FLAGS) -I $(INCLUDES) -c $< -o $@
 
 clean:
-	$(RM) $(OBJ)
+	@$(RM) $(OBJ)
 
 fclean: clean
-	$(RM) $(NAME)
+	@$(RM) $(NAME)
 
 re: fclean all
 

@@ -12,14 +12,14 @@
 
 #include "asm.h"
 
-static bool	is_endline(char *str)
+bool		is_endline(char c)
 {
-	return (!(*str) || *str == '\n');
+	return (!c || c == '\n');
 }
 
-static bool	is_comment(char *str)
+bool		is_comment(char c)
 {
-	return (*str == ';' || *str == '#');
+	return (c == ';' || c == '#');
 }
 
 static char	*file_append_data(char **data, char **line, bool is_cmds)
@@ -47,8 +47,8 @@ int			file_get_line(t_file *f, t_counter *c, bool is_cmds)
 		c->begin_whitespaces = ft_strspn(f->line, DELIMS_CHARS);
 		if (!is_cmds)
 		{
-			if (is_endline(f->line + c->begin_whitespaces)
-			|| is_comment(f->line + c->begin_whitespaces))
+			if (is_endline(f->line[c->begin_whitespaces])
+			|| is_comment(f->line[c->begin_whitespaces]))
 				continue ;
 			f->line = ft_strcutuntil(f->line, COMMENT_CHARS);
 		}

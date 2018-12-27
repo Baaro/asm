@@ -12,7 +12,7 @@
 
 #include "asm.h"
 
-void	lexical_errors(t_errors error, char *line, t_counter *counter)
+void	lexical_errors(t_errors error, t_counter *counter)
 {
 	ft_printf("\x1b[31mLexical error: \x1b[0m");
 	if (counter)

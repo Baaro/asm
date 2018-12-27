@@ -40,7 +40,7 @@ ssize_t		get_invalid_symbols(char *line, size_t len, char *valid_symbols)
 		if (!ft_strchr(valid_symbols, line[i]))
 			return (i);
 	}
-	return (i == len ? -1 : i);
+	return ((size_t)i == len ? -1 : i);
 }
 
 uint16_t	swap_uint16(uint16_t val)

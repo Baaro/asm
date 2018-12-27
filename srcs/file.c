@@ -26,18 +26,55 @@ void			file_del(t_file **f)
 	free(*f);
 }
 
+static void		check_endline(char *line, ssize_t size)
+{
+	while (--size)
+	{
+		if (ft_isalnum(line[size]))
+		{
+			while (--size)
+			{
+				if (is_endline(line[size]) && is_comment(line[size + 1]))
+					return ;
+				if (is_endline(line[size]) && !is_comment(line[size + 1]))
+					lexical_errors(E_NO_ENDLINE, NULL);
+			}
+		}
+		else if (is_endline(line[size]))
+			return ;
+	}
+}
+
+static void		file_check_endline(t_file *file)
+{
+	ssize_t	ret;
+	ssize_t size;
+	char	*tmp;
+	char	*data;
+
+	tmp = ft_strnew(BUFF_SIZE);
+	data = ft_strnew(0);
+	size = 0;
+	while ((ret = read(file->fd, tmp, BUFF_SIZE)))
+	{
+		size += ret;
+		data = ft_strjoincl(data, tmp, 0);
+		ft_strclr(tmp);
+	}
+	check_endline(data, size);
+	ft_strdel(&tmp);
+	ft_strdel(&data);
+	close(file->fd);
+	file->fd = open(file->name, O_RDONLY);
+}
+
 t_file			*file_get(char *filename)
 {
 	t_file	*file;
-	char	*slash;
 
 	if (!ft_is_file(filename))
 	{
-		if ((slash = ft_strrchr(filename, '/')))
-			ft_printf("ERROR: Can't read source file\
-			[%s]\n", ft_strsub(slash + 1, 0, ft_strlen(slash)));
-		else
-			ft_printf("ERROR: Can't read source file [%s]\n", filename);
+		ft_printf("ERROR: Can't read source file \"%s\"\n", filename);
 		exit(EXIT_FAILURE);
 	}
 	file = file_new();
@@ -47,23 +84,6 @@ t_file			*file_get(char *filename)
 		ft_printf("WRONG FILE ON INPUT!\n");
 		exit(EXIT_FAILURE);
 	}
-	// ssize_t	ret = 0;
-	// char	*tmp = ft_strnew(BUFF_SIZE);
-	// char	*data = ft_strnew(0);
-
-	// while ((ret = read(file->fd, tmp, BUFF_SIZE)))
-	// {
-	// 	data = ft_strjoincl(data, tmp, 0);
-	// 	ft_strclr(tmp);
-	// }
-	// char *last = data + ft_strlen(data) - 1;
-	// printf("1%s", last);
-
-	// last = last + ft_strspn(last, DELIMS_CHARS);
-	// printf("2%s", last);
-	// if (*last != '\n')
-	// 	lexical_errors(E_NO_ENDLINE, NULL, NULL);
-	// close(file->fd);
-	// file->fd = open(file->name, O_RDONLY);
+	file_check_endline(file);
 	return (file);
 }

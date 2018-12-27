@@ -14,7 +14,7 @@
 
 void	usage(void)
 {
-	ft_printf("\nUsage: ./asm [-a] <sourcefile.s>"
+	ft_printf("Usage: ./asm [-a] <sourcefile.s>"
 			"\n    -a : Instead of creating a .cor file, "
 			"outputs a stripped and annotated "
 			"version of the code to the standard output.\n");
@@ -23,7 +23,7 @@ void	usage(void)
 
 int		main(int ac, char **av)
 {
-	uint8_t		flags;
+	uint8_t		flag;
 	t_file_cor	*fc;
 	t_file		*f;
 	t_counter	*c;
@@ -33,12 +33,14 @@ int		main(int ac, char **av)
 	else if (ac >= 2)
 	{
 		c = counter_new();
-		c->args = 1;
+		flag = flags_get(&ac, &av, c);
+		if (ac == c->args)
+			usage();
 		while (c->args < ac)
 		{
 			f = file_get(av[c->args]);
 			fc = file_cor_make(f, c);
-			file_cor_write(fc, flags, c);
+			file_cor_write(fc, flag);
 			file_del(&f);
 			file_cor_del(&fc);
 			counter_clear(c);
@@ -46,5 +48,6 @@ int		main(int ac, char **av)
 		}
 		counter_del(&c);
 	}
+	// system("leaks asm");
 	return (EXIT_SUCCESS);
 }

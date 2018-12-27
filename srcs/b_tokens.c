@@ -26,7 +26,7 @@ t_b_token			*b_token_make(t_token *t, uint32_t sizeprv, uint32_t posprv)
 	if (t->op)
 	{
 		bt->op_code = op_get_code(t->op);
-		bt->op_template = (t_op_template *)&g_op_template_tab[bt->op_code - 1];
+		bt->op_template = (t_op_templ *)&g_op_template_tab[bt->op_code - 1];
 		bt->codage = bt->op_template->codage;
 		args_set(bt, t);
 	}

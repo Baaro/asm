@@ -12,14 +12,13 @@
 
 #include "asm.h"
 
-const static t_op_template	g_op_template_tab[NUM_INSTRUCTIONS + 1];
+const static t_op_templ	g_op_template_tab[NUM_INSTRUCTIONS + 1];
 
 char			*op_get_str(char *cur_line, t_counter *c)
 {
 	ssize_t		invld_symbol;
 	size_t		op_len;
 	char		*op_name;
-	char		*tmp;
 
 	op_name = ft_strtok(cur_line, DELIMS_CHARS);
 	if ((ft_strchr(op_name, '%')))
@@ -34,7 +33,7 @@ char			*op_get_str(char *cur_line, t_counter *c)
 	if ((invld_symbol = get_invalid_symbols(op_name, op_len, OPS_CHARS)) != -1)
 	{
 		c->column += (size_t)invld_symbol;
-		lexical_errors(E_INVALID_SYMBOLS, tmp, c);
+		lexical_errors(E_INVALID_SYMBOLS, c);
 	}
 	return (op_name);
 }

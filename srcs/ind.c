@@ -47,6 +47,6 @@ t_argument			*ind_get(char *arg_str)
 		arg->ref->name = ft_strsub(arg_str, 1, arg->ref->len);
 	}
 	else
-		arg->val = swap_uint16(ft_atoi32(arg_str));
+		arg->val = ft_atoi32(arg_str);
 	return (arg);
 }

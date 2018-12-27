@@ -82,7 +82,7 @@ t_label	*label_get_solo(char *line, t_counter *counter)
 			LABEL_CHARS)) != -1)
 		{
 			counter->column += (size_t)invld_smbl;
-			lexical_errors(E_INVALID_SYMBOLS, line, counter);
+			lexical_errors(E_INVALID_SYMBOLS, counter);
 		}
 		label->name = ft_strsub(line, 0, label_char);
 		label->len = ft_strlen(label->name);

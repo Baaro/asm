@@ -42,7 +42,7 @@ static void		header_set_cmds(t_file *f, t_header *h, t_counter *c)
 		else
 			semantic_errors(E_SEMANTIC_ERROR, f->line, c);
 	}
-	lexical_errors(E_IS_NOT_ENOUGH_DATA, NULL, c);
+	lexical_errors(E_IS_NOT_ENOUGH_DATA, c);
 }
 
 void			header_del(t_header **h)

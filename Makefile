@@ -2,13 +2,11 @@ NAME = asm
 
 CC := gcc
 
-# FLAGS := -Wall -Wextra -Werror -g
-FLAGS := -g
+FLAGS := -Wall -Wextra -Werror -g
 INCLUDES :=	includes					\
 
 source_dirs :=	srcs					\
 				srcs/instr_compute		\
-# OBJ_DIR := objs
 
 RM := rm -rf
 
@@ -21,23 +19,23 @@ OBJ = $(notdir $(patsubst %.c, %.o, $(wildcard $(search_wildcards))))
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(MAKE) -C ./libft
-	$(CC) $(FLAGS) -o $@ $(OBJ) $(LIBFT)
+	@$(MAKE) -C ./libft
+	@$(CC) $(FLAGS) -o $@ $(OBJ) $(LIBFT)
+	@echo "\033[092mAssembler has compiled successfully!\033[0m"
 
 VPATH := $(source_dirs)
 
 %.o: %.c
-	# $(CC) $(FLAGS) -c $(addprefix -I $(INCLUDES), $(source_dirs)) $<
-	$(CC) $(FLAGS) -I $(INCLUDES) -c $< -o $@
+	@$(CC) $(FLAGS) -I $(INCLUDES) -c $< -o $@
 	
 clean:
-	$(MAKE) clean -C ./libft
-	$(RM) $(OBJ) $(OBJ_DIR)
-	rm -rf *.cor
+	@$(MAKE) clean -C ./libft
+	@$(RM) $(OBJ) $(OBJ_DIR)
+	@rm -rf *.cor
 
 fclean: clean
-	$(MAKE) fclean -C ./libft
-	$(RM) $(NAME) $(OBJ_DIR)
+	@$(MAKE) fclean -C ./libft
+	@$(RM) $(NAME) $(OBJ_DIR)
 
 re: fclean all
 

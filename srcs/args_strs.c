@@ -22,7 +22,7 @@ static void			args_valid_all_str(char *arg, t_counter *c)
 	if ((invalid_symbol = get_invalid_symbols(arg, arglen, ARGS_CHARS)) != -1)
 	{
 		c->column += arglen + (size_t)invalid_symbol - 1;
-		lexical_errors(E_INVALID_SYMBOLS, arg, c);
+		lexical_errors(E_INVALID_SYMBOLS, c);
 	}
 	coma = 0;
 	while (*arg)
@@ -30,7 +30,7 @@ static void			args_valid_all_str(char *arg, t_counter *c)
 		if (*arg == ',')
 			coma++;
 		if (coma > 2 || (*arg == ',' && *(arg + 1) == ','))
-			lexical_errors(E_INVALID_SYMBOLS, arg, c);
+			lexical_errors(E_INVALID_SYMBOLS, c);
 		arg++;
 	}
 }

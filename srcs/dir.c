@@ -46,9 +46,9 @@ t_argument			*dir_get(uint8_t dir_size, char *arg_str)
 	else
 	{
 		if (dir_size == USHORT)
-			arg->val = swap_uint16(ft_atoi32(arg_str + 1));
+			arg->val = ft_atoi32(arg_str + 1);
 		else if (dir_size == UINT)
-			arg->val = swap_uint32(ft_atoi32(arg_str + 1));
+			arg->val = ft_atoi32(arg_str + 1);
 	}
 	arg->dir_size = dir_size;
 	return (arg);

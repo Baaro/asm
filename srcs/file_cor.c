@@ -32,10 +32,19 @@ char				*file_cor_get_name(char *f_name)
 	char	*dot;
 	char	*fc_name;
 
-	slash = ft_strrchr(f_name, '/');
-	dot = ft_strrchr(slash, '.');
-	fc_name = ft_strsub(slash + 1, 0, dot - slash);
-	fc_name = ft_strjoincl(fc_name, "cor", 0);
+	slash = NULL;
+	dot = NULL;
+	fc_name = NULL;
+	if ((slash = ft_strrchr(f_name, '/')))
+	{
+		if ((dot = ft_strrchr(slash, '.')))
+			fc_name = ft_strsub(slash + 1, 0, dot - slash - 1);
+		else
+			fc_name = ft_strsub(slash + 1, 0, slash - f_name);
+	}
+	else if ((dot = ft_strrchr(f_name, '.')))
+		fc_name = ft_strsub(f_name, 0, dot - f_name);
+	fc_name = ft_strjoincl(fc_name, ".cor", 0);
 	return (fc_name);
 }
 

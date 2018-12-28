@@ -14,14 +14,35 @@
 
 const static t_op_templ	g_op_template_tab[NUM_INSTRUCTIONS + 1];
 
+static void			op_exists(char *op)
+{
+	ssize_t	cur_op;
+
+	cur_op = -1;
+	while (++cur_op < NUM_INSTRUCTIONS)
+		if (ft_strequ(op, g_op_template_tab[cur_op].name))
+			return ;
+	printf(RED"ERROR: "RESET"Unknown op: [%s]!\n", op);
+	exit(EXIT_FAILURE);
+}
+
 char			*op_get_str(char *cur_line, t_counter *c)
 {
-	ssize_t		invld_symbol;
-	size_t		op_len;
-	char		*op_name;
+	ssize_t	invld_symbol;
+	size_t	op_len;
+	char	*op_name;
 
-	op_name = ft_strtrim(ft_strtok(cur_line, DELIMS_CHARS));
-	op_len = ft_strlen(op_name);
+	op_len = 0;
+	if ((op_name = ft_strtrim(ft_strtok(cur_line, DELIMS_CHARS))))
+	{
+		op_exists(op_name);
+		op_len = ft_strlen(op_name);
+	}
+	else
+	{
+		printf("ERROR: The %s does not exists!!\n", cur_line);
+		exit(EXIT_FAILURE);
+	}
 	if ((invld_symbol = get_invalid_symbols(op_name, op_len, OPS_CHARS)) != -1)
 	{
 		c->column += (size_t)invld_symbol;

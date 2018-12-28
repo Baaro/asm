@@ -21,9 +21,9 @@ void	label_append(t_list **curr_labs, t_list **all_labs, t_label *l)
 	}
 }
 
-bool	is_label(char *line, size_t len)
+bool	is_label(char *line, int32_t len)
 {
-	size_t counter;
+	int32_t	counter;
 
 	counter = -1;
 	while (++counter < len)
@@ -55,7 +55,8 @@ t_label	*label_get(char *line, t_counter *counter)
 	t_label	*label;
 
 	label_char = ft_strcspn(line, ":");
-	if (is_label(line, label_char))
+	if (line[label_char] == LABEL_CHAR
+	&& is_label(line, label_char))
 	{
 		if ((invld_smbl = get_invalid_symbols(line, label_char,\
 			LABEL_CHARS)) == -1)
@@ -65,6 +66,13 @@ t_label	*label_get(char *line, t_counter *counter)
 			label->name = ft_strsub(line, 0, label_char);
 			label->len = ft_strlen(label->name);
 			return (label);
+		}
+		else
+		{
+			ft_printf("\x1b[31mLexical error:\x1b[0m[%zu]\
+ Wrong label's name: [%s]\n",\
+			counter->row, ft_strsub(line, 0, label_char + 1));
+			exit(EXIT_FAILURE);
 		}
 	}
 	return (NULL);
@@ -85,7 +93,10 @@ t_label	*label_get_solo(char *line, t_counter *counter)
 			LABEL_CHARS)) != -1)
 		{
 			counter->column += (size_t)invld_smbl;
-			lexical_errors(E_INVALID_SYMBOLS, counter);
+			ft_printf("\x1b[31mLexical error:\x1b[0m[%zu]\
+ Wrong label's name: [%s]\n",\
+			counter->row, ft_strsub(line, 0, label_char + 1));
+			exit(EXIT_FAILURE);
 		}
 		label->name = ft_strsub(line, 0, label_char);
 		label->len = ft_strlen(label->name);

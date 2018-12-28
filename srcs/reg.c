@@ -26,8 +26,8 @@ bool		is_reg(char *arg)
 		{
 			if (!(ft_isdigit(*copy_arg)))
 			{
-				ft_printf("wrong reg: %s\n", arg);
-				exit(1);
+				ft_printf("ERROR: Wrong reg: %s\n", arg);
+				exit(EXIT_FAILURE);
 			}
 			copy_arg++;
 		}

@@ -43,7 +43,7 @@ int			file_get_line(t_file *f, t_counter *c, bool is_cmds)
 	while ((status = get_next_line(f->fd, &f->line) == 1))
 	{
 		c->row++;
-		c->column = 1;
+		c->column = 0;
 		c->begin_whitespaces = ft_strspn(f->line, DELIMS_CHARS);
 		if (!is_cmds)
 		{

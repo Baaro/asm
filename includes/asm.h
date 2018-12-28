@@ -170,7 +170,7 @@ void			header_del(t_header **h);
 
 void			cmd_str_set(t_file *f, t_header *h, t_counter *c);
 
-bool			is_label(char *line, size_t len);
+bool			is_label(char *line, int32_t len);
 void			label_append(t_list **curr_labs, t_list **all_labs, t_label *l);
 t_label			*label_get_solo(char *line, t_counter *counter);
 t_label			*label_get(char *line, t_counter *counter);

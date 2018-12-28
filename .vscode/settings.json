@@ -1,9 +1,0 @@
-{
-    "files.associations": {
-        "asm.h": "c",
-        "op.h": "c",
-        "regex.h": "c",
-        "libft.h": "c",
-        "stdbool.h": "c"
-    }
-}

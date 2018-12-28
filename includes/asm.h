@@ -144,8 +144,8 @@ typedef struct	s_b_token
 
 typedef struct	s_labels
 {
-	t_list			*all;
-	t_list			*curr;
+	t_list		*all;
+	t_list		*curr;
 }				t_labels;
 
 void			usage(void);

@@ -44,7 +44,7 @@ t_argument	*reg_get(char *arg_str)
 	arg = ft_memalloc(sizeof(t_argument));
 	arg->code = REG_CODE;
 	arg->val = ft_atoi32(arg_str + 1);
-	if (arg->val < 1 || arg->val > 16)
+	if (arg->val < 1 || arg->val > 99)
 		semantic_errors(E_WRONG_ARGUMENT, arg_str, NULL);
 	return (arg);
 }

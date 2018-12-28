@@ -18,9 +18,9 @@ void	lexical_errors(t_errors error, t_counter *counter)
 	if (counter)
 		ft_printf("[%zu]", counter->row);
 	if (error == E_NO_BEGIN_QUOTES)
-		ft_printf("The name's of string doesn't have BEGIN quotes!\n");
+		ft_printf("The cmd's string doesn't have BEGIN quotes!\n");
 	else if (error == E_NO_END_QUOTES)
-		ft_printf("The name's of string doesn't have END quotes!\n");
+		ft_printf("The cmd's string doesn't have END quotes!\n");
 	else if (error == E_CHAMPION_NAME_TOO_LONG)
 		ft_printf("Champion name too long!\n");
 	else if (error == E_CHAMPION_COMMENT_TOO_LONG)

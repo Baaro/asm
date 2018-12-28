@@ -20,20 +20,14 @@ char			*op_get_str(char *cur_line, t_counter *c)
 	size_t		op_len;
 	char		*op_name;
 
-	op_name = ft_strtok(cur_line, DELIMS_CHARS);
-	if ((ft_strchr(op_name, '%')))
-	{
-		op_name = ft_strjoin(ft_strtok(op_name, "%"), " %");
-		op_name = ft_strjoincl(op_name, ft_strtok(NULL, "\0"), 0);
-		op_name = ft_strtrim(ft_strtok(op_name, DELIMS_CHARS));
-	}
-	else
-		op_name = ft_strtrim(op_name);
+	op_name = ft_strtrim(ft_strtok(cur_line, DELIMS_CHARS));
 	op_len = ft_strlen(op_name);
 	if ((invld_symbol = get_invalid_symbols(op_name, op_len, OPS_CHARS)) != -1)
 	{
 		c->column += (size_t)invld_symbol;
-		lexical_errors(E_INVALID_SYMBOLS, c);
+		ft_printf("\x1b[31mLexical error:\x1b[0m Wrong op's name: [%s]\n",\
+		op_name);
+		exit(EXIT_FAILURE);
 	}
 	return (op_name);
 }
@@ -49,7 +43,7 @@ uint8_t			op_get_code(char *op)
 	while (++curr_instr < NUM_INSTRUCTIONS)
 	{
 		op_len = ft_strlen(g_op_template_tab[curr_instr].name);
-		if (ft_strnequ(g_op_template_tab[curr_instr].name, op, op_len))
+		if (ft_strequ(g_op_template_tab[curr_instr].name, op))
 			op_code = g_op_template_tab[curr_instr].code;
 	}
 	if (op_code == 0)

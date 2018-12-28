@@ -35,7 +35,7 @@ static char	*cmd_str_read(t_file *f, t_counter *c)
 	while (!(ft_strchr(str, QUOTES_CHAR)))
 	{
 		if ((file_get_line(f, c, true)) == 0)
-			lexical_errors(E_IS_NOT_ENOUGH_DATA, c);
+			lexical_errors(E_NO_END_QUOTES, c);
 		str = ft_strjoincl(str, f->line, 0);
 	}
 	return (str);

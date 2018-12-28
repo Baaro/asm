@@ -55,6 +55,7 @@ typedef enum	e_errors
 	E_WRONG_ARGUMENT,
 	E_UNKNOWN_REFERENCE,
 	E_NO_ENDLINE,
+	E_WRONG_LABEL_NAME,
 }				t_errors;
 
 typedef struct	s_counter

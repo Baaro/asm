@@ -69,10 +69,8 @@ t_label	*label_get(char *line, t_counter *counter)
 		}
 		else
 		{
-			ft_printf("\x1b[31mLexical error:\x1b[0m[%zu]\
- Wrong label's name: [%s]\n",\
-			counter->row, ft_strsub(line, 0, label_char + 1));
-			exit(EXIT_FAILURE);
+			syntactic_errors(E_WRONG_LABEL_NAME,\
+			ft_strsub(line, 0, label_char + 1), counter);
 		}
 	}
 	return (NULL);
@@ -93,10 +91,8 @@ t_label	*label_get_solo(char *line, t_counter *counter)
 			LABEL_CHARS)) != -1)
 		{
 			counter->column += (size_t)invld_smbl;
-			ft_printf("\x1b[31mLexical error:\x1b[0m[%zu]\
- Wrong label's name: [%s]\n",\
-			counter->row, ft_strsub(line, 0, label_char + 1));
-			exit(EXIT_FAILURE);
+			syntactic_errors(E_WRONG_LABEL_NAME,\
+			ft_strsub(line, 0, label_char + 1), counter);
 		}
 		label->name = ft_strsub(line, 0, label_char);
 		label->len = ft_strlen(label->name);

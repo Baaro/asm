@@ -14,7 +14,7 @@
 
 const static t_op_templ	g_op_template_tab[NUM_INSTRUCTIONS + 1];
 
-static void			op_exists(char *op)
+static void		op_exists(char *op)
 {
 	ssize_t	cur_op;
 

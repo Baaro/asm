@@ -40,10 +40,12 @@ void	lexical_errors(t_errors error, t_counter *counter)
 void	syntactic_errors(t_errors error, char *line, t_counter *counter)
 {
 	line = NULL;
-	ft_printf("\x1b[31mSyntactic error\x1b[0m");
-	ft_printf("[%zu]\n", counter->row);
+	ft_printf("\x1b[31mSyntactic error:\x1b[0m");
+	ft_printf("[%zu] ", counter->row);
 	if (error == E_NOT_ALL_COMMAND)
 		ft_printf("Is not a .name or .comment!\n");
+	else if (E_WRONG_LABEL_NAME)
+		ft_printf("Wrong label's name!\n", line);
 	exit(EXIT_FAILURE);
 }
 

@@ -8,3 +8,6 @@ End with an example of getting some data out of the system or using it for a lit
 
 ### Coding style
 C code has written following [Norminette](https://github.com/vsokh/assembler/blob/master/docs/norme.en.pdf)(42 code style specifications for almost all C-based projects) rules.
+
+### Author
+vsokolog

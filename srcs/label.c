@@ -18,7 +18,10 @@ void	label_append(t_list **curr_labs, t_list **all_labs, t_label *l)
 	{
 		ft_lstaddend(curr_labs, ft_lstnew(l, sizeof(t_label)));
 		ft_lstaddend(all_labs, ft_lstnew(l, sizeof(t_label)));
+		return ;
 	}
+	if (l->name)
+		free(l->name);
 }
 
 bool	is_label(char *line, int32_t len)
@@ -59,19 +62,16 @@ t_label	*label_get(char *line, t_counter *counter)
 	&& is_label(line, label_char))
 	{
 		if ((invld_smbl = get_invalid_symbols(line, label_char,\
-			LABEL_CHARS)) == -1)
+			LABEL_CHARS)) != -1)
 		{
-			label = ft_memalloc(sizeof(t_label));
 			counter->column += label_char;
-			label->name = ft_strsub(line, 0, label_char);
-			label->len = ft_strlen(label->name);
-			return (label);
-		}
-		else
-		{
 			syntactic_errors(E_WRONG_LABEL_NAME,\
 			ft_strsub(line, 0, label_char + 1), counter);
 		}
+		label = ft_memalloc(sizeof(t_label));
+		label->name = ft_strsub(line, 0, label_char);
+		label->len = ft_strlen(label->name);
+		return (label);
 	}
 	return (NULL);
 }
@@ -86,14 +86,14 @@ t_label	*label_get_solo(char *line, t_counter *counter)
 	if (line[label_char] == LABEL_CHAR
 	&& line[label_char + 1] == '\0')
 	{
-		label = ft_memalloc(sizeof(t_label));
-		if ((invld_smbl = get_invalid_symbols(line, label_char - 1,\
+		if ((invld_smbl = get_invalid_symbols(line, label_char,\
 			LABEL_CHARS)) != -1)
 		{
 			counter->column += (size_t)invld_smbl;
 			syntactic_errors(E_WRONG_LABEL_NAME,\
 			ft_strsub(line, 0, label_char + 1), counter);
 		}
+		label = ft_memalloc(sizeof(t_label));
 		label->name = ft_strsub(line, 0, label_char);
 		label->len = ft_strlen(label->name);
 		return (label);

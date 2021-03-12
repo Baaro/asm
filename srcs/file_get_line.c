@@ -45,7 +45,7 @@ int			file_get_line(t_file *f, t_counter *c, bool is_cmds)
 		c->row++;
 		c->column = 0;
 		c->begin_whitespaces = ft_strspn(f->line, DELIMS_CHARS);
-		if (!is_cmds)
+		if (!is_cmds && *(f->line + c->begin_whitespaces) != HEADER_DOT_CHAR)
 		{
 			if (is_endline(f->line[c->begin_whitespaces])
 			|| is_comment(f->line[c->begin_whitespaces]))

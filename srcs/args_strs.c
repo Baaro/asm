@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "asm.h"
+#include "../includes/asm.h"
 
 static void			args_valid_all_str(char *arg, t_counter *c)
 {
@@ -39,7 +39,7 @@ void				args_valid_begin_char(char args_begin)
 {
 	if (!(ft_strchr(VALID_CHARS, args_begin)))
 	{
-		printf("ERROR: Wrong separator %c\n", args_begin);
+		ft_printf("ERROR: Wrong separator %c\n", args_begin);
 		exit(EXIT_FAILURE);
 	}
 }
@@ -48,7 +48,7 @@ void				args_valid_end_char(char args_begin)
 {
 	if (!(ft_strchr(VALID_CHARS, args_begin)))
 	{
-		printf("ERROR: wrong separator %c\n", args_begin);
+		ft_printf("ERROR: wrong separator %c\n", args_begin);
 		exit(EXIT_FAILURE);
 	}
 }
@@ -71,7 +71,7 @@ void				args_get_strs(t_token *token, t_counter *c)
 	}
 	else
 	{
-		printf("ERROR: [%s] has no argumets!\n", token->op);
+		ft_printf("ERROR: [%s] has no argumets!\n", token->op);
 		exit(EXIT_FAILURE);
 	}
 }

@@ -38,6 +38,10 @@ srcs/ft_printf/form/form_str_char/form_unicode		\
 MAKE := make
 RM := rm -rf
 
+RED = '\033[0;31m'
+GR = '\033[0;32m'
+NC = '\033[0m'
+
 search_wildcards := $(addsuffix /*.c, $(source_dirs))
 
 OBJ = $(notdir $(patsubst %.c, %.o, $(wildcard $(search_wildcards))))
@@ -53,6 +57,10 @@ VPATH := $(source_dirs)
 
 %.o: %.c
 	@$(CC) $(FLAGS) -I $(INCLUDES) -c $< -o $@
+
+norm:
+	@echo ${RED}[Checking the $(NAME) NORM]${NC}
+	@norminette
 
 clean:
 	@$(RM) $(OBJ)

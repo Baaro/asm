@@ -19,10 +19,7 @@ bool				is_dir(char *arg_str)
 		if (*(arg_str + 1) == LABEL_CHAR)
 		{
 			if (!is_label(arg_str + 2, ft_strlen(arg_str + 2)))
-			{
-				ft_printf("wrong ref: %s\n", arg_str);
-				exit(EXIT_FAILURE);
-			}
+				linker_errors(E_UNKNOWN_REFERENCE, arg_str);
 		}
 		else if (!is_valid_val(arg_str + 1))
 			semantic_errors(E_WRONG_ARGUMENT, arg_str, NULL);

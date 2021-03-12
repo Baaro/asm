@@ -12,7 +12,7 @@
 
 #include "asm.h"
 
-const static t_op_templ	g_op_template_tab[NUM_INSTRUCTIONS + 1];
+static const t_op_templ	g_op_template_tab[NUM_INSTRUCTIONS + 1];
 
 static void		op_exists(char *op)
 {
@@ -22,7 +22,7 @@ static void		op_exists(char *op)
 	while (++cur_op < NUM_INSTRUCTIONS)
 		if (ft_strequ(op, g_op_template_tab[cur_op].name))
 			return ;
-	printf(RED"ERROR: "RESET"Unknown op: [%s]!\n", op);
+	ft_printf(RED"ERROR: "RESET"Unknown operation: [%s]!\n", op);
 	exit(EXIT_FAILURE);
 }
 
@@ -40,7 +40,7 @@ char			*op_get_str(char *cur_line, t_counter *c)
 	}
 	else
 	{
-		printf("ERROR: The %s does not exists!!\n", cur_line);
+		ft_printf("ERROR: The [%s] does not exists!!\n", cur_line);
 		exit(EXIT_FAILURE);
 	}
 	if ((invld_symbol = get_invalid_symbols(op_name, op_len, OPS_CHARS)) != -1)
@@ -56,14 +56,12 @@ char			*op_get_str(char *cur_line, t_counter *c)
 uint8_t			op_get_code(char *op)
 {
 	uint8_t	op_code;
-	uint8_t	op_len;
 	ssize_t curr_instr;
 
 	op_code = 0;
 	curr_instr = -1;
 	while (++curr_instr < NUM_INSTRUCTIONS)
 	{
-		op_len = ft_strlen(g_op_template_tab[curr_instr].name);
 		if (ft_strequ(g_op_template_tab[curr_instr].name, op))
 			op_code = g_op_template_tab[curr_instr].code;
 	}

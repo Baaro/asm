@@ -24,7 +24,6 @@ static t_argument	*arg_get(t_b_token *bt, t_token *t, ssize_t curr_arg)
 		arg = ind_get(t->args[curr_arg]);
 	else
 	{
-		ft_printf("instr: %d\n", bt->op_template->code);
 		ft_printf("Wrong argument for [%s]!\n", bt->op_template->name);
 		exit(EXIT_FAILURE);
 	}
@@ -46,7 +45,6 @@ void				arg_valid(t_b_token *bt, ssize_t curr_arg)
 		return ;
 	else
 	{
-		ft_printf("instr: %d\n", bt->op_template->code);
 		ft_printf("Wrong argument for [%s]!\n", bt->op_template->name);
 		exit(EXIT_FAILURE);
 	}

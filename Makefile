@@ -1,16 +1,33 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: dtsyvin <marvin@42.fr>                     +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2018/12/28 20:51:01 by dtsyvin           #+#    #+#              #
+#    Updated: 2018/12/28 20:51:03 by dtsyvin          ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 NAME = asm
 
 CC := gcc
 
 FLAGS := -Wall -Wextra -Werror -g
-INCLUDES :=	includes					\
+HEADERS := op asm
+INCLUDES :=	includes
+HFILES = $(patsubst %, $(INCLUDES)/%.h, $(HEADERS))
 
-source_dirs :=	srcs					\
-				srcs/instr_compute		\
+source_dirs :=	srcs
 
 RM := rm -rf
 
 LIBFT := libft/libft.a
+
+RED = '\033[0;31m'
+GR = '\033[0;32m'
+NC = '\033[0m'
 
 search_wildcards := $(addsuffix /*.c, $(source_dirs))
 
@@ -25,9 +42,16 @@ $(NAME): $(OBJ)
 
 VPATH := $(source_dirs)
 
-%.o: %.c
+%.o: %.c $(HFILES)
 	@$(CC) $(FLAGS) -I $(INCLUDES) -c $< -o $@
-	
+
+norm:
+	@echo ${RED}[Checking the $(NAME) NORM]${NC}
+	@norminette
+
+fnorm: norm
+	@make norm -C ./libft
+
 clean:
 	@$(MAKE) clean -C ./libft
 	@$(RM) $(OBJ) $(OBJ_DIR)

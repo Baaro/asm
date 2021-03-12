@@ -219,7 +219,7 @@ bool			is_valid_val(char *arg_str);
 ssize_t			get_invalid_symbols(char *line, size_t len, char *valid_smbls);
 void			ft_lstprint(t_list *elem);
 
-const static t_op_templ	g_op_template_tab[NUM_INSTRUCTIONS + 1] =
+static const t_op_templ	g_op_template_tab[NUM_INSTRUCTIONS + 1] =
 {
 	{"live", 1, {T_DIR}, false, 4},
 	{"ld", 2, {T_DIR | T_IND, T_REG}, true, 4},

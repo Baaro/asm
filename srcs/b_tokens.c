@@ -39,13 +39,11 @@ static t_b_token	*b_token_make(t_token *t, uint32_t sprv, uint32_t pprv)
 void				b_tokens_del(t_list **b_tokens)
 {
 	t_list		*to_free;
-	t_list		*to_free_label;
 	ssize_t		i;
 
 	while (*b_tokens)
 	{
 		to_free = *b_tokens;
-		to_free_label = ((t_b_token *)to_free->content)->labels;
 		*b_tokens = (*b_tokens)->next;
 		ft_lstdel(&((t_b_token *)to_free->content)->labels, ft_lstelemfree);
 		i = -1;

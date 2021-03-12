@@ -14,7 +14,7 @@
 
 void	lexical_errors(t_errors error, t_counter *counter)
 {
-	ft_printf("\x1b[31mLexical error: \x1b[0m");
+	ft_printf("\x1b[31mLexical error:\x1b[0m");
 	if (counter)
 		ft_printf("[%zu]", counter->row);
 	if (error == E_NO_BEGIN_QUOTES)
@@ -26,7 +26,7 @@ void	lexical_errors(t_errors error, t_counter *counter)
 	else if (error == E_CHAMPION_COMMENT_TOO_LONG)
 		ft_printf("Champion comment too long!\n");
 	else if (error == E_INVALID_SYMBOLS)
-		ft_printf("Invalid symbol!\n");
+		ft_printf("Wrong character!\n");
 	else if (error == E_WRONG_INPUT)
 		ft_printf("Wrong input!\n");
 	else if (error == E_IS_NOT_ENOUGH_DATA)
@@ -51,7 +51,7 @@ void	syntactic_errors(t_errors error, char *line, t_counter *counter)
 
 void	semantic_errors(t_errors error, char *line, t_counter *counter)
 {
-	ft_printf("\x1b[31mSemantic error: \x1b[0m");
+	ft_printf("\x1b[31mSemantic error:\x1b[0m");
 	if (counter)
 		ft_printf("[%zu]", counter->row);
 	if (error == E_DOUBLE_NAME)
@@ -59,7 +59,7 @@ void	semantic_errors(t_errors error, char *line, t_counter *counter)
 	else if (error == E_DOUBLE_COMMENT)
 		ft_printf("The Comment command has already read!\n");
 	else if (error == E_UNMATCHED_COMMAND)
-		ft_printf("Unmatched command!\n");
+		ft_printf("Unknown command!\n");
 	else if (error == E_COMMAND_READ)
 		ft_printf("The Commands has already read\
 		This is an unknown command!\n");
@@ -68,13 +68,14 @@ void	semantic_errors(t_errors error, char *line, t_counter *counter)
 	else if (error == E_UNKNOWN_INSTR)
 		ft_printf("Unknown instruction: [%s]!\n", line);
 	else if (error == E_WRONG_ARGUMENT)
-		ft_printf("Unknown argument: [%s]!\n", line);
+		ft_printf("Wrong argument for instruction: [%s]!\n", line);
 	exit(EXIT_FAILURE);
 }
 
 void	linker_errors(t_errors error, char *line)
 {
+	ft_printf("\x1b[31mLinker error: \x1b[0m");
 	if (error == E_UNKNOWN_REFERENCE)
-		ft_printf("Unknown reference: [%s]!\n", line);
+		ft_printf("Unexisting reference: [%s]!\n", line);
 	exit(EXIT_FAILURE);
 }

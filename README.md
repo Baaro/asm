@@ -3,7 +3,7 @@ This project is an essential part of another project([Corewar](https://www.wikiw
 The goal of this module is to be a translator from pseudo-assembler to pseudo-byte code. At some degree is a humble attempt to mimic some functionality of [GNU as command](https://linux.die.net/man/1/as).
 
 ## Getting Started
-End with an example of getting some data out of the system or using it for a little demo
+TBD
 
 ## Coding style
 C code has written following [Norminette](https://github.com/vsokh/assembler/blob/master/docs/norme.en.pdf)(42 code style specifications for almost all C-based projects) rules.

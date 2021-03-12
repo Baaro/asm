@@ -6,11 +6,11 @@
 /*   By: vsokolog <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/25 14:37:49 by vsokolog          #+#    #+#             */
-/*   Updated: 2018/12/25 14:37:50 by vsokolog         ###   ########.fr       */
+/*   Updated: 2021/03/12 15:24:09 by vsokolog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/asm.h"
+#include "../inc/asm.h"
 
 static void			args_valid_all_str(char *arg, t_counter *c)
 {

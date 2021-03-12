@@ -6,7 +6,7 @@
 #    By: dtsyvin <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/12/28 20:51:01 by dtsyvin           #+#    #+#              #
-#    Updated: 2018/12/28 20:51:03 by dtsyvin          ###   ########.fr        #
+#    Updated: 2021/03/12 15:23:51 by vsokolog         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,10 +16,10 @@ CC := gcc
 
 FLAGS := -Wall -Wextra -Werror -g
 HEADERS := op asm
-INCLUDES :=	includes
+INCLUDES :=	inc
 HFILES = $(patsubst %, $(INCLUDES)/%.h, $(HEADERS))
 
-source_dirs :=	srcs
+source_dirs :=	src
 
 RM := rm -rf
 

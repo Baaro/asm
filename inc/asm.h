@@ -16,7 +16,7 @@
 # include <stdlib.h>
 # include <stddef.h>
 # include <stdbool.h>
-# include "../libft/includes/ft_printf.h"
+# include "../libft/inc/ft_printf.h"
 # include <fcntl.h>
 # include "op.h"
 # define FLAG_A 1

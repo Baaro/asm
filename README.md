@@ -7,4 +7,4 @@ The goal of this module is to be a translator from pseudo-assembler to pseudo-by
 End with an example of getting some data out of the system or using it for a little demo
 
 ### Coding style
-C code has written following Norminette(42 code style specifications for almost all C-based projects) rules.
+C code has written following [Norminette](https://github.com/vsokh/assembler/blob/master/docs/norme.en.pdf)(42 code style specifications for almost all C-based projects) rules.

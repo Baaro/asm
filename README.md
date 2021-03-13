@@ -2,8 +2,7 @@
 This project is an essential part of another project([Corewar](https://www.wikiwand.com/en/Core_War)) which was made with a group of students during my studying.
 The goal of this module is to be a translator from pseudo-assembler to pseudo-byte code.
 
-## Getting Started
-### Install & Build & Run
+## Install & Build & Run
 ```
 git clone https://github.com/vsokh/assembler.git && \
 cd assembler && \
@@ -19,9 +18,9 @@ You can execute the program with `-a` flag in order to observe program size, opc
 ./asm -a vm_champs/champs/examples/zork.s
 ```
  
-### Preview
+## Preview
 For the preview I'm using [bat](https://github.com/sharkdp/bat) & [hexyl](https://github.com/sharkdp/hexyl) commands.
-
+![preview of an input and output](https://github.com/vsokh/assembler/blob/master/images/preview.png))
 
 ## Coding style
 C code has written following [Norminette](https://github.com/vsokh/assembler/blob/master/docs/norme.en.pdf)(42 code style specifications for almost all C-based projects) rules.

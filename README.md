@@ -20,7 +20,7 @@ You can execute the program with `-a` flag in order to observe program size, opc
  
 ## Preview
 For the preview I'm using [bat](https://github.com/sharkdp/bat) & [hexyl](https://github.com/sharkdp/hexyl) commands.
-![preview of an input and output](https://github.com/vsokh/assembler/blob/master/images/preview.png))
+![preview of an input and output](https://github.com/vsokh/assembler/blob/master/images/preview.png)
 
 ## Coding style
 C code has written following [Norminette](https://github.com/vsokh/assembler/blob/master/docs/norme.en.pdf)(42 code style specifications for almost all C-based projects) rules.

@@ -23,7 +23,7 @@ For the preview I'm using [bat](https://github.com/sharkdp/bat) & [hexyl](https:
 ![preview of an input and output](https://github.com/vsokh/assembler/blob/master/images/preview.png)
 
 ## Coding style
-C code has written following [Norminette](https://github.com/vsokh/assembler/blob/master/docs/norme.en.pdf)(42 code style specifications for almost all C-based projects) rules.
+Code written in C follows [Norminette](https://github.com/vsokh/assembler/blob/master/docs/norme.en.pdf)(42 code style specifications for C-based projects) rules.
 
 ## Author
 vsokolog

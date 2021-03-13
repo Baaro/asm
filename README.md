@@ -1,6 +1,5 @@
 # Assembler
-This project is an essential part of another project([Corewar](https://www.wikiwand.com/en/Core_War)) which was made with a group of students during my studying.
-The goal of this module is to be a translator from pseudo-assembler to pseudo-byte code.
+The goal of this project is to be a translator from pseudo-assembler to pseudo-byte code.
 
 ## Install & Build & Run
 ```

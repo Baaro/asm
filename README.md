@@ -18,7 +18,7 @@ You can execute the program with `-a` flag in order to observe program size, opc
 ```
  
 ## Preview
-For the preview I'm using [bat](https://github.com/sharkdp/bat) & [hexyl](https://github.com/sharkdp/hexyl) commands.
+For the sake of beauty I use [bat](https://github.com/sharkdp/bat) & [hexyl](https://github.com/sharkdp/hexyl) commands.
 ![preview of an input and output](https://github.com/vsokh/assembler/blob/master/images/preview.png)
 
 ## Coding style
